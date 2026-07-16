@@ -7,6 +7,7 @@ import jdatetime
 import pytz
 import random
 import time
+import html
 from datetime import datetime
 
 # ==========================================
@@ -124,10 +125,8 @@ Hiddify
 
 """
             footer = """
-برای دانلود آخرین نسخه به پست پین شده کانال مراجعه کنید
-
+برای دانلود آخرین نسخه به پست پین شده کانال مراجعه کنید 
 ♨️با دوستان خود به اشتراک بگذارید ♨️
-
 #MahsaNG #v2ray #فیلترشکن #hiddify #proxy #اینترنت_مجانی 
 #پروکسی 
 
@@ -136,11 +135,19 @@ Hiddify
 
 💬نظرات خود را با ما به اشتراک بگذارید 👇"""
 
-            configs_text = "\n\n".join(configs_to_post)
+            # فرمت‌بندی کانفیگ‌ها به صورت Quote (نقل قول) و قابل کپی با یک ضربه
+            formatted_configs = []
+            for cfg in configs_to_post:
+                safe_cfg = html.escape(cfg)
+                # استفاده از blockquote برای فرمت نقل قول و code برای کپی شونده بودن
+                formatted_configs.append(f"<blockquote><code>{safe_cfg}</code></blockquote>")
+            
+            configs_text = "\n".join(formatted_configs)
             full_message = header + configs_text + footer
             
             url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-            payload = {"chat_id": CHANNEL_USERNAME, "text": full_message, "parse_mode": "Markdown"}
+            # تغییر فرمت به HTML برای پشتیبانی از Quote
+            payload = {"chat_id": CHANNEL_USERNAME, "text": full_message, "parse_mode": "HTML"}
             requests.post(url, json=payload)
             print(f"{len(configs_to_post)} کانفیگ با موفقیت پست شد.")
         else:
