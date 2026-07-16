@@ -138,8 +138,8 @@ Hiddify
             # فرمت‌بندی کانفیگ‌ها: همه در یک بلوک واحد تا با یک ضربه کپی شوند
             all_configs_str = "\n\n".join(configs_to_post)
             safe_configs_str = html.escape(all_configs_str)
-            # استفاده از blockquote برای نقل قول و pre برای کپی شونده بودن کل متن با یک ضربه
-            configs_text = f"<blockquote><pre>{safe_configs_str}</pre></blockquote>"
+            # استفاده از pre برای کپی شونده بودن کل ۵ کانفیگ با یک ضربه
+            configs_text = f"<pre>{safe_configs_str}</pre>"
             full_message = header + configs_text + footer
             
             url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
