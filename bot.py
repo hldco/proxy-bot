@@ -47,6 +47,38 @@ def save_sent_config(configs_list):
         for config in configs_list:
             f.write(config + "\n")
 
+def get_ip_from_config(config):
+    """استخراج آی‌پی از داخل کانفیگ"""
+    try:
+        if config.startswith("vmess://"):
+            b64_str = config.replace("vmess://", "")
+            b64_str += '=' * (-len(b64_str) % 4)
+            json_data = json.loads(base64.b64decode(b64_str).decode('utf-8'))
+            return json_data.get("add", "")
+        elif config.startswith(("vless://", "trojan://", "ss://")):
+            # پیدا کردن آی‌پی بین علامت @ و :
+            match = re.search(r'@([^:]+):', config)
+            if match:
+                return match.group(1)
+    except:
+        return ""
+    return ""
+
+def get_country_flag(ip):
+    """گرفتن پرچم کشور بر اساس آی‌پی"""
+    if not ip or not re.match(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$', ip):
+        return "🌐" # اگر آی‌پی نبود، کره زمین
+    try:
+        # استفاده از سرویس رایگان ip-api
+        res = requests.get(f"http://ip-api.com/json/{ip}?fields=countryCode", timeout=5).json()
+        code = res.get("countryCode", "")
+        if len(code) == 2:
+            # تبدیل کد کشور به ایموجی پرچم
+            return chr(0x1F1E6 + ord(code[0]) - ord('A')) + chr(0x1F1E6 + ord(code[1]) - ord('A'))
+    except:
+        pass
+    return "🌐"
+
 def change_remark(config, new_remark):
     try:
         if config.startswith("vmess://"):
@@ -65,7 +97,8 @@ def change_remark(config, new_remark):
         return config
 
 def main():
-    delay_seconds = random.randint(0, 1800)
+    # کاهش تاخیر رندوم به ۰ تا ۱۰ دقیقه
+    delay_seconds = random.randint(0, 600)
     print(f"ربات برای طبیعی بودن، {delay_seconds} ثانیه صبر می‌کند...")
     time.sleep(delay_seconds)
 
@@ -86,7 +119,14 @@ def main():
         for config in configs:
             config = config.strip()
             if config.startswith(("vless://", "vmess://", "trojan://", "ss://")) and config not in sent_configs:
-                modified_config = change_remark(config, CUSTOM_REMARK)
+                # ۱. استخراج آی‌پی
+                ip = get_ip_from_config(config)
+                # ۲. گرفتن پرچم کشور
+                flag = get_country_flag(ip)
+                # ۳. ترکیب پرچم با اسم کانال
+                final_remark = f"{flag} {CUSTOM_REMARK}"
+                # ۴. تغییر اسم کانفیگ
+                modified_config = change_remark(config, final_remark)
                 new_configs_list.append(modified_config)
                 
         if new_configs_list:
