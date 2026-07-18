@@ -8,6 +8,7 @@ import pytz
 import random
 import time
 import html
+import re
 from datetime import datetime
 
 # ==========================================
@@ -48,7 +49,6 @@ def save_sent_config(configs_list):
             f.write(config + "\n")
 
 def get_ip_from_config(config):
-    """استخراج آی‌پی از داخل کانفیگ"""
     try:
         if config.startswith("vmess://"):
             b64_str = config.replace("vmess://", "")
@@ -56,7 +56,6 @@ def get_ip_from_config(config):
             json_data = json.loads(base64.b64decode(b64_str).decode('utf-8'))
             return json_data.get("add", "")
         elif config.startswith(("vless://", "trojan://", "ss://")):
-            # پیدا کردن آی‌پی بین علامت @ و :
             match = re.search(r'@([^:]+):', config)
             if match:
                 return match.group(1)
@@ -65,15 +64,12 @@ def get_ip_from_config(config):
     return ""
 
 def get_country_flag(ip):
-    """گرفتن پرچم کشور بر اساس آی‌پی"""
     if not ip or not re.match(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$', ip):
-        return "🌐" # اگر آی‌پی نبود، کره زمین
+        return "🌐"
     try:
-        # استفاده از سرویس رایگان ip-api
         res = requests.get(f"http://ip-api.com/json/{ip}?fields=countryCode", timeout=5).json()
         code = res.get("countryCode", "")
         if len(code) == 2:
-            # تبدیل کد کشور به ایموجی پرچم
             return chr(0x1F1E6 + ord(code[0]) - ord('A')) + chr(0x1F1E6 + ord(code[1]) - ord('A'))
     except:
         pass
@@ -97,13 +93,12 @@ def change_remark(config, new_remark):
         return config
 
 def main():
-    # کاهش تاخیر رندوم به ۰ تا ۱۰ دقیقه
     delay_seconds = random.randint(0, 600)
     print(f"ربات برای طبیعی بودن، {delay_seconds} ثانیه صبر می‌کند...")
     time.sleep(delay_seconds)
 
     sent_configs = get_sent_configs()
-    new_configs_list = []
+    new_configs_data = []
     
     try:
         response = requests.get(SOURCE_URL)
@@ -119,32 +114,22 @@ def main():
         for config in configs:
             config = config.strip()
             if config.startswith(("vless://", "vmess://", "trojan://", "ss://")) and config not in sent_configs:
-                # ۱. استخراج آی‌پی
                 ip = get_ip_from_config(config)
-                # ۲. گرفتن پرچم کشور
                 flag = get_country_flag(ip)
-                # ۳. ترکیب پرچم با اسم کانال
                 final_remark = f"{flag} {CUSTOM_REMARK}"
-                # ۴. تغییر اسم کانفیگ
                 modified_config = change_remark(config, final_remark)
-                new_configs_list.append(modified_config)
+                # ذخیره کانفیگ اصلی و تغییر یافته در یک لیست
+                new_configs_data.append({"original": config, "modified": modified_config})
                 
-        if new_configs_list:
-            if len(new_configs_list) > MAX_CONFIGS_PER_POST:
-                configs_to_post = random.sample(new_configs_list, MAX_CONFIGS_PER_POST)
+        if new_configs_data:
+            if len(new_configs_data) > MAX_CONFIGS_PER_POST:
+                selected_data = random.sample(new_configs_data, MAX_CONFIGS_PER_POST)
             else:
-                configs_to_post = new_configs_list
+                selected_data = new_configs_data
                 
-            original_configs_posted = []
-            for posted in configs_to_post:
-                for orig in configs:
-                    # پیدا کردن کانفیگ اصلی برای ذخیره در لیست تکرارها
-                    ip = get_ip_from_config(orig)
-                    flag = get_country_flag(ip)
-                    fr = f"{flag} {CUSTOM_REMARK}"
-                    if change_remark(orig, fr) == posted:
-                        original_configs_posted.append(orig)
-                        break
+            configs_to_post = [item["modified"] for item in selected_data]
+            original_configs_posted = [item["original"] for item in selected_data]
+            
             save_sent_config(original_configs_posted)
             
             date_str, time_str = get_tehran_time()
@@ -184,17 +169,15 @@ https://t.me/goololgoo/79
 
 💬نظرات خود را با ما به اشتراک بگذارید 👇"""
 
-            # فرمت‌بندی کانفیگ‌ها: همه در یک بلوک واحد تا با یک ضربه کپی شوند
             all_configs_str = "\n\n".join(configs_to_post)
             safe_configs_str = html.escape(all_configs_str)
-            # استفاده از pre برای کپی شونده بودن کل ۵ کانفیگ با یک ضربه
             configs_text = f"<pre>{safe_configs_str}</pre>"
             full_message = header + configs_text + footer
             
             url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-            # تغییر فرمت به HTML برای پشتیبانی از Quote
             payload = {"chat_id": CHANNEL_USERNAME, "text": full_message, "parse_mode": "HTML"}
-            requests.post(url, json=payload)
+            tg_response = requests.post(url, json=payload)
+            print("Telegram Response:", tg_response.text)
             print(f"{len(configs_to_post)} کانفیگ با موفقیت پست شد.")
         else:
             print("کانفیگ جدیدی پیدا نشد.")
