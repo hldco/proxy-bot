@@ -98,7 +98,11 @@ def main():
             original_configs_posted = []
             for posted in configs_to_post:
                 for orig in configs:
-                    if change_remark(orig, CUSTOM_REMARK) == posted:
+                    # پیدا کردن کانفیگ اصلی برای ذخیره در لیست تکرارها
+                    ip = get_ip_from_config(orig)
+                    flag = get_country_flag(ip)
+                    fr = f"{flag} {CUSTOM_REMARK}"
+                    if change_remark(orig, fr) == posted:
                         original_configs_posted.append(orig)
                         break
             save_sent_config(original_configs_posted)
