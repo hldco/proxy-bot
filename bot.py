@@ -9,6 +9,7 @@ import random
 import time
 import html
 import re
+import socket
 from datetime import datetime
 
 # ==========================================
@@ -48,32 +49,56 @@ def save_sent_config(configs_list):
         for config in configs_list:
             f.write(config + "\n")
 
-def get_ip_from_config(config):
+def extract_ip_port(config):
+    """استخراج آی‌پی و پورت از داخل کانفیگ"""
     try:
         if config.startswith("vmess://"):
             b64_str = config.replace("vmess://", "")
             b64_str += '=' * (-len(b64_str) % 4)
             json_data = json.loads(base64.b64decode(b64_str).decode('utf-8'))
-            return json_data.get("add", "")
+            return json_data.get("add", ""), str(json_data.get("port", ""))
         elif config.startswith(("vless://", "trojan://", "ss://")):
-            match = re.search(r'@([^:]+):', config)
+            match = re.search(r'@([^:]+):(\d+)', config)
             if match:
-                return match.group(1)
-    except:
-        return ""
-    return ""
-
-def get_country_flag(ip):
-    if not ip or not re.match(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$', ip):
-        return "🌐"
-    try:
-        res = requests.get(f"http://ip-api.com/json/{ip}?fields=countryCode", timeout=5).json()
-        code = res.get("countryCode", "")
-        if len(code) == 2:
-            return chr(0x1F1E6 + ord(code[0]) - ord('A')) + chr(0x1F1E6 + ord(code[1]) - ord('A'))
+                return match.group(1), match.group(2)
     except:
         pass
-    return "🌐"
+    return None, None
+
+def check_port(ip, port):
+    """تست می‌کند آیا سرور کانفیگ روشن است و پذیرای اتصال هست یا خیر"""
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(3) # 3 ثانیه زمان برای تست
+        result = sock.connect_ex((ip, int(port)))
+        sock.close()
+        return result == 0 # 0 یعنی پورت باز است و سرور زنده است
+    except:
+        return False
+
+def get_flags_batch(ip_list):
+    """گرفتن پرچم همه آی‌پی‌ها در یک درخواست برای جلوگیری از مسدود شدن"""
+    flags = {}
+    valid_ips = [ip for ip in ip_list if ip and re.match(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$', ip)]
+    if not valid_ips:
+        return {ip: "🌐" for ip in ip_list}
+    
+    try:
+        res = requests.post("http://ip-api.com/batch", json=[{"query": ip, "fields": "query,countryCode"} for ip in valid_ips], timeout=10).json()
+        for item in res:
+            ip = item.get("query")
+            code = item.get("countryCode", "")
+            if len(code) == 2:
+                flags[ip] = chr(0x1F1E6 + ord(code[0]) - ord('A')) + chr(0x1F1E6 + ord(code[1]) - ord('A'))
+            else:
+                flags[ip] = "🌐"
+    except:
+        pass
+    
+    for ip in ip_list:
+        if ip not in flags:
+            flags[ip] = "🌐"
+    return flags
 
 def change_remark(config, new_remark):
     try:
@@ -99,6 +124,7 @@ def main():
 
     sent_configs = get_sent_configs()
     new_configs_data = []
+    all_ips = []
     
     try:
         response = requests.get(SOURCE_URL)
@@ -111,30 +137,48 @@ def main():
         except:
             configs = content.strip().split('\n')
             
+        # مرحله ۱: استخراج آی‌پی‌ها و پورت‌ها
         for config in configs:
             config = config.strip()
             if config.startswith(("vless://", "vmess://", "trojan://", "ss://")) and config not in sent_configs:
-                ip = get_ip_from_config(config)
-                flag = get_country_flag(ip)
-                final_remark = f"{flag} {CUSTOM_REMARK}"
-                modified_config = change_remark(config, final_remark)
-                # ذخیره کانفیگ اصلی و تغییر یافته در یک لیست
-                new_configs_data.append({"original": config, "modified": modified_config})
-                
+                ip, port = extract_ip_port(config)
+                if ip:
+                    new_configs_data.append({"original": config, "ip": ip, "port": port})
+                    all_ips.append(ip)
+                    
         if new_configs_data:
-            if len(new_configs_data) > MAX_CONFIGS_PER_POST:
-                selected_data = random.sample(new_configs_data, MAX_CONFIGS_PER_POST)
-            else:
-                selected_data = new_configs_data
+            print(f"{len(new_configs_data)} کانفیگ جدید پیدا شد. در حال گرفتن پرچم کشورها...")
+            flags_map = get_flags_batch(all_ips)
+            
+            valid_configs = []
+            print("در حال تست پورت سرورها برای پیدا کردن کانفیگ‌های زنده...")
+            for item in new_configs_data:
+                ip = item["ip"]
+                port = item["port"]
+                # مرحله ۲: تست زنده بودن کانفیگ
+                if check_port(ip, port):
+                    flag = flags_map.get(ip, "🌐")
+                    final_remark = f"{flag} {CUSTOM_REMARK}"
+                    modified_config = change_remark(item["original"], final_remark)
+                    valid_configs.append({"original": item["original"], "modified": modified_config})
+                    print(f"✅ زنده است: {ip}:{port} - {flag}")
+                else:
+                    print(f"❌ مرده است: {ip}:{port}")
+                    
+            if valid_configs:
+                # مرحله ۳: انتخاب ۵ کانفیگ سالم
+                if len(valid_configs) > MAX_CONFIGS_PER_POST:
+                    selected_data = random.sample(valid_configs, MAX_CONFIGS_PER_POST)
+                else:
+                    selected_data = valid_configs
+                    
+                configs_to_post = [item["modified"] for item in selected_data]
+                original_configs_posted = [item["original"] for item in selected_data]
                 
-            configs_to_post = [item["modified"] for item in selected_data]
-            original_configs_posted = [item["original"] for item in selected_data]
-            
-            save_sent_config(original_configs_posted)
-            
-            date_str, time_str = get_tehran_time()
-            
-            header = f"""🔵🟡🟣 پروکسی جدید پر سرعت و پایدار✌️
+                save_sent_config(original_configs_posted)
+                date_str, time_str = get_tehran_time()
+                
+                header = f"""🔵🟡🟣 پروکسی جدید پر سرعت و پایدار✌️
 
 ⛽️مخصوص اینستاگرام و دانلود  💦
 
@@ -153,10 +197,9 @@ Hiddify
 🔘با ضربه 👇 کپی میشود🔘
 
 """
-            footer = """
+                footer = """
 
 برای دانلود آخرین نسخه برنامه ها به پست پین شده کانال مراجعه کنید
-https://t.me/goololgoo/79
 
 ♨️با دوستان خود به اشتراک بگذارید ♨️
 
@@ -169,16 +212,17 @@ https://t.me/goololgoo/79
 
 💬نظرات خود را با ما به اشتراک بگذارید 👇"""
 
-            all_configs_str = "\n\n".join(configs_to_post)
-            safe_configs_str = html.escape(all_configs_str)
-            configs_text = f"<pre>{safe_configs_str}</pre>"
-            full_message = header + configs_text + footer
-            
-            url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-            payload = {"chat_id": CHANNEL_USERNAME, "text": full_message, "parse_mode": "HTML"}
-            tg_response = requests.post(url, json=payload)
-            print("Telegram Response:", tg_response.text)
-            print(f"{len(configs_to_post)} کانفیگ با موفقیت پست شد.")
+                all_configs_str = "\n\n".join(configs_to_post)
+                safe_configs_str = html.escape(all_configs_str)
+                configs_text = f"<pre>{safe_configs_str}</pre>"
+                full_message = header + configs_text + footer
+                
+                url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+                payload = {"chat_id": CHANNEL_USERNAME, "text": full_message, "parse_mode": "HTML"}
+                requests.post(url, json=payload)
+                print(f"{len(configs_to_post)} کانفیگ سالم و زنده با موفقیت پست شد.")
+            else:
+                print("هیچ کانفیگ زنده‌ای در اینbatch پیدا نشد.")
         else:
             print("کانفیگ جدیدی پیدا نشد.")
             
