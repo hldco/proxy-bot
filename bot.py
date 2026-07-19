@@ -16,7 +16,7 @@ from datetime import datetime
 # تنظیمات ربات
 BOT_TOKEN = "8924162958:AAERLm6RZNwczvStWvlCiizTDqsxzQcsBPQ" 
 CHANNEL_USERNAME = "@goololgoo"
-SOURCE_URL = "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/refs/heads/main/configtg.txt"
+SOURCE_URL = "https://raw.githubusercontent.com/Created-By/Telegram-Eag1e_YT/main/%40Eag1e_YT"
 CUSTOM_REMARK = "@goololgoo 🔐 وی‌پی‌ان رایگان | Free Proxy💥"
 MAX_CONFIGS_PER_POST = 5
 # ==========================================
