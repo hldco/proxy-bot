@@ -11,17 +11,25 @@ import html
 import re
 import socket
 from datetime import datetime
+from bs4 import BeautifulSoup
 
 # ==========================================
 # تنظیمات ربات
 BOT_TOKEN = "8924162958:AAERLm6RZNwczvStWvlCiizTDqsxzQcsBPQ" 
 CHANNEL_USERNAME = "@goololgoo"
-SOURCE_URL = "https://raw.githubusercontent.com/Created-By/Telegram-Eag1e_YT/main/%40Eag1e_YT"
+
+# منبع اول: گیت‌هاب (برای V2ray)
+SOURCE_URL = "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/refs/heads/main/configtg.txt"
+
+# منبع دوم: کانال‌های تلگرام (برای MTProto) - یوزرنیم چند کانال را بدون @ داخل گیومه و با کاما بنویسید
+SOURCE_CHANNELS = ["@PinkProxy", "@P1000Y", "@ProxyMTProto"] 
+
 CUSTOM_REMARK = "@goololgoo 🔐 وی‌پی‌ان رایگان | Free Proxy💥"
 MAX_CONFIGS_PER_POST = 5
 # ==========================================
 
 SENT_FILE = "sent_configs.txt"
+STATE_FILE = "state.txt"
 
 def to_persian_digits(text):
     mapping = str.maketrans('0123456789', '۰۱۲۳۴۵۶۷۸۹')
@@ -49,8 +57,21 @@ def save_sent_config(configs_list):
         for config in configs_list:
             f.write(config + "\n")
 
+def get_next_post_type():
+    if not os.path.exists(STATE_FILE):
+        with open(STATE_FILE, "w") as f:
+            f.write("v2ray")
+        return "v2ray"
+    with open(STATE_FILE, "r") as f:
+        last_type = f.read().strip()
+    return "mtproto" if last_type == "v2ray" else "v2ray"
+
+def update_post_type(current_type):
+    next_type = "mtproto" if current_type == "v2ray" else "v2ray"
+    with open(STATE_FILE, "w") as f:
+        f.write(next_type)
+
 def extract_ip_port(config):
-    """استخراج آی‌پی و پورت از داخل کانفیگ"""
     try:
         if config.startswith("vmess://"):
             b64_str = config.replace("vmess://", "")
@@ -61,28 +82,30 @@ def extract_ip_port(config):
             match = re.search(r'@([^:]+):(\d+)', config)
             if match:
                 return match.group(1), match.group(2)
+        elif "tg://proxy" in config or "https://t.me/proxy" in config:
+            ip_match = re.search(r'server=([^&]+)', config)
+            port_match = re.search(r'port=(\d+)', config)
+            if ip_match and port_match:
+                return ip_match.group(1), port_match.group(1)
     except:
         pass
     return None, None
 
 def check_port(ip, port):
-    """تست می‌کند آیا سرور کانفیگ روشن است و پذیرای اتصال هست یا خیر"""
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(3) # 3 ثانیه زمان برای تست
+        sock.settimeout(3)
         result = sock.connect_ex((ip, int(port)))
         sock.close()
-        return result == 0 # 0 یعنی پورت باز است و سرور زنده است
+        return result == 0
     except:
         return False
 
 def get_flags_batch(ip_list):
-    """گرفتن پرچم همه آی‌پی‌ها در یک درخواست برای جلوگیری از مسدود شدن"""
     flags = {}
     valid_ips = [ip for ip in ip_list if ip and re.match(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$', ip)]
     if not valid_ips:
         return {ip: "🌐" for ip in ip_list}
-    
     try:
         res = requests.post("http://ip-api.com/batch", json=[{"query": ip, "fields": "query,countryCode"} for ip in valid_ips], timeout=10).json()
         for item in res:
@@ -94,13 +117,12 @@ def get_flags_batch(ip_list):
                 flags[ip] = "🌐"
     except:
         pass
-    
     for ip in ip_list:
         if ip not in flags:
             flags[ip] = "🌐"
     return flags
 
-def change_remark(config, new_remark):
+def change_remark_v2ray(config, new_remark):
     try:
         if config.startswith("vmess://"):
             b64_str = config.replace("vmess://", "")
@@ -117,68 +139,16 @@ def change_remark(config, new_remark):
     except:
         return config
 
-def main():
-    delay_seconds = random.randint(0, 600)
-    print(f"ربات برای طبیعی بودن، {delay_seconds} ثانیه صبر می‌کند...")
-    time.sleep(delay_seconds)
+def change_remark_mtproto(link, new_remark):
+    clean_link = re.sub(r'&name=[^&]*', '', link)
+    return f"{clean_link}&name={urllib.parse.quote(new_remark)}"
 
-    sent_configs = get_sent_configs()
-    new_configs_data = []
-    all_ips = []
+def send_post(configs_to_post, original_configs_posted, post_type):
+    save_sent_config(original_configs_posted)
+    date_str, time_str = get_tehran_time()
     
-    try:
-        response = requests.get(SOURCE_URL)
-        response.raise_for_status()
-        content = response.text
-        
-        try:
-            decoded_content = base64.b64decode(content).decode('utf-8')
-            configs = decoded_content.strip().split('\n')
-        except:
-            configs = content.strip().split('\n')
-            
-        # مرحله ۱: استخراج آی‌پی‌ها و پورت‌ها
-        for config in configs:
-            config = config.strip()
-            if config.startswith(("vless://", "vmess://", "trojan://", "ss://")) and config not in sent_configs:
-                ip, port = extract_ip_port(config)
-                if ip:
-                    new_configs_data.append({"original": config, "ip": ip, "port": port})
-                    all_ips.append(ip)
-                    
-        if new_configs_data:
-            print(f"{len(new_configs_data)} کانفیگ جدید پیدا شد. در حال گرفتن پرچم کشورها...")
-            flags_map = get_flags_batch(all_ips)
-            
-            valid_configs = []
-            print("در حال تست پورت سرورها برای پیدا کردن کانفیگ‌های زنده...")
-            for item in new_configs_data:
-                ip = item["ip"]
-                port = item["port"]
-                # مرحله ۲: تست زنده بودن کانفیگ
-                if check_port(ip, port):
-                    flag = flags_map.get(ip, "🌐")
-                    final_remark = f"{flag} {CUSTOM_REMARK}"
-                    modified_config = change_remark(item["original"], final_remark)
-                    valid_configs.append({"original": item["original"], "modified": modified_config})
-                    print(f"✅ زنده است: {ip}:{port} - {flag}")
-                else:
-                    print(f"❌ مرده است: {ip}:{port}")
-                    
-            if valid_configs:
-                # مرحله ۳: انتخاب ۵ کانفیگ سالم
-                if len(valid_configs) > MAX_CONFIGS_PER_POST:
-                    selected_data = random.sample(valid_configs, MAX_CONFIGS_PER_POST)
-                else:
-                    selected_data = valid_configs
-                    
-                configs_to_post = [item["modified"] for item in selected_data]
-                original_configs_posted = [item["original"] for item in selected_data]
-                
-                save_sent_config(original_configs_posted)
-                date_str, time_str = get_tehran_time()
-                
-                header = f"""🔵🟡🟣 پروکسی جدید پر سرعت و پایدار✌️
+    if post_type == "v2ray":
+        header = f"""🔵🟡🟣 پروکسی جدید پر سرعت و پایدار✌️
 
 ⛽️مخصوص اینستاگرام و دانلود  💦
 
@@ -197,7 +167,7 @@ Hiddify
 🔘با ضربه 👇 کپی میشود🔘
 
 """
-                footer = """
+        footer = """
 
 برای دانلود آخرین نسخه برنامه ها به پست پین شده کانال مراجعه کنید
 
@@ -211,20 +181,148 @@ Hiddify
 @goololgoo_group
 
 💬نظرات خود را با ما به اشتراک بگذارید 👇"""
+    else:
+        header = f"""☄ پروکسی Mtporoto مخصوص تلگرام 🔥
 
-                all_configs_str = "\n\n".join(configs_to_post)
-                safe_configs_str = html.escape(all_configs_str)
-                configs_text = f"<pre>{safe_configs_str}</pre>"
-                full_message = header + configs_text + footer
+🆕 آخرین به روز رسانی {date_str} ساعت {time_str} 🕘
+
+تست شده و فعال✅
+
+تمام اپراتور ها📱
+📍رایتل ، همراه اول ، ایرانسل ، مخابرات 📍
+
+"""
+        footer = """
+
+♨️با دوستان خود به اشتراک بگذارید ♨️
+
+#Mtporoto #MahsaNG #v2ray #فیلترشکن #hiddify #proxy #هوش_مصنوعی 
+#پروکسی #تلگرام #telegram
+
+👇همین الان عضو بشید👇
+@goololgoo
+@goololgoo_group
+
+💬نظرات خود را با ما به اشتراک بگذارید 👇"""
+
+    all_configs_str = "\n\n".join(configs_to_post)
+    safe_configs_str = html.escape(all_configs_str)
+    configs_text = f"<pre>{safe_configs_str}</pre>"
+    full_message = header + configs_text + footer
+    
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    payload = {"chat_id": CHANNEL_USERNAME, "text": full_message, "parse_mode": "HTML"}
+    requests.post(url, json=payload)
+    print(f"{len(configs_to_post)} کانفیگ {post_type} با موفقیت پست شد.")
+
+def main():
+    delay_seconds = random.randint(0, 420)
+    print(f"ربات برای طبیعی بودن، {delay_seconds} ثانیه صبر می‌کند...")
+    time.sleep(delay_seconds)
+
+    sent_configs = get_sent_configs()
+    target_type = get_next_post_type()
+    print(f"نوبت ارسال برای: {target_type}")
+    
+    target_data = []
+    all_ips = []
+    
+    try:
+        if target_type == "v2ray":
+            print("در حال دریافت کانفیگ‌ها از گیت‌هاب...")
+            response = requests.get(SOURCE_URL)
+            response.raise_for_status()
+            content = response.text
+            
+            try:
+                decoded_content = base64.b64decode(content).decode('utf-8')
+                configs = decoded_content.strip().split('\n')
+            except:
+                configs = content.strip().split('\n')
                 
-                url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-                payload = {"chat_id": CHANNEL_USERNAME, "text": full_message, "parse_mode": "HTML"}
-                requests.post(url, json=payload)
-                print(f"{len(configs_to_post)} کانفیگ سالم و زنده با موفقیت پست شد.")
-            else:
-                print("هیچ کانفیگ زنده‌ای در اینbatch پیدا نشد.")
+            for config in configs:
+                config = config.strip()
+                if config.startswith(("vless://", "vmess://", "trojan://", "ss://")) and config not in sent_configs:
+                    ip, port = extract_ip_port(config)
+                    if ip:
+                        target_data.append({"original": config, "ip": ip, "port": port})
+                        all_ips.append(ip)
         else:
-            print("کانفیگ جدیدی پیدا نشد.")
+            print("در حال دریافت پروکسی‌ها از کانال‌های تلگرام (بررسی ۵ پست آخر)...")
+            found_proxies = set()
+            
+            for src_chan in SOURCE_CHANNELS:
+                tg_url = f"https://t.me/s/{src_chan}"
+                try:
+                    tg_response = requests.get(tg_url, timeout=10)
+                    if tg_response.status_code == 200:
+                        soup = BeautifulSoup(tg_response.text, 'html.parser')
+                        
+                        # پیدا کردن کل بلاک‌های پیام (هر بلاک شامل یک پیام است)
+                        all_messages = soup.find_all('div', class_='tgme_widget_message')
+                        
+                        # گرفتن فقط ۵ پیام آخر کانال
+                        recent_messages = all_messages[-5:] if len(all_messages) >= 5 else all_messages
+                        
+                        for msg in recent_messages:
+                            # ۱. جستجو در متن پیام
+                            text_div = msg.find('div', class_='tgme_widget_message_text')
+                            if text_div:
+                                text = text_div.get_text()
+                                matches = re.findall(r'(https://t.me/proxy\?server=[^\s]+|tg://proxy\?server=[^\s]+)', text)
+                                for match in matches:
+                                    found_proxies.add(match)
+                                    
+                            # ۲. جستجو در دکمه‌های لینک‌دار (Buttons) همان پیام
+                            buttons = msg.find_all('a', href=True)
+                            for btn in buttons:
+                                href = btn['href']
+                                if "tg://proxy" in href or "https://t.me/proxy" in href:
+                                    found_proxies.add(href)
+                                    
+                        print(f"از کانال @{src_chan} - ۵ پست آخر بررسی شد.")
+                except:
+                    pass
+                    
+            for proxy_link in found_proxies:
+                if proxy_link not in sent_configs:
+                    ip, port = extract_ip_port(proxy_link)
+                    if ip:
+                        target_data.append({"original": proxy_link, "ip": ip, "port": port})
+                        all_ips.append(ip)
+                                
+        if target_data:
+            print(f"در مجموع {len(target_data)} کانفیگ {target_type} جدید پیدا شد.")
+            flags_map = get_flags_batch(all_ips)
+            
+            valid_configs = []
+            print("در حال تست پورت سرورها...")
+            for item in target_data:
+                if check_port(item["ip"], item["port"]):
+                    flag = flags_map.get(item["ip"], "🌐")
+                    final_remark = f"{flag} {CUSTOM_REMARK}"
+                    
+                    if target_type == "v2ray":
+                        modified = change_remark_v2ray(item["original"], final_remark)
+                    else:
+                        modified = change_remark_mtproto(item["original"], final_remark)
+                        
+                    valid_configs.append({"original": item["original"], "modified": modified})
+                    print(f"✅ زنده است: {item['ip']}:{item['port']}")
+                else:
+                    print(f"❌ مرده است: {item['ip']}:{item['port']}")
+
+            if valid_configs:
+                selected = random.sample(valid_configs, min(len(valid_configs), MAX_CONFIGS_PER_POST))
+                configs_to_post = [x["modified"] for x in selected]
+                originals = [x["original"] for x in selected]
+                send_post(configs_to_post, originals, target_type)
+            else:
+                print(f"هیچ کانفیگ {target_type} زنده‌ای پیدا نشد.")
+        else:
+            print(f"کانفیگ {target_type} جدیدی پیدا نشد.")
+            
+        update_post_type(target_type)
             
     except Exception as e:
         print(f"Error: {e}")
