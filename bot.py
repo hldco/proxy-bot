@@ -19,7 +19,7 @@ BOT_TOKEN = "8924162958:AAERLm6RZNwczvStWvlCiizTDqsxzQcsBPQ"
 CHANNEL_USERNAME = "@goololgoo"
 
 # منبع اول: گیت‌هاب (برای V2ray)
-SOURCE_URL = "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/refs/heads/main/configtg.txt"
+SOURCE_URL = "https://raw.githubusercontent.com/4n0nymou3/multi-proxy-config-fetcher/refs/heads/main/configs/proxy_configs.txt"
 
 # منبع دوم: کانال‌های تلگرام (برای MTProto) - یوزرنیم چند کانال را بدون @ داخل گیومه و با کاما بنویسید
 SOURCE_CHANNELS = ["@PinkProxy", "@P1000Y", "@ProxyMTProto"] 
