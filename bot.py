@@ -19,10 +19,10 @@ BOT_TOKEN = "8924162958:AAERLm6RZNwczvStWvlCiizTDqsxzQcsBPQ"
 CHANNEL_USERNAME = "@goololgoo"
 
 # منبع اول: گیت‌هاب (برای V2ray)
-SOURCE_URL = "https://raw.githubusercontent.com/4n0nymou3/multi-proxy-config-fetcher/refs/heads/main/configs/proxy_configs.txt"
+SOURCE_URL = "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/refs/heads/main/configtg.txt"
 
 # منبع دوم: کانال‌های تلگرام (برای MTProto) - یوزرنیم چند کانال را بدون @ داخل گیومه و با کاما بنویسید
-SOURCE_CHANNELS = ["@PinkProxy", "@P1000Y", "@ProxyMTProto"] 
+SOURCE_CHANNELS = ["نام_کانال_اول", "نام_کانال_دوم", "نام_کانال_سوم"] 
 
 CUSTOM_REMARK = "@goololgoo 🔐 وی‌پی‌ان رایگان | Free Proxy💥"
 MAX_CONFIGS_PER_POST = 5
@@ -258,14 +258,10 @@ def main():
                     if tg_response.status_code == 200:
                         soup = BeautifulSoup(tg_response.text, 'html.parser')
                         
-                        # پیدا کردن کل بلاک‌های پیام (هر بلاک شامل یک پیام است)
                         all_messages = soup.find_all('div', class_='tgme_widget_message')
-                        
-                        # گرفتن فقط ۵ پیام آخر کانال
                         recent_messages = all_messages[-5:] if len(all_messages) >= 5 else all_messages
                         
                         for msg in recent_messages:
-                            # ۱. جستجو در متن پیام
                             text_div = msg.find('div', class_='tgme_widget_message_text')
                             if text_div:
                                 text = text_div.get_text()
@@ -273,7 +269,6 @@ def main():
                                 for match in matches:
                                     found_proxies.add(match)
                                     
-                            # ۲. جستجو در دکمه‌های لینک‌دار (Buttons) همان پیام
                             buttons = msg.find_all('a', href=True)
                             for btn in buttons:
                                 href = btn['href']
@@ -287,8 +282,9 @@ def main():
             for proxy_link in found_proxies:
                 if proxy_link not in sent_configs:
                     ip, port = extract_ip_port(proxy_link)
+                    # برای MTProto نیازی به آی‌پی و پورت نداریم چون قرار نیست تست پورت انجام شود
+                    target_data.append({"original": proxy_link, "ip": ip, "port": port})
                     if ip:
-                        target_data.append({"original": proxy_link, "ip": ip, "port": port})
                         all_ips.append(ip)
                                 
         if target_data:
@@ -296,21 +292,27 @@ def main():
             flags_map = get_flags_batch(all_ips)
             
             valid_configs = []
-            print("در حال تست پورت سرورها...")
+            print("در حال آماده‌سازی...")
             for item in target_data:
-                if check_port(item["ip"], item["port"]):
+                flag = "🌐"
+                if item["ip"]:
                     flag = flags_map.get(item["ip"], "🌐")
-                    final_remark = f"{flag} {CUSTOM_REMARK}"
-                    
-                    if target_type == "v2ray":
+                
+                final_remark = f"{flag} {CUSTOM_REMARK}"
+                
+                if target_type == "v2ray":
+                    # فقط برای V2ray تست پورت انجام می‌دهیم
+                    if check_port(item["ip"], item["port"]):
                         modified = change_remark_v2ray(item["original"], final_remark)
+                        valid_configs.append({"original": item["original"], "modified": modified})
+                        print(f"✅ زنده است: {item['ip']}:{item['port']}")
                     else:
-                        modified = change_remark_mtproto(item["original"], final_remark)
-                        
-                    valid_configs.append({"original": item["original"], "modified": modified})
-                    print(f"✅ زنده است: {item['ip']}:{item['port']}")
+                        print(f"❌ مرده است: {item['ip']}:{item['port']}")
                 else:
-                    print(f"❌ مرده است: {item['ip']}:{item['port']}")
+                    # برای MTProto بدون تست پورت مستقیم اضافه می‌کنیم
+                    modified = change_remark_mtproto(item["original"], final_remark)
+                    valid_configs.append({"original": item["original"], "modified": modified})
+                    print(f"✅ اضافه شد: {item['original']}")
 
             if valid_configs:
                 selected = random.sample(valid_configs, min(len(valid_configs), MAX_CONFIGS_PER_POST))
