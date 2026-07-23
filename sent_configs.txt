@@ -33,3 +33,8 @@ trojan://IQ68037294@glowing-deer.rooster465.autos:443?security=tls&type=tcp&head
 trojan://PD07395842@endless-crappie.rooster465.autos:443?fp=chrome#🇮🇪 1022 - IE - Trojan/TLS/UTLS - 443
 trojan://ON38567014@summary-finch.rooster465.autos:443?security=tls&path=/#🇩🇪 975 - DE - Trojan/TLS - 443
 trojan://NQ26071394@3.255.100.31:443?security=tls&sni=thankful-piranha.rooster465.autos&path=/#🇮🇪 583 - IE - Trojan/TLS - 443
+trojan://PD07395842@ready-kangaroo.rooster465.autos:443?sni=ready-kangaroo.rooster465.autos&fp=chrome&type=tcp&path=/#🇫🇷 1053 - FR - Trojan/TLS/UTLS - 443
+trojan://NQ26071394@52.26.202.76:443?security=tls&sni=learning-fawn.rooster465.autos&path=/#🇺🇸 623 - US - Trojan/TLS - 443
+trojan://IQ68037294@definite-giraffe.rooster465.autos:443?sni=definite-giraffe.rooster465.autos&path=/#🇫🇷 163 - FR - Trojan/TLS - 443
+trojan://ON38567014@35.90.87.253:443?sni=harmless-akita.rooster465.autos&fp=chrome&type=tcp&path=/#🇺🇸 856 - US - Trojan/TLS/UTLS - 443
+trojan://NQ26071394@89.39.70.143:443?security=tls&sni=thorough-falcon.rooster465.autos&path=/#🇺🇸 651 - US - Trojan/TLS - 443
