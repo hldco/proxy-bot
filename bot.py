@@ -15,7 +15,7 @@ from bs4 import BeautifulSoup
 
 # ==========================================
 # تنظیمات ربات
-BOT_TOKEN = "8924162958:AAERLm6RZNwczvStWvlCiizTDqsxzQcsBPQ" 
+BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 CHANNEL_USERNAME = "@goololgoo"
 
 # منبع اول: گیت‌هاب (برای V2ray)
