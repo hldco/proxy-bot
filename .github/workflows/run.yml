@@ -1,11 +1,11 @@
 name: Run V2ray Bot
 on:
   schedule:
-    - cron: '*/30 * * * *' # هر 30 دقیقه یکبار اجرا می‌شود
+    - cron: '*/30 * * * *'
   workflow_dispatch:
 
 permissions:
-  contents: write # اجازه ذخیره فایل‌های حافظه در گیت‌هاب
+  contents: write
 
 jobs:
   run_bot:
@@ -25,6 +25,8 @@ jobs:
           
       - name: Run Bot
         run: python bot.py
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
         
       - name: Save sent configs
         uses: stefanzweifel/git-auto-commit-action@v5
