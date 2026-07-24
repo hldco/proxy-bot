@@ -142,7 +142,7 @@ def send_post(configs_to_post, original_configs_posted, post_type):
     date_str, time_str = get_tehran_time()
     
     if post_type == "v2ray":
-        header = f"""🔵🟡🟣 پروکسی v2ray مخصوص اینستاگرام و دانلود ✌️
+        header = f"""⚡️ پروکسی v2ray مخصوص اینستاگرام و دانلود ✌️
 
 ⛽️ جدید پر سرعت و پایدار  💦
 
