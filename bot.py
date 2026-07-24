@@ -19,7 +19,7 @@ BOT_TOKEN = os.environ.get("BOT_TOKEN", "") # توکن از گاوصندوق گ�
 CHANNEL_USERNAME = "@goololgoo"
 
 # منبع اول: گیت‌هاب (برای V2ray)
-SOURCE_URL = "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/refs/heads/main/configtg.txt"
+SOURCE_URL = "https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub8.txt"
 
 # منبع دوم: کانال‌های تلگرام (برای MTProto) - یوزرنیم چند کانال را بدون @ داخل گیومه و با کاما بنویسید
 SOURCE_CHANNELS = ["PinkProxy", "ProxyMTProto"] 
@@ -142,9 +142,9 @@ def send_post(configs_to_post, original_configs_posted, post_type):
     date_str, time_str = get_tehran_time()
     
     if post_type == "v2ray":
-        header = f"""🔵🟡🟣 پروکسی جدید پر سرعت و پایدار✌️
+        header = f"""🔵🟡🟣 پروکسی v2ray مخصوص اینستاگرام و دانلود ✌️
 
-⛽️مخصوص اینستاگرام و دانلود  💦
+⛽️ جدید پر سرعت و پایدار  💦
 
 🆕 آخرین به روز رسانی {date_str} ساعت {time_str}  🕘
 
