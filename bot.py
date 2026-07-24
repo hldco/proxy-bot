@@ -15,21 +15,20 @@ from bs4 import BeautifulSoup
 
 # ==========================================
 # تنظیمات ربات
-BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
+BOT_TOKEN = os.environ.get("BOT_TOKEN", "") # توکن از گاوصندوق گیت‌هاب خوانده می‌شود
 CHANNEL_USERNAME = "@goololgoo"
 
 # منبع اول: گیت‌هاب (برای V2ray)
 SOURCE_URL = "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/refs/heads/main/configtg.txt"
 
 # منبع دوم: کانال‌های تلگرام (برای MTProto) - یوزرنیم چند کانال را بدون @ داخل گیومه و با کاما بنویسید
-SOURCE_CHANNELS = ["نام_کانال_اول", "نام_کانال_دوم", "نام_کانال_سوم"] 
+SOURCE_CHANNELS = ["نام_کانال_اول", "نام_کانال_دوم"] 
 
 CUSTOM_REMARK = "@goololgoo 🔐 وی‌پی‌ان رایگان | Free Proxy💥"
 MAX_CONFIGS_PER_POST = 5
 # ==========================================
 
 SENT_FILE = "sent_configs.txt"
-STATE_FILE = "state.txt"
 
 def to_persian_digits(text):
     mapping = str.maketrans('0123456789', '۰۱۲۳۴۵۶۷۸۹')
@@ -46,6 +45,15 @@ def get_tehran_time():
     time_str = f"{hour}:{minute}"
     return date_str, time_str
 
+def get_next_post_type():
+    """بر اساس دقیقه ساعت تصمیم می‌گیرد تا نیازی به فایل حافظه نباشد"""
+    tz = pytz.timezone('Asia/Tehran')
+    now = datetime.now(tz)
+    if now.minute < 30:
+        return "v2ray"
+    else:
+        return "mtproto"
+
 def get_sent_configs():
     if not os.path.exists(SENT_FILE):
         return set()
@@ -56,20 +64,6 @@ def save_sent_config(configs_list):
     with open(SENT_FILE, "a", encoding="utf-8") as f:
         for config in configs_list:
             f.write(config + "\n")
-
-def get_next_post_type():
-    if not os.path.exists(STATE_FILE):
-        with open(STATE_FILE, "w") as f:
-            f.write("v2ray")
-        return "v2ray"
-    with open(STATE_FILE, "r") as f:
-        last_type = f.read().strip()
-    return "mtproto" if last_type == "v2ray" else "v2ray"
-
-def update_post_type(current_type):
-    next_type = "mtproto" if current_type == "v2ray" else "v2ray"
-    with open(STATE_FILE, "w") as f:
-        f.write(next_type)
 
 def extract_ip_port(config):
     try:
@@ -282,7 +276,6 @@ def main():
             for proxy_link in found_proxies:
                 if proxy_link not in sent_configs:
                     ip, port = extract_ip_port(proxy_link)
-                    # برای MTProto نیازی به آی‌پی و پورت نداریم چون قرار نیست تست پورت انجام شود
                     target_data.append({"original": proxy_link, "ip": ip, "port": port})
                     if ip:
                         all_ips.append(ip)
@@ -301,7 +294,6 @@ def main():
                 final_remark = f"{flag} {CUSTOM_REMARK}"
                 
                 if target_type == "v2ray":
-                    # فقط برای V2ray تست پورت انجام می‌دهیم
                     if check_port(item["ip"], item["port"]):
                         modified = change_remark_v2ray(item["original"], final_remark)
                         valid_configs.append({"original": item["original"], "modified": modified})
@@ -309,7 +301,6 @@ def main():
                     else:
                         print(f"❌ مرده است: {item['ip']}:{item['port']}")
                 else:
-                    # برای MTProto بدون تست پورت مستقیم اضافه می‌کنیم
                     modified = change_remark_mtproto(item["original"], final_remark)
                     valid_configs.append({"original": item["original"], "modified": modified})
                     print(f"✅ اضافه شد: {item['original']}")
@@ -323,8 +314,6 @@ def main():
                 print(f"هیچ کانفیگ {target_type} زنده‌ای پیدا نشد.")
         else:
             print(f"کانفیگ {target_type} جدیدی پیدا نشد.")
-            
-        update_post_type(target_type)
             
     except Exception as e:
         print(f"Error: {e}")
