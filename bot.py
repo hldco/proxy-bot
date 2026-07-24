@@ -22,7 +22,7 @@ CHANNEL_USERNAME = "@goololgoo"
 SOURCE_URL = "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/refs/heads/main/configtg.txt"
 
 # منبع دوم: کانال‌های تلگرام (برای MTProto) - یوزرنیم چند کانال را بدون @ داخل گیومه و با کاما بنویسید
-SOURCE_CHANNELS = ["نام_کانال_اول", "نام_کانال_دوم"] 
+SOURCE_CHANNELS = ["@PinkProxy", "@ProxyMTProto"] 
 
 CUSTOM_REMARK = "@goololgoo 🔐 وی‌پی‌ان رایگان | Free Proxy💥"
 MAX_CONFIGS_PER_POST = 5
