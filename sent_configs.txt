@@ -58,3 +58,8 @@ https://t.me/proxy?server=bala.hastim.co.uk&amp;port=443&amp;secret=ee1603010200
 https://t.me/proxy?server=motasel.co.uk&port=443&secret=eeNEgYdJvXrFGRMCIMJdCQ
 https://t.me/proxy?server=cdn.savelyev.click&port=443&secret=ee47db8cfb73a38af6c54d8976432e265863646e2e736176656c7965762e636c69636b
 https://t.me/proxy?server=secure.gorbushkin.click&port=443&secret=ee2566052eb7f98d9601ca0b656f9032177365637572652e676f72627573686b696e2e636c69636b
+vless://b8b65abb-c32d-45e5-b485-be473aaeba31@167.82.0.1:80?encryption=none&type=ws&host=BankMelat.glObal.ssl.faStly.nEt.#@meliproxyy
+vless://b759c022-6536-418f-88a3-57eb9f76cf46@marzban-node-production-43c6.up.railway.app:443?security=tls&type=ws&headerType=&path=/vless&host=marzban-node-production-43c6.up.railway.app&sni=marzban-node-production-43c6.up.railway.app&fp=chrome&alpn=h2#Telegram : PeekConfig🚀
+vless://cf39fab0-bb85-42cb-9945-2ad69d78e575@chatgpt.com:443?path=/GOrbEh&security=tls&encryption=none&insecure=0&host=rubifen.adaspoloandco.com&fp=chrome&type=ws&allowInsecure=0&sni=rubifen.adaspoloandco.com#[🇩🇪]@NetliVPN
+vless://d0e2ae3e-0be7-4dcf-9abb-dcc82aabc076@germany2.avrilon.us:443?security=reality&encryption=mlkem768x25519plus.native.0rtt.IU93_zTVl-948HR94z9259IKoTU_qSM_0ttmIUamVh8&pbk=rA_ItMaIiG_OUjcaTLpxOoF-OHh4WJsNUfWh7QUn_xU&headerType=none&fp=chrome&spx=/0147b059b8565c5&type=tcp&flow=xtls-rprx-vision&sni=qapartners.sec.samsung.com&sid=0a3ff4a7#@icv2ray
+vless://d4951d91-23e0-4301-a1ea-5300e0b5ec67@support.zoom.us:8080?path=/free-server.techsonic.me&security=none&encryption=none&host=free-server.techsonic.me&type=ws#kurdconfig
