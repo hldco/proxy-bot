@@ -185,6 +185,8 @@ Hiddify
 تمام اپراتور ها📱
 📍رایتل ، همراه اول ، ایرانسل ، مخابرات 📍
 
+👇برای اتصال روی لینک‌ها کلیک کنید👇
+
 """
         footer = """
 
@@ -199,9 +201,23 @@ Hiddify
 
 💬نظرات خود را با ما به اشتراک بگذارید 👇"""
 
-    all_configs_str = "\n\n".join(configs_to_post)
-    safe_configs_str = html.escape(all_configs_str)
-    configs_text = f"<pre>{safe_configs_str}</pre>"
+    # ==========================================
+    # تفاوت در نحوه نمایش کانفیگ‌ها
+    # ==========================================
+    if post_type == "v2ray":
+        # کادری خاکستری برای کپی شدن با یک ضربه
+        all_configs_str = "\n\n".join(configs_to_post)
+        safe_configs_str = html.escape(all_configs_str)
+        configs_text = f"<pre>{safe_configs_str}</pre>"
+    else:
+        # لینک‌های قابل کلیک برای اتصال مستقیم در تلگرام
+        links_html = []
+        for cfg in configs_to_post:
+            safe_cfg = html.escape(cfg)
+            links_html.append(f'<a href="{safe_cfg}">{safe_cfg}</a>')
+        configs_text = "\n\n".join(links_html)
+    # ==========================================
+
     full_message = header + configs_text + footer
     
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
