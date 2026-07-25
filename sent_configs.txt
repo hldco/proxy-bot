@@ -114,3 +114,5 @@ vless://c32d328c-e6e7-f34c-2f20-15c5cd5816d3@ipfut.cdn365d.com:512?security=none
 vless://bbae962a-b6e9-46e6-990c-6abf13e6b075@de.edge-9d7c.com:443?security=reality&encryption=none&pbk=qoAuuFJ0eK1lAMHIqTt6LniY6qu1GIobrGthBcRHUXM&headerType=none&type=tcp&flow=xtls-rprx-vision&sni=de.edge-9d7c.com&sid=9d84de9d9f7b85e9#@hi_proxy_iran :👈کانال تلگرام
 vless://cfde0aba-0985-4034-ab92-50b1534b126c@167.82.0.1:80?security=none&encryption=none&host=BankMelat.glObal.ssl.faStly.nEt.&type=ws#🇺🇸121950 | ⚡️Telegram = t.me/SOSkeyNET
 vless://d08d180d-cb07-4d82-b1bd-1e42fa523cd7@45.130.125.0:443?path=/sg-orcl&security=tls&encryption=none&insecure=0&host=ads.ruangguru.com.cyylr.eu.cc&type=ws&allowInsecure=0&sni=ads.ruangguru.com.cyylr.eu.cc#TEL:Father_vpn
+https://t.me/proxy?server=194.120.230.106&port=443&secret=3XnnAQIAAQAH8AMDhuJMOt0
+tg://proxy?server=mtp1.hlebushek.com&port=443&secret=eea61deab187a415531ac418cd29ae58ee706574726f766963682e7275
