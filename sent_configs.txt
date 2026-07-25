@@ -98,3 +98,8 @@ tg://proxy?server=lazeyka-2-4-cor.getvelora.space&port=443&secret=ee9ba903246664
 https://t.me/proxy?server=pathory.co.uk.&port=443&secret=ddf0eeb0bd9adc4fd4a93994ee3b2a216b
 https://t.me/proxy?server=ops2ops.co.uk.&port=443&secret=ddf0eeb0bd9adc4fd4a93994ee3b2a216b
 tg://proxy?server=lazeyka-2-4-hi.getvelora.space&port=443&secret=ee697e723e8ba1ff23642036fbf9e84a926f7a6f6e2e7275
+vless://d40896cb-c5bc-4ae1-8c63-ad2a40ffc861@Snapp.ir:8880?path=/&security=none&encryption=none&host=Appleiranorg.com&type=ws#@Net2ray 🇩🇪
+vless://bbae962a-b6e9-46e6-990c-6abf13e6b075@de.edge-9d7c.com:443?security=reality&encryption=none&pbk=qoAuuFJ0eK1lAMHIqTt6LniY6qu1GIobrGthBcRHUXM&headerType=none&fp=chrome&type=tcp&flow=xtls-rprx-vision&sni=de.edge-9d7c.com&sid=9d84de9d9f7b85e9#@vpnbaz 🌊
+vless://bbae962a-b6e9-46e6-990c-6abf13e6b075@de.edge-9d7c.com:443?security=reality&encryption=none&pbk=qoAuuFJ0eK1lAMHIqTt6LniY6qu1GIobrGthBcRHUXM&headerType=none&type=tcp&flow=xtls-rprx-vision&sni=de.edge-9d7c.com&sid=9d84de9d9f7b85e9#@IRAN_V2RAY1
+vless://c01c2da7-6977-4b53-a493-cda17fa61b4f@45.144.53.99:443?encryption=none&flow=xtls-rprx-vision&fp=&pbk=p8VariNOxqulB45KBqfYb2_zNGfGtKHxCF8BwDbgNQc&security=reality&sid=58a08ac3a078cab0&sni=gitea.voidmoor.com&type=tcp#🎀30@oneclickvpnkeys
+vless://bbae962a-b6e9-46e6-990c-6abf13e6b075@de.edge-9d7c.com:443?encryption=none&type=tcp&security=reality&headerType=none&sni=de.edge-9d7c.com&fp=chrome&insecure=1&allowInsecure=1&pbk=qoAuuFJ0eK1lAMHIqTt6LniY6qu1GIobrGthBcRHUXM&sid=9d84de9d9f7b85e9&flow=xtls-rprx-vision#@meliproxyy
