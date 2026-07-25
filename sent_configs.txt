@@ -108,3 +108,4 @@ tg://proxy?server=probably.nolags.pw&port=443&secret=ddc986c839977fd65cfbc10a931
 https://t.me/proxy?server=bo9ss.co.uk.&port=443&secret=ddf0eeb0bd9adc4fd4a93994ee3b2a216b
 tg://proxy?server=ad.workingproxy.xyz&port=443&secret=dd286c761f9f4aada689aaf8ac12acf63e
 https://t.me/proxy?server=beest-sellerst.co.uk.&port=443&secret=eef0eeb0bd9adc4fd4a93994ee3b2a216b63646e2e79656b74616e65742e636f6d
+https://t.me/proxy?server=zon-b0z.co.uk.&port=443&secret=ddf0eeb0bd9adc4fd4a93994ee3b2a216b
