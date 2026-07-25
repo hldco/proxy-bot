@@ -63,3 +63,8 @@ vless://b759c022-6536-418f-88a3-57eb9f76cf46@marzban-node-production-43c6.up.rai
 vless://cf39fab0-bb85-42cb-9945-2ad69d78e575@chatgpt.com:443?path=/GOrbEh&security=tls&encryption=none&insecure=0&host=rubifen.adaspoloandco.com&fp=chrome&type=ws&allowInsecure=0&sni=rubifen.adaspoloandco.com#[🇩🇪]@NetliVPN
 vless://d0e2ae3e-0be7-4dcf-9abb-dcc82aabc076@germany2.avrilon.us:443?security=reality&encryption=mlkem768x25519plus.native.0rtt.IU93_zTVl-948HR94z9259IKoTU_qSM_0ttmIUamVh8&pbk=rA_ItMaIiG_OUjcaTLpxOoF-OHh4WJsNUfWh7QUn_xU&headerType=none&fp=chrome&spx=/0147b059b8565c5&type=tcp&flow=xtls-rprx-vision&sni=qapartners.sec.samsung.com&sid=0a3ff4a7#@icv2ray
 vless://d4951d91-23e0-4301-a1ea-5300e0b5ec67@support.zoom.us:8080?path=/free-server.techsonic.me&security=none&encryption=none&host=free-server.techsonic.me&type=ws#kurdconfig
+https://t.me/proxy?server=should.be.wake.up.ir.yfdhjderkig.info.&port=88&secret=ee0000f00f0f775555fffffff5006e2e69626973636f7474692e79656b74616e65742e636f6d
+tg://proxy?server=mtp2.hlebushek.com&port=443&secret=ee8263f1fdfbfa0629c67c40d208806873706574726f766963682e7275
+https://t.me/proxy?server=node.mishkalapy.life&port=443&secret=ee05b1fa1cf5ade2ed4052b16971b33ca46e6f64652e6d6973686b616c6170792e6c696665
+https://t.me/proxy?server=mirror.balalaika.click&port=443&secret=ee82514fa3e992fa79f3fd3bff4db750116d6972726f722e62616c616c61696b612e636c69636b
+tg://proxy?server=mtp3.hlebushek.com&port=443&secret=ee49b03637799a40446509a268d99ff91b706574726f766963682e7275
