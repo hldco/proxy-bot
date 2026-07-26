@@ -153,3 +153,7 @@ vless://cf75e4d5-21f0-426b-bebb-1fa7c5d52343@172.67.139.95:443?path=/In_Panel_Ra
 vless://bbae962a-b6e9-46e6-990c-6abf13e6b075@de.edge-9d7c.com:443?security=reality&encryption=none&pbk=qoAuuFJ0eK1lAMHIqTt6LniY6qu1GIobrGthBcRHUXM&headerType=none&fp=chrome&type=tcp&flow=xtls-rprx-vision&sni=de.edge-9d7c.com&sid=9d84de9d9f7b85e9#@M4Dvpn
 vless://b71d03e2-fa61-4206-8354-46b6228ccf5d@api1.hexogate.net:443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=play.google.com&fp=chrome&pbk=I2_bIN-vkKdu02l_1TXzb1FCu5oZHMvx6s_j6lqL7zI&sid=66d6d3d24148fc1f&type=tcp&headerType=none#@Daily_Configs : کانال تلگرام
 vless://b783c6d6-3a0f-4c13-bbd1-86bf1ec4d94d@104.238.31.71:443?security=reality&encryption=none&pbk=SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc&headerType=none&type=tcp&flow=xtls-rprx-vision&sni=unitbook.net&sid=6ba85179e30d4fc2#Proxy_Se7en
+tg://proxy?server=options.nolags.pw&port=443&secret=dd1cfd25e7607e8ede7cc49b925165728a
+https://t.me/proxy?server=f1.car-race.co.uk&port=443&secret=ee1603010200010001fc030386e24c3add6d656469612e737465616d706f77657265642e636f6d
+https://t.me/proxy?server=ma.hastim.co.uk&port=443&secret=ee1603010200010001fc030386e24c3add6d656469612e737465616d706f77657265642e636f6d
+tg://proxy?server=mtproto.workingproxy.xyz&port=443&secret=dd28d1629617423db1e80a7b4a00de6032
