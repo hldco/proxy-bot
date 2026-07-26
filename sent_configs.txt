@@ -139,3 +139,8 @@ vless://bbae962a-b6e9-46e6-990c-6abf13e6b075@45.144.53.165:443/?type=tcp&encrypt
 vless://c19735a7-ff97-a112-3f07-60e500f7719b@104.18.39.123:443?path=/---@MiTiVPN---@MiTiVPN---@MiTiVPN---@MiTiVPN---@MiTiVPN---@MiTiVPN---@MiTiVPN---@MiTiVPN---@MiTiVPN---@MiTiVPN---@MiTiVPN---@MiTiVPN---@MiTiVPN---@MiTiVPN---@MiTiVPN---@MiTiVPN=des&security=tls&alpn=http/1.1&encryption=none&insecure=0&host=l-j-pjj-MiTiVPN---MiTiVPN-o.App-Cloud.ir&fp=chrome&type=ws&allowInsecure=0&sni=ldggej--MiTiVPN---MiTiVPN-o.App-Cloud.ir#🇨🇦@FreakConfig
 vless://b6749f13-cd63-4bc4-b165-5d120b7a1ff4@5.75.196.139:5039?security=reality&encryption=none&pbk=fv-InxuZSzLlHc83OANs4U2windIUSwPilOpJkMgtW0&headerType=none&fp=chrome&type=tcp&sni=www.yahoo.com&sid=2e8424a2696cb606#@hex_proxy ⁵
 vless://cf39fab0-bb85-42cb-9945-2ad69d78e575@104.26.14.85:443?path=/GOrbEh&security=tls&encryption=none&insecure=0&host=rubifen.adaspoloandco.com&fp=chrome&type=ws&allowInsecure=0&sni=rubifen.adaspoloandco.com#@FarazV2ray
+https://t.me/proxy?server=webhook.jinxandjack.co.uk.&port=443&secret=eeddffffffc5a1168b2ff3eba31cbfffff7765622e62616c652e6169
+tg://proxy?server=vpn4.primeperformance.space&port=8443&secret=ee4331ae1586ba488e489e092e1783969e76706e342e7072696d65706572666f726d616e63652e7370616365
+https://t.me/proxy?server=app.what-ever.co.uk.&port=443&secret=eeddffffffc5a1168b2ff3eba31cbfffff7765622e62616c652e6169
+https://t.me/proxy?server=logs.jinxandjack.co.uk.&port=443&secret=eeddffffffc5a1168b2ff3eba31cbfffff7765622e62616c652e6169
+https://t.me/proxy?server=portal.balalaika.click&port=443&secret=eec5e0b6eade04d838e3af484c380745e4706f7274616c2e62616c616c61696b612e636c69636b
