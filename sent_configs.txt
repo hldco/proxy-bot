@@ -233,3 +233,8 @@ tg://proxy?server=petrichor.slarkfat.icu&port=443&secret=ee6a0333c1db3f8eaba5c76
 https://t.me/proxy?server=downloaad.forzajuve.co.uk.&port=8443&secret=EERighJJvXrFGRMCIMjdCQ
 tg://proxy?server=ardesvpn1.ru&port=8443&secret=ee05cf8e164f926f4a664b2404d276a1d6617264657376706e312e7275
 https://t.me/proxy?server=91.107.160.196&port=443&secret=3XnnAQIAAQAH8AMDhuJMOt0
+vless://9fa6d846-5961-8e0e-ce27-77de00000000@fancy-wind-799d.cloudneryacc.workers.dev:443?path=/sync&security=tls&encryption=none&insecure=0&host=fancy-wind-799d.cloudneryacc.workers.dev&fp=chrome&type=ws&allowInsecure=0&sni=fancy-wind-799d.cloudneryacc.workers.dev#@𝐕𝟐𝐗𝐍𝐄𝐓
+vless://a34b5e88-cf0d-4c01-8199-2d1002d3c787@95.85.229.113:443?security=reality&encryption=none&pbk=HKpd1sbrhBds8SJSL0d22MAq_QyTR6EP6y5b5DYol3U&headerType=none&fp=chrome&type=tcp&flow=xtls-rprx-vision&sni=www.wikihow.com#@Ap_Ir6
+vless://965fef48-24c7-4727-b51e-6d3b2b8873c8@45.130.125.158:443?mode=auto&path=/&security=tls&alpn=h3,h2,http/1.1&encryption=none&insecure=0&host=mahsa97.manhamunamkeyeruz.ir&fp=chrome&type=xhttp&allowInsecure=0&sni=mahsa97.manhamunamkeyeruz.ir#TEL;Father_vpn
+vless://ab51054f-de76-4a0f-9f3a-b44c8df86a6c@138.124.61.172:50443?security=reality&encryption=none&pbk=hp9ht_jsxocTnQEbChb1G3JoDF50x-xDT8UYr66D1TQ&headerType=none&fp=chrome&type=tcp&flow=xtls-rprx-vision&sni=www.icloud.com#@icv2ray
+vless://ab51054f-de76-4a0f-9f3a-b44c8df86a6c@72.5.42.70:40443?security=reality&encryption=none&pbk=6AOnobBShzL_N96JRBNMfbL84_3myz8ZbKfZUEqRXiY&headerType=none&fp=chrome&type=tcp&flow=xtls-rprx-vision&sni=deepl.com#@FarazV2ray
