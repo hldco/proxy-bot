@@ -343,3 +343,8 @@ vless://c19735a7-ff97-a112-3f07-60e500f7719b@104.18.152.246:443?path=/---@MiTiVP
 vless://c8cc8656-67e5-4567-bc3c-cf91b5c3ba0d@25gr4213dafasdf.clonecloudcenter.ir:28599?mode=packet-up&path=/&security=reality&encryption=none&pbk=fHINyZE4QrCuW6-FdK2IHIs-rH_e--bzpfkraOzvTx8&fp=chrome&type=xhttp&sni=icloud.com&sid=a6036fd373d44b06#🟥𝗝𝗼𝗶𝗻 ➠ @𝙋𝙚𝙚𝙠𝘾𝙤𝙣𝙛𝙞𝙜🌐🟥🇫🇷
 vless://d0fe66f5-41ff-0236-39a9-83384791639d@gbbb.tarqivo.ir:8443?security=reality&encryption=none&pbk=xXaCtONWKzYdCWya3nzOe3_UYfHplbmdThukm0__smI&host=play.google.com&headerType=http&fp=chrome&spx=/&type=tcp&sni=www.samsung.com&sid=f49da53c#@tootffarangi🍓-6
 vless://cefffd1d-cc58-4560-b4d1-44f1af528f30@151.101.66.133:443?security=tls&sni=www.Arizona.edu&type=ws&host=fraud.chase&path=/Tel-@VPNine1/?ed=2048#🇺🇸US-🚀@VPNine1
+tg://proxy?server=fleethop.online&port=443&secret=ee7b65b9f92173a83dcd4d1c5b8c1031f7666c656574686f702e6f6e6c696e65
+https://t.me/proxy?server=download.strawberrybarn.co.uk.&port=8443&secret=EERighJJvXrFGRMCIMjdCQ
+https://t.me/proxy?server=New.nchnch.co.uk&port=4455&secret=dd104462821249bd7ac519130220c25d09
+https://t.me/proxy?server=gw.nowabst.net&port=853&secret=ee6104d5fd936c4930978f0227166deaa9766b2e636f6d
+tg://proxy?server=fleethop.org&port=443&secret=ee5963ce7d4a7f471c330778c419c0b19e666c656574686f702e6f7267
