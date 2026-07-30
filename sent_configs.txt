@@ -323,3 +323,6 @@ vless://cf39fab0-bb85-42cb-9945-2ad69d78e575@104.26.14.85:443?path=/GOrbEh&secur
 vless://d2fb0afa-0e80-4925-ace9-b962c7a545db@ar-play.mobileemdad.top:443?security=reality&encryption=none&pbk=PjR-SM4fOm2fY4mTqWoqZDRyxontvpailM0gBqUxlUQ&headerType=none&fp=chrome&type=tcp&sni=play.google.com&sid=08#🇺🇸126113 | ⚡️Telegram = t.me/SOSkeyNET
 vless://b756db61-5926-490a-b732-3d5b17ae1d57@3.78.157.23:443?security=&encryption=none&host=play.google.com&headerType=http&type=tcp#@Arvand_soul❤️🧑‍💻 کانفیگ ملی در #13
 vless://cf39fab0-bb85-42cb-9945-2ad69d78e575@173.245.59.1:443?path=/GOrbEh#TELEGRAM-mehrosaboran_mehrosaboran_mehrosaboran_mehrosaboran_mehrosaboran?ed=2560&security=tls&encryption=none&insecure=0&host=rubifen.adaspoloandco.com&fp=chrome&type=ws&allowInsecure=0&sni=rubifen.adaspoloandco.com#@mehrosaboran
+https://t.me/proxy?server=tabibie.del.davazdah.info&port=443&secret=ee1603010200010001fc030386e24c3add626973636f7474692e79656b74616e65742e636f6d
+https://t.me/proxy?server=achar-ghofli-chie.avangement.info&port=443&secret=ee1603010200010001fc030386e24c3add626973636f7474692e79656b74616e65742e636f6d
+https://t.me/proxy?server=cinema-hulk.avangement.info&port=443&secret=ee1603010200010001fc030386e24c3add626973636f7474692e79656b74616e65742e636f6d
