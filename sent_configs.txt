@@ -379,3 +379,8 @@ tg://proxy?server=medblock.fit&port=443&secret=ee56f78cfdeedfc4562c048fe36e92f89
 tg://proxy?server=neo-vpn.ink&port=443&secret=eea40b9cca8c9d1e4eba3c50c16d38358a6e656f2d76706e2e696e6b
 tg://proxy?server=night.workingproxy.xyz&port=443&secret=dde5d60707998c23e890e00e0bbe5eacdd
 https://t.me/proxy?server=65.21.205.29&port=443&secret=3XnnAQIAAQAH8AMDhuJMOt0
+vless://b8794f67-80d9-4124-8fc5-2d2ce5516573@50.7.177.179:443?encryption=none&flow=xtls-rprx-vision&fp=chrome&pbk=AYL1z7PNyo6LqYLeZpXa50FnK9eEu7o18KHRhOlST1w&security=reality&sid=bd72&sni=deepl.com&type=tcp#🇺🇸US-🚀@VPNine1
+vless://a0fe052d-6ca1-4a9c-b626-7ecf78f386cb@108.162.194.165:2086?path=/&security=&encryption=none&host=arshia.lezzatArshia.ir&type=httpupgrade#Arshiavpn12
+vless://a5bea439-6176-4b5d-a891-bd31fc3530c9@vfpsxy8f176a.dop999.com:42268?path=/&security=none&encryption=none&host=play.google.com&type=httpupgrade#🇳🇱NL-🚀@VPNine1
+vless://bbae962a-b6e9-46e6-990c-6abf13e6b075@185.191.118.67:443?flow=xtls-rprx-vision&encryption=none&security=reality&sni=de.edge-9d7c.com&pbk=qoAuuFJ0eK1lAMHIqTt6LniY6qu1GIobrGthBcRHUXM&sid=9d84de9d9f7b85e9&type=tcp&headerType=none#𝐂𝐡𝐚𝐧𝐧𝐞𝐥: @ISVvpn-2
+vless://a6d20e79-d326-42c1-bc20-f4cecc6dc42d@ul-mexico1.09vpn.com:8443?encryption=none&security=tls&type=ws&path=/vless/#🇲🇽 Join+Telegram:@Farah_VPN 🇲🇽
