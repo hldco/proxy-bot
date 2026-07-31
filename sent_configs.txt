@@ -353,3 +353,5 @@ vless://c19735a7-ff97-a112-3f07-60e500f7719b@172.66.40.99:443?encryption=none&ty
 vless://b0928fc8-ac5f-637b-3208-0535bb18374a@x4g-production-815c.up.railway.app:443?path=/ws/b0928fc8-ac5f-637b-3208-0535bb18374a&security=tls&alpn=http/1.1&encryption=none&host=x4g-production-815c.up.railway.app&fp=chrome&type=ws&sni=x4g-production-815c.up.railway.app#All Operators @MaSTeRSeRVeR1
 vless://a8a98c3e-0b0d-47c4-b4a0-1402ba3252ca@89.222.123.209:16923?encryption=none&fp=&pbk=_QeslG3rHGM7DoM99pYC8-jpc16pM2MbNZ6NRMoxmHA&security=reality&serviceName=neurex&sid=10ffb85da1c2d986&sni=api-maps.yandex.ru&type=grpc#🐰88@oneclickvpnkeys
 vless://b2f6aa3a-2550-4a1c-b2c0-1c94b1207217@162.159.38.119:443?encryption=none&security=tls&sni=terazhediii.info&insecure=0&allowInsecure=0&type=ws&host=terazhediii.info&path=/hdgrbws#✅  @vistav2ray  👈👈کانال ما ✅
+https://t.me/proxy?server=mtp.nowabst.net&port=853&secret=eeceaec97c86b6332adc48b3c081954e60766b2e636f6d
+https://t.me/proxy?server=mt.nowabst.net&port=853&secret=ee4e9fcd5caf6e9be2f8ec43e370e902d6766b2e636f6d
