@@ -360,3 +360,7 @@ vless://b585dc5e-55bf-4a8b-913a-27c9ccac05c3@149.202.58.99:443?path=/vws/&securi
 vless://b0f08ae1-7cf9-4612-ad61-72681e0b92da@185.68.184.237:443?mode=gun&security=reality&encryption=none&pbk=kPBXTe2KCp55GrHS_qU_sF7ohUcT8Vu-e8i6Yd9MERI&fp=chrome&type=grpc&serviceName=data-sync&sni=google.com&sid=d5c7f84e37e0c12d#@meliproxyy
 vless://c9380ef8-23f8-422e-81fe-ebbb032202cf@151.101.193.54:80/?type=ws&encryption=none&flow=&host=BankMelat.glObal.ssl.faStly.nEt.&path=/&packetEncoding=xudp#🇫🇮芬兰
 vless://cfde0aba-0985-4034-ab92-50b1534b126c@151.101.56.7:80?path=/&security=none&encryption=none&host=BankMelat.glObal.ssl.faStly.nEt.&type=ws#برای اتصال دائمی جوین شو💤 TelegramID ⌲Express_freevpn
+https://t.me/proxy?server=beer.crona-extra.co.uk&port=8443&secret=EERighJJvXrFGRMCIMJdCQ
+tg://proxy?server=sisu.proxytales.life&port=443&secret=ee6a0333c1db3f8eaba5c76731a44203b6617669746f2e7275
+https://t.me/proxy?server=tge0a4dd98.koshkaproxy.shop&port=443&secret=ee1e355000114cdb95628c1564225a404b36326334346231662e6b6f73686b6170726f78792e73686f70
+https://t.me/proxy?server=ad4.arixo.shop&port=443&secret=eec699329f2f8c2d33cd1e1a9f10e5d32d6164312e617269786f2e73686f70
