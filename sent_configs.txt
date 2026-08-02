@@ -465,3 +465,5 @@ vless://d037c1e1-d6ac-4236-8170-c1e625c9cfc4@netherlands.vpnserverhub.com:443?se
 vless://c81f0504-2c7c-11f1-9ec5-baabcd4be2cd@172.86.91.58:8443?encryption=none&flow=xtls-rprx-vision&security=reality&sni=www.apple.com&fp=chrome&pbk=FVL0r87K3-vUP2KXQX1juLMFEHJtvxwKM-nm6_PYllc&sid=cafe01234567&allowInsecure=1&type=tcp&headerType=none#🇺🇸130136 | ⚡️Telegram = t.me/SOSkeyNET
 vless://ab7d5ea9-6eca-47c3-b14b-67378fc2d7c2@217.177.75.7:443?type=tcp&security=reality&encryption=none&flow=xtls-rprx-vision&fp=chrome&pbk=6INA8Jxa9oQT3XrW4uXd0leo2upMdUn8s_XbSP0qB3I&sid=f0a9d2b1c7e4f648&sni=usa.tunnelx.space#@filembad
 vless://d65cc14c-f53f-4fe2-b262-97856601319c@169.40.42.179:443?security=reality&encryption=none&pbk=e2RLf57Li_-MDZGE9ss1BWPgP54mqRb5PfXhW2jcVVg&headerType=&fp=chrome&type=tcp&flow=xtls-rprx-vision&sni=yahoo.com&sid=c39cc7310a#🇺🇸 (7)
+https://t.me/proxy?server=download-iran.dinocol.co.uk.&port=8443&secret=EERighJJvXrFGRMCIMjdCQ
+https://t.me/proxy?server=65.21.83.228&port=443&secret=3XnnAQIAAQAH8AMDhuJMOt0
