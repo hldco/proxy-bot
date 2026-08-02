@@ -487,3 +487,8 @@ https://t.me/proxy?server=mirror.balalaika.click&port=443&secret=eea0398370ab267
 https://t.me/proxy?server=uploi1on.ir&port=443&secret=3XnnAQIAAQAH8AMDhuJMOt0
 https://t.me/proxy?server=net.antitspu.com&port=443&secret=ee24918e3782cee00f652c0018f2867ffd6e65742e616e7469747370752e636f6d
 https://t.me/proxy?server=chai.mikham.co.uk&port=8443&secret=EERighJJvXrFGRMCIMJdCQ
+vless://ce069292-c8bf-40dd-a6b1-87818a1e64e9@ldgb.pages.dev:443?encryption=none&fp=chrome&path=/&security=tls&sni=ldgb.pages.dev&type=ws#👁️‍🗨️53@oneclickvpnkeys
+vless://c19735a7-ff97-a112-3f07-60e500f7719b@172.66.40.99:443?path=/---@MiTiVPN---@MiTiVPN/---@MiTiVPN---@MiTiVPN/---@MiTiVPN---@MiTiVPN/SwS&security=tls&alpn=http/1.1&encryption=none&insecure=0&host=l-j--bMiTiVPN---MiTiVPN-mmo.KingCloud-1.ir&type=ws&allowInsecure=0&sni=l-j-o-MiTiVPN---MiTiVPN-iiio.KingCloud-1.ir#🚀t.me/iProxyChannel 2
+vless://b2f6aa3a-2550-4a1c-b2c0-1c94b1207217@cf.levikogjgfdd.ir:443?path=/hdgrbws&security=tls&encryption=none&insecure=0&host=terazhediii.info&fp=chrome&type=ws&allowInsecure=0&sni=terazhediii.info#@FarazV2ray
+vless://cf39fab0-bb85-42cb-9945-2ad69d78e575@173.245.49.69:443?path=/GOrbEh&security=tls&encryption=none&insecure=0&host=rubifen.adaspoloandco.com&fp=chrome&type=ws&allowInsecure=0&sni=rubifen.adaspoloandco.com#🚀@VPNine1
+vless://bdb694c1-fd18-4775-abee-5cf551db8e13@188.226.133.127:2053?ed=2560&eh=Sec-WebSocket-Protocol&encryption=none&fp=chrome&host=mcuxsrqp.ncdiqw.workers.dev&path=/&security=tls&sni=mcuxsrqp.ncdiqw.workers.dev&type=ws#🧬60@oneclickvpnkeys
