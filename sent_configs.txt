@@ -505,3 +505,8 @@ vless://c6666ab2-c3e4-4504-bf2f-8b6672b00927@199.232.78.159:443?security=tls&enc
 https://t.me/proxy?server=relay2.best-proxy.ink&port=443&secret=eee751f2db32edcfc86330057749a3ab9472656c6179322e626573742d70726f78792e696e6b
 https://t.me/proxy?server=view.fleethop.online&port=443&secret=ee05a819f41fd784d0a3ad0f67013fb7a9766965772e666c656574686f702e6f6e6c696e65
 https://t.me/proxy?server=feed.fast-proxy.ink&port=443&secret=ee3001f44afccd358abf35cf2bebf2b50f666565642e666173742d70726f78792e696e6b
+vless://bccd6085-b88a-40ec-872c-a59cff204afc@gotveran.sav-savteam.ir:2010?encryption=none&type=tcp&headerType=http&host=play.google.com#@meliproxyy
+vless://a5ea9247-79f3-4655-aece-3fb51e1e669e@78.40.195.56:443?security=reality&encryption=none&pbk=APXp2igsjxFmGkpb3L98I__FTySIY6saN6skP2y0ank&headerType=&type=tcp&flow=xtls-rprx-vision&sni=19.07-7.yunus.guru&sid=c6d439fd92614ab0#@icv2ray
+vless://a67f0c92-2a75-4db4-af3b-46f4904c8d28@kakaG.tempfast.ir:33786?security=reality&encryption=none&pbk=tPl3qHlJ_ZPX_jXBA8i1j_dmQBMhJ31qk4HQlXjntmE&headerType=none&fp=chrome&type=tcp&sni=icloud.com&sid=f55c53dfd45cfc6d#🔵@chillguy_vpn
+vless://b2f6aa3a-2550-4a1c-b2c0-1c94b1207217@173.245.58.75:443?&security=tls&sni=terazhediii.info&type=ws&headerType=none&host=terazhediii.info&path=/hdgrbws#🇬🇧 Join+Telegram:@Farah_VPN 🇬🇧
+vless://ab178d57-d18c-4658-8362-f06599777cae@104.31.16.85:80?security=none&type=ws&host=allV2ray.cbr.roghanali.IR.&path=AfV2ray?ed=2048#🇨🇦131501 | ⚡️Telegram = t.me/SOSkeyNET
