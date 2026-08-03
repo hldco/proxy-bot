@@ -530,3 +530,4 @@ vless://cf546c96-ed5e-46cc-b080-1cacf1770a5c@159.69.193.221:1234?security=none&e
 vless://c998b565-38c7-4bee-a833-d8b479bf5180@u.cafeplusserver.ir:25239?encryption=none&headerType=http&host=telewebion.ir&path=/&security=none&type=tcp#🇺🇸-VEGAAS_VPN
 vless://b772154e-7d28-4d59-9b94-5476f88795b4@172.67.204.84:2052?security=none&type=ws&host=www.speedtest.net.Ftp.debIAn.org.webDownload.sPace.#@Hope_Net-join-us-on-Telegram
 vless://caec7e57-ca9e-4738-a2c3-4ed513d83451@62.238.55.96:1234?security=none&encryption=none&host=play.google.com/?JOIN_TELEGRAM@MARAMBASHI_MARAMBASHI_MARAMBASHI_MARAMBASHI&headerType=http&type=tcp#@MARAMBASHI 👽
+https://t.me/proxy?server=panel.neo-vpn.ink&port=443&secret=eeb4ea209a41744fcfe544c552c134b0a670616e656c2e6e656f2d76706e2e696e6b
