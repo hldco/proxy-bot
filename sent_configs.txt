@@ -525,3 +525,8 @@ https://t.me/proxy?server=miravox.co.uk.&port=443&secret=ddf0eeb0bd9adc4fd4a9399
 https://t.me/proxy?server=sync.savelyev.click&port=443&secret=ee6b56378bbf49f5bd8552fa1e9d63bab773796e632e736176656c7965762e636c69636b
 https://t.me/proxy?server=bastani.mikham.co.uk&port=8443&secret=EERighJJvXrFGRMCIMJdCQ
 https://t.me/proxy?server=ad6.fluxvpnguard.ru&port=443&secret=eeb471ae1aa2e8a185ed77a4d024dd3b7f6164362e666c757876706e67756172642e7275
+vless://b60e5c32-3d4e-425c-a785-a36cd0621a72@104.18.12.149:443?path=/&security=tls&encryption=none&insecure=0&host=S4-f45.pAGeS.DeV&type=ws&allowInsecure=0&sni=S4-f45.pAGeS.DeV#@v2rayngzendegimamad🕊️
+vless://cf546c96-ed5e-46cc-b080-1cacf1770a5c@159.69.193.221:1234?security=none&encryption=none&host=play.google.com&headerType=http&type=tcp#@vmesc
+vless://c998b565-38c7-4bee-a833-d8b479bf5180@u.cafeplusserver.ir:25239?encryption=none&headerType=http&host=telewebion.ir&path=/&security=none&type=tcp#🇺🇸-VEGAAS_VPN
+vless://b772154e-7d28-4d59-9b94-5476f88795b4@172.67.204.84:2052?security=none&type=ws&host=www.speedtest.net.Ftp.debIAn.org.webDownload.sPace.#@Hope_Net-join-us-on-Telegram
+vless://caec7e57-ca9e-4738-a2c3-4ed513d83451@62.238.55.96:1234?security=none&encryption=none&host=play.google.com/?JOIN_TELEGRAM@MARAMBASHI_MARAMBASHI_MARAMBASHI_MARAMBASHI&headerType=http&type=tcp#@MARAMBASHI 👽
