@@ -502,3 +502,6 @@ vless://c19735a7-ff97-a112-3f07-60e500f7719b@188.114.97.6:443?path=/---@MiTiVPN-
 vless://c35050ce-01ab-45a9-91b8-54cec637d0a8@173.245.59.162:443?encryption=none&security=tls&sni=octopusss5.info&fp=chrome&insecure=0&allowInsecure=0&type=ws&host=octopusss5.info&path=/udfyfws@ThePackageCom#[11337] - Telegram : @V2All
 vless://b2974faf-4dc2-4a6d-9359-7fa657015bee@104.25.193.8:443?path=/In_Panel_Rayeghan_Ast_Va_Gheyre_Ghabele_Foroosh&security=tls&encryption=none&insecure=0&host=zeus-panel-55srwb.arynzlfkhany.workers.dev&fp=chrome&type=ws&allowInsecure=0&sni=zeus-panel-55srwb.arynzlfkhany.workers.dev#🇨🇦@FreakConfig
 vless://c6666ab2-c3e4-4504-bf2f-8b6672b00927@199.232.78.159:443?security=tls&encryption=none&insecure=0&host=BankMelat.glObal.ssl.faStly.nEt.&type=ws&allowInsecure=0&sni=ssl.fastly.com#@bored_vpn
+https://t.me/proxy?server=relay2.best-proxy.ink&port=443&secret=eee751f2db32edcfc86330057749a3ab9472656c6179322e626573742d70726f78792e696e6b
+https://t.me/proxy?server=view.fleethop.online&port=443&secret=ee05a819f41fd784d0a3ad0f67013fb7a9766965772e666c656574686f702e6f6e6c696e65
+https://t.me/proxy?server=feed.fast-proxy.ink&port=443&secret=ee3001f44afccd358abf35cf2bebf2b50f666565642e666173742d70726f78792e696e6b
