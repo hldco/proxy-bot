@@ -548,3 +548,5 @@ vless://c97b2158-64c9-1f55-8167-72970d347288@157.22.19.5:443?encryption=none&fp=
 vless://ad356e93-cc14-417d-9f4e-32376d03f5b7@104.18.4.138:2096?path=/ws?ed=2560&security=tls&encryption=none&host=greattehran.hozheen.ir&fp=chrome&type=ws&sni=f53d749fda28cb85.hozheen.ir#❤️‍🔥 کانال تلگرام HiByeVPNN@
 vless://ccd1c444-4812-4e11-aed1-99d3678b0b63@62.238.49.122:41982?security=none&encryption=none&host=play.google.com&headerType=http&type=tcp#🇫🇮FI-🚀@VPNine1
 vless://bafc3071-ddc3-596c-3dce-76dd74a8e610@x4g-production-1d8d.up.railway.app:443?path=/ws/bafc3071-ddc3-596c-3dce-76dd74a8e610&security=tls&alpn=http/1.1&encryption=none&host=x4g-production-1d8d.up.railway.app&fp=chrome&type=ws&sni=x4g-production-1d8d.up.railway.app#All Operators @MaSTeRSeRVeR1
+tg://proxy?server=media2.happtg.org&port=443&secret=ee95aa916bd319beb312cc6ba9b2c5aef8766b2e7275
+tg://proxy?server=media3.happtg.org&port=443&secret=ee8fc9c7632b344b1b76639c501ae7cfb5766b2e7275
