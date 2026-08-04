@@ -559,3 +559,5 @@ vless://a1368205-7481-4228-bf24-00f24ad7b267@104.105.64.121:50327?security=reali
 vless://a481265c-a4d8-4d1a-9ae1-48eb3f7fccb4@159.69.193.221:1234?security=none&encryption=none&host=play.google.com&headerType=http&type=tcp#configprxy
 vless://a18f7c2d-9e45-4b8a-af3c-1d5e7f9c8b2a@tg.riotvpn.eu:443?security=reality&encryption=none&pbk=8h8t5eBWL9oERK7xWHQLFJE5j6sZdgNDQAs3EGnNbho&headerType=none&fp=chrome&type=tcp&sni=ads.x5.ru&sid=2f49bccf11150ef2#@vmess_ir
 vless://a43e8266-33f3-456e-8896-dbeec3d3292e@162.159.38.119:443?alpn=h2,http/1.1,h3&encryption=none&fp=chrome&host=ad.shadowsinner.fun&path=/&security=tls&sni=ad.shadowsinner.fun&type=ws#🚀@VPNine1
+https://t.me/proxy?server=Rudmoain.co.uk.&port=443&secret=eef0eeb0bd9adc4fd4a93994ee3b2a216b63646e2e79656b74616e65742e636f6d
+https://t.me/proxy?server=sync.utkanos.life&port=443&secret=eef79990aed856d00b3f7f71bc53e19c8a73796e632e75746b616e6f732e6c696665
