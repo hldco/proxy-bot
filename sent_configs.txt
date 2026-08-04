@@ -550,3 +550,7 @@ vless://ccd1c444-4812-4e11-aed1-99d3678b0b63@62.238.49.122:41982?security=none&e
 vless://bafc3071-ddc3-596c-3dce-76dd74a8e610@x4g-production-1d8d.up.railway.app:443?path=/ws/bafc3071-ddc3-596c-3dce-76dd74a8e610&security=tls&alpn=http/1.1&encryption=none&host=x4g-production-1d8d.up.railway.app&fp=chrome&type=ws&sni=x4g-production-1d8d.up.railway.app#All Operators @MaSTeRSeRVeR1
 tg://proxy?server=media2.happtg.org&port=443&secret=ee95aa916bd319beb312cc6ba9b2c5aef8766b2e7275
 tg://proxy?server=media3.happtg.org&port=443&secret=ee8fc9c7632b344b1b76639c501ae7cfb5766b2e7275
+https://t.me/proxy?server=s1.postpulse.space&port=443&secret=ee402900cd57c3daef160c3a2aef80a29c6164312e617269786f2e73686f70
+tg://proxy?server=adieu.shmelproxy.top&port=443&secret=ee6a0333c1db3f8eaba5c76731a44203b6617669746f2e7275
+https://t.me/proxy?server=194.120.230.26&port=443&secret=3XnnAQIAAQAH8AMDhuJMOt0
+https://t.me/proxy?server=79.137.196.223&port=10443&secret=ee63fccdeb9951e5f99d66d274148278b97777772e636c6f7564666c6172652e636f6d
