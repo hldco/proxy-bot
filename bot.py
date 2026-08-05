@@ -15,17 +15,17 @@ from bs4 import BeautifulSoup
 
 # ==========================================
 # تنظیمات ربات
-BOT_TOKEN = os.environ.get("BOT_TOKEN", "") # توکن از گاوصندوق گیت‌هاب خوانده می‌شود
+BOT_TOKEN = os.environ.get("BOT_TOKEN", "") 
 CHANNEL_USERNAME = "@goololgoo"
 
 # منبع اول: گیت‌هاب (برای V2ray)
-SOURCE_URL = "https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub8.txt"
+SOURCE_URL = "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/refs/heads/main/configtg.txt"
 
-# منبع دوم: کانال‌های تلگرام (برای MTProto) - یوزرنیم چند کانال را بدون @ داخل گیومه و با کاما بنویسید
-SOURCE_CHANNELS = ["PinkProxy", "ProxyMTProto"] 
+# منبع دوم: کانال‌های تلگرام (برای MTProto) - ۵ کانال را بدون @ وارد کنید
+SOURCE_CHANNELS = ["PinkProxy", "Myporoxy", "ProxyWR" , "P500Y", "ProxyMTProto"] 
 
 CUSTOM_REMARK = "@goololgoo 🔐 وی‌پی‌ان رایگان | Free Proxy💥"
-MAX_CONFIGS_PER_POST = 5
+MAX_CONFIGS_PER_POST = 12 # افزایش به 12 پروکسی در هر پست
 # ==========================================
 
 SENT_FILE = "sent_configs.txt"
@@ -46,7 +46,6 @@ def get_tehran_time():
     return date_str, time_str
 
 def get_next_post_type():
-    """بر اساس دقیقه ساعت تصمیم می‌گیرد تا نیازی به فایل حافظه نباشد"""
     tz = pytz.timezone('Asia/Tehran')
     now = datetime.now(tz)
     if now.minute < 30:
@@ -142,9 +141,9 @@ def send_post(configs_to_post, original_configs_posted, post_type):
     date_str, time_str = get_tehran_time()
     
     if post_type == "v2ray":
-        header = f"""⚡️ پروکسی v2ray مخصوص اینستاگرام و دانلود ✌️
+        header = f"""🔵🟡🟣 پروکسی جدید پر سرعت و پایدار✌️
 
-⛽️ جدید پر سرعت و پایدار  💦
+⛽️مخصوص اینستاگرام و دانلود  💦
 
 🆕 آخرین به روز رسانی {date_str} ساعت {time_str}  🕘
 
@@ -185,7 +184,7 @@ Hiddify
 تمام اپراتور ها📱
 📍رایتل ، همراه اول ، ایرانسل ، مخابرات 📍
 
-👇برای اتصال روی لینک‌ها کلیک کنید👇
+👇برای اتصال روی دکمه‌ها کلیک کنید👇
 
 """
         footer = """
@@ -201,28 +200,44 @@ Hiddify
 
 💬نظرات خود را با ما به اشتراک بگذارید 👇"""
 
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    
     # ==========================================
     # تفاوت در نحوه نمایش کانفیگ‌ها
     # ==========================================
     if post_type == "v2ray":
-        # کادری خاکستری برای کپی شدن با یک ضربه
         all_configs_str = "\n\n".join(configs_to_post)
         safe_configs_str = html.escape(all_configs_str)
         configs_text = f"<pre>{safe_configs_str}</pre>"
+        full_message = header + configs_text + footer
+        
+        payload = {"chat_id": CHANNEL_USERNAME, "text": full_message, "parse_mode": "HTML"}
+        requests.post(url, json=payload)
     else:
-        # لینک‌های قابل کلیک برای اتصال مستقیم در تلگرام
-        links_html = []
+        # برای MTProto دکمه‌های شیشه‌ای در 4 ردیف 3 تایی می‌سازیم
+        full_message = header + footer
+        keyboard = []
+        row = []
         for cfg in configs_to_post:
-            safe_cfg = html.escape(cfg)
-            links_html.append(f'<a href="{safe_cfg}">{safe_cfg}</a>')
-        configs_text = "\n\n".join(links_html)
+            row.append({"text": "proxy", "url": cfg})
+            # وقتی ردیف به ۳ دکمه رسید، آن را به کیبورد اضافه می‌کنیم و ردیف جدید شروع می‌شود
+            if len(row) == 3:
+                keyboard.append(row)
+                row = []
+        # اگر دکمه‌ای باقی ماند (مثلاً 13 تا بود) آن را در ردیف آخر می‌گذاریم
+        if row:
+            keyboard.append(row)
+            
+        reply_markup = {"inline_keyboard": keyboard}
+        payload = {
+            "chat_id": CHANNEL_USERNAME, 
+            "text": full_message, 
+            "parse_mode": "HTML",
+            "reply_markup": reply_markup
+        }
+        requests.post(url, json=payload)
     # ==========================================
-
-    full_message = header + configs_text + footer
     
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-    payload = {"chat_id": CHANNEL_USERNAME, "text": full_message, "parse_mode": "HTML"}
-    requests.post(url, json=payload)
     print(f"{len(configs_to_post)} کانفیگ {post_type} با موفقیت پست شد.")
 
 def main():
