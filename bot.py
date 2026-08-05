@@ -337,7 +337,9 @@ def main():
                     print(f"✅ اضافه شد: {item['original']}")
 
             if valid_configs:
-                selected = random.sample(valid_configs, min(len(valid_configs), MAX_CONFIGS_PER_POST))
+                # انتخاب تعداد مناسب بر اساس نوع پست
+                limit = MAX_MTPROTO_POST if target_type == "mtproto" else MAX_V2RAY_POST
+                selected = random.sample(valid_configs, min(len(valid_configs), limit))
                 configs_to_post = [x["modified"] for x in selected]
                 originals = [x["original"] for x in selected]
                 send_post(configs_to_post, originals, target_type)
