@@ -187,7 +187,7 @@ Hiddify
 تمام اپراتور ها📱
 📍رایتل ، همراه اول ، ایرانسل ، مخابرات 📍
 
-👇برای اتصال روی دکمه‌ها کلیک کنید👇
+👇برای اتصال کلیک کنید / برای اشتراک کپی کنید👇
 
 """
         footer = """
@@ -205,7 +205,11 @@ Hiddify
 
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     
+    # ==========================================
+    # تفاوت در نحوه نمایش کانفیگ‌ها
+    # ==========================================
     if post_type == "v2ray":
+        # کادری خاکستری برای کپی شدن با یک ضربه
         all_configs_str = "\n\n".join(configs_to_post)
         safe_configs_str = html.escape(all_configs_str)
         configs_text = f"<pre>{safe_configs_str}</pre>"
@@ -214,25 +218,22 @@ Hiddify
         payload = {"chat_id": CHANNEL_USERNAME, "text": full_message, "parse_mode": "HTML"}
         requests.post(url, json=payload)
     else:
-        full_message = header + footer
-        keyboard = []
-        row = []
-        for cfg in configs_to_post:
-            row.append({"text": "proxy", "url": cfg})
-            if len(row) == 3:
-                keyboard.append(row)
-                row = []
-        if row:
-            keyboard.append(row)
-            
-        reply_markup = {"inline_keyboard": keyboard}
-        payload = {
-            "chat_id": CHANNEL_USERNAME, 
-            "text": full_message, 
-            "parse_mode": "HTML",
-            "reply_markup": reply_markup
-        }
+        # لینک‌های متنی قابل کلیک و قابل کپی برای اشتراک در گروه
+        links_html = []
+        for i, cfg in enumerate(configs_to_post, 1):
+            safe_cfg = html.escape(cfg)
+            links_html.append(f'<a href="{safe_cfg}">🚀 Proxy {i}</a>')
+        
+        # قرار دادن ۴ لینک در هر ردیف (جدا شده با ۴ فاصله)
+        rows = []
+        for i in range(0, len(links_html), 4):
+            rows.append("    ".join(links_html[i:i+4]))
+        configs_text = "\n\n".join(rows)
+        
+        full_message = header + configs_text + footer
+        payload = {"chat_id": CHANNEL_USERNAME, "text": full_message, "parse_mode": "HTML"}
         requests.post(url, json=payload)
+    # ==========================================
     
     print(f"{len(configs_to_post)} کانفیگ {post_type} با موفقیت پست شد.")
 
