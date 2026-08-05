@@ -25,7 +25,10 @@ SOURCE_URL = "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/refs/head
 SOURCE_CHANNELS = ["PinkProxy", "Myporoxy", "ProxyWR" , "P500Y", "ProxyMTProto"] 
 
 CUSTOM_REMARK = "@goololgoo 🔐 وی‌پی‌ان رایگان | Free Proxy💥"
-MAX_CONFIGS_PER_POST = 12 # افزایش به 12 پروکسی در هر پست
+
+# تعداد کانفیگ‌ها در هر پست
+MAX_V2RAY_POST = 5   # ۵ تا برای پست V2ray (کپی شونده)
+MAX_MTPROTO_POST = 12 # ۱۲ تا برای پست MTProto (دکمه شیشه‌ای)
 # ==========================================
 
 SENT_FILE = "sent_configs.txt"
@@ -202,9 +205,6 @@ Hiddify
 
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     
-    # ==========================================
-    # تفاوت در نحوه نمایش کانفیگ‌ها
-    # ==========================================
     if post_type == "v2ray":
         all_configs_str = "\n\n".join(configs_to_post)
         safe_configs_str = html.escape(all_configs_str)
@@ -214,17 +214,14 @@ Hiddify
         payload = {"chat_id": CHANNEL_USERNAME, "text": full_message, "parse_mode": "HTML"}
         requests.post(url, json=payload)
     else:
-        # برای MTProto دکمه‌های شیشه‌ای در 4 ردیف 3 تایی می‌سازیم
         full_message = header + footer
         keyboard = []
         row = []
         for cfg in configs_to_post:
             row.append({"text": "proxy", "url": cfg})
-            # وقتی ردیف به ۳ دکمه رسید، آن را به کیبورد اضافه می‌کنیم و ردیف جدید شروع می‌شود
             if len(row) == 3:
                 keyboard.append(row)
                 row = []
-        # اگر دکمه‌ای باقی ماند (مثلاً 13 تا بود) آن را در ردیف آخر می‌گذاریم
         if row:
             keyboard.append(row)
             
@@ -236,7 +233,6 @@ Hiddify
             "reply_markup": reply_markup
         }
         requests.post(url, json=payload)
-    # ==========================================
     
     print(f"{len(configs_to_post)} کانفیگ {post_type} با موفقیت پست شد.")
 
