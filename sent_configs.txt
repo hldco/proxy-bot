@@ -83,3 +83,8 @@ https://t.me/proxy?server=takhasos.karshenasi.info&port=443&secret=ee16030102000
 https://t.me/proxy?server=94.184.32.21.ir-vlue3.ir&port=2020&secret=AAAAAAAAAAAAAAAAAAAAAA==
 https://t.me/proxy?server=cloud.click-master.co.uk&amp;port=8443&amp;secret=EERighJJvXrFGRMCIMJdCQ
 https://t.me/proxy?server=proxy.lodkirmm.ru&port=8443&secret=ee16309abd572d284b309ef26bd7a3f685d0b7d0ba70726f78792e6c6f646b69726d6d2e7275
+vless://f75814f6-8f81-4847-b792-168c41f2dc85@45.196.201.61:443?security=reality&encryption=none&pbk=zii4nGNapnFKL6SN8GzWNqFlElBvUCUFUThEP0kFH04&headerType=none&fp=chrome&type=tcp&flow=xtls-rprx-vision&sni=storage.yandex.net&sid=c6ef72e4635d15a5#@Capoit
+vless://de64aaa6-a0ea-48d0-853b-1c3cbc7fb42c@141.98.118.70:443?mode=auto&path=/&security=reality&encryption=none&pbk=LjEQR0FEtsOs5eQoVsZgJX5ZI0yeadUKTCLoGD641RQ&fp=chrome&spx=/&type=xhttp&sni=www.google.com&sid=44#🚀t.me/iProxyChannel 1
+ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNToxaGhycXJva2ozYWc@209.46.102.22:8388#👁️‍🗨️2@SHAHSERVER1
+vless://16b34a60-cb57-4659-b802-da89506c7ff8@pl-2.wrs.tconnect.services:443?encryption=none&flow=xtls-rprx-vision&type=tcp&security=reality&fp=chrome&sni=stackoverflow.com&pbk=EYL4xS6Msvddf6qwmFHfHplw18bmntv98GkoQBK1fhM&sid=71e87186710e710e#🦉@FreeConfigForYou
+vless://f0dc4d4f-c956-0004-bc3a-021424b8e879@192.142.12.175:443?security=reality&encryption=none&pbk=6VMgXXhZdJCiOG05EyK_zTHh00kpFGrZJeZIEPgqhjY&headerType=none&fp=chrome&type=tcp&flow=xtls-rprx-vision&sni=jsonstudio.site&sid=1c3e8241a8743df9#@prrofile_purple | 𝗙𝗮𝗦𝗧 💚
