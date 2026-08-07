@@ -166,3 +166,7 @@ vless://e5cc16a6-ea42-46b2-82ae-ad2157e1641b@188.114.97.6:443?encryption=none&fp
 vless://d84c0e47-7575-44cb-bc05-b55de8b51ca0@188.114.98.0:2053?path=/latest?ed=2560&security=tls&encryption=none&insecure=0&type=ws&allowInsecure=0&sni=hz.badomzamini.uk#Arshiavpn12
 vless://f106648e-0644-40bc-974c-6edc966fe18d@45.130.125.162:8443?mode=auto&path=/?ed=2053&security=tls&alpn=h3,h2&encryption=none&insecure=0&fp=chrome&type=xhttp&allowInsecure=0&sni=cji.new-persian-song.ir#[15463] - Telegram : @V2All
 vless://7fb197a7-dab7-4fae-95e6-fe527c8d2453@104.18.155.69:2087?path=/&security=tls&encryption=none&insecure=0&host=ftp.skylinknet.ir&fp=chrome&type=ws&allowInsecure=0&sni=ftp.skylinknet.ir#@SkyLiink_vpn 🇩🇪
+https://t.me/proxy?server=severjadid.co.uk&port=4455&secret=dd104462821249bd7ac519130220c25d09
+tg://proxy?server=30a1de.corecdn.net&port=443&secret=eed6662c1fb60871326543681c1fce09c93330613164652e636f726563646e2e6e6574
+tg://proxy?server=c12dfd.vpngate-cloud.net&port=443&secret=eed10acacf18fc72b11dc0b166d72a68536331326466642e76706e676174652d636c6f75642e6e6574
+tg://proxy?server=500245.hopwire.io&port=443&secret=ee06342713da7e66863b8d0f70d93d145a3530303234352e686f70776972652e696f
