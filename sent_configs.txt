@@ -214,3 +214,8 @@ https://t.me/proxy?server=live.garden-troll.life&port=443&secret=ee35e031f41ae8b
 https://t.me/proxy?server=node2.librava.click&port=443&secret=ee0bbeba170f295eef00b7b9be814e218b6e6f6465322e6c6962726176612e636c69636b
 https://t.me/proxy?server=103.161.35.23&port=443&secret=3XnnAQIAAQAH8AMDhuJMOt0
 https://t.me/proxy?server=edge2.librava.click&port=443&secret=ee4cac1442f878b9c522cf77e7cc47dd8765646765322e6c6962726176612e636c69636b
+tg://proxy?server=mtp2.hlebushek.com&port=443&secret=ee8263f1fdfbfa0629c67c40d208806873706574726f766963682e7275
+tg://proxy?server=mtp3.hlebushek.com&port=443&secret=ee49b03637799a40446509a268d99ff91b706574726f766963682e7275
+tg://proxy?server=mtp1.hlebushek.com&port=443&secret=eea61deab187a415531ac418cd29ae58ee706574726f766963682e7275
+https://t.me/proxy?server=ving.mozitop.co.uk&port=8443&secret=eeNEgYdJvXrFGRMCIMJdCQ
+https://t.me/proxy?server=mio.mozitop.co.uk&port=8443&secret=eeNEgYdJvXrFGRMCIMJdCQ
