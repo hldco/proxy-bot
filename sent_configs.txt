@@ -210,3 +210,4 @@ https://t.me/proxy?server=dev.nowabst.net&port=853&secret=ee54079943a5db4dc91636
 https://t.me/proxy?server=94.184.32.25.ir-vlue3.ir&amp;port=2020&amp;secret=AAAAAAAAAAAAAAAAAAAAAA==
 https://t.me/proxy?server=salam.amoojoon.co.uk&amp;port=443&amp;secret=ee1603010200010001fc030386e24c3add6d656469612e737465616d706f77657265642e636f6d
 https://t.me/proxy?server=khoobi.amoojoon.co.uk&amp;port=8443&amp;secret=EERighJJvXrFGRMCIMJdCQ
+https://t.me/proxy?server=live.garden-troll.life&port=443&secret=ee35e031f41ae8bb68b6d517e706ccdfb06c6976652e67617264656e2d74726f6c6c2e6c696665
