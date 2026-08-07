@@ -219,3 +219,8 @@ tg://proxy?server=mtp3.hlebushek.com&port=443&secret=ee49b03637799a40446509a268d
 tg://proxy?server=mtp1.hlebushek.com&port=443&secret=eea61deab187a415531ac418cd29ae58ee706574726f766963682e7275
 https://t.me/proxy?server=ving.mozitop.co.uk&port=8443&secret=eeNEgYdJvXrFGRMCIMJdCQ
 https://t.me/proxy?server=mio.mozitop.co.uk&port=8443&secret=eeNEgYdJvXrFGRMCIMJdCQ
+vless://d85ea913-7dfa-44b0-bd66-33414e897991@afrcloud22.mmv.kr:443?path=/35.230.79.26=443&security=tls&encryption=none&insecure=0&host=afrcloud22.mmv.kr&type=ws&allowInsecure=0&sni=afrcloud22.mmv.kr#IR-@V2rayAlpha-11
+vless://9abf5e0c-e98a-44a3-bd0b-1a6dd065eb0f@157.85.96.11:8443/?type=tcp&encryption=none&flow=#🇲🇾马来西亚
+vless://d9eb0df3-3190-4447-86b6-656fe5ff1119@172.67.147.161:443?security=tls&sni=mmdv2.pages.dev&type=ws&host=mmdv2.pages.dev#🇨🇦136805 | ⚡️Telegram = t.me/SOSkeyNET
+vless://68b4b16e-2759-47a4-8a69-33118edf5ce6@ang.leontunel.ru:443?security=reality&encryption=none&pbk=5RK9ivB7UF_89vkywwpZjW3jAJqsEGskRSS7c0OUOXM&headerType=none&fp=chrome&type=tcp&flow=xtls-rprx-vision&sni=ang.leontunel.ru&sid=2f4761809cf9fbfb#♾️𝗝𝗼𝗶𝗻➠🆔️@ATLAS_V2VPN🆓️🛜🔷️504🌐🆕️
+vless://04cb9c0f-363c-4bf8-a195-2cb8bd43b02a@o.server5peekconfig.workers.dev:443?path=/eyJqdW5rIjoiSU9LdXp3R1p6IiwicHJvdG9jb2wiOiJ2bCIsIm1vZGUiOiJwcmVmaXgiLCJwYW5lbElQcyI6WyJbMmEwMjo4OTg6MTQ2OjY0OjpdIl19?ed&security=tls&alpn=http/1.1&encryption=none&insecure=0&host=o.server5peekconfig.workers.dev&fp=chrome&type=ws&allowInsecure=0&sni=O.seRVer5peEKCOnFIG.WOrKers.dEV#🇨🇦🆔 @bigAvpn
