@@ -49,12 +49,7 @@ def get_tehran_time():
     return date_str, time_str
 
 def get_next_post_type():
-    tz = pytz.timezone('Asia/Tehran')
-    now = datetime.now(tz)
-    if now.minute < 30:
-        return "v2ray"
-    else:
-        return "mtproto"
+    return "mtproto"
 
 def get_sent_configs():
     if not os.path.exists(SENT_FILE):
