@@ -10,6 +10,7 @@ import time
 import html
 import re
 import socket
+import io
 from datetime import datetime
 from bs4 import BeautifulSoup
 
@@ -18,17 +19,15 @@ from bs4 import BeautifulSoup
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "") 
 CHANNEL_USERNAME = "@goololgoo"
 
-# منبع اول: گیت‌هاب (برای V2ray)
+# منابع
 SOURCE_URL = "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/refs/heads/main/configtg.txt"
-
-# منبع دوم: کانال‌های تلگرام (برای MTProto) - ۵ کانال را بدون @ وارد کنید
 SOURCE_CHANNELS = ["PinkProxy", "Myporoxy", "ProxyWR" , "P500Y", "ProxyMTProto"] 
 
 CUSTOM_REMARK = "@goololgoo 🔐 وی‌پی‌ان رایگان | Free Proxy💥"
 
-# تعداد کانفیگ‌ها در هر پست
-MAX_V2RAY_POST = 5   # ۵ تا برای پست V2ray (کپی شونده)
-MAX_MTPROTO_POST = 12 # ۱۲ تا برای پست MTProto (لینک متنی)
+# تعداد کانفیگ‌ها
+MAX_V2RAY_POST = 5
+MAX_MTPROTO_POST = 12
 # ==========================================
 
 SENT_FILE = "sent_configs.txt"
@@ -49,12 +48,7 @@ def get_tehran_time():
     return date_str, time_str
 
 def get_next_post_type():
-    tz = pytz.timezone('Asia/Tehran')
-    now = datetime.now(tz)
-    if now.minute < 30:
-        return "v2ray"
-    else:
-        return "mtproto"
+    return "npvt"
 
 def get_sent_configs():
     if not os.path.exists(SENT_FILE):
@@ -139,8 +133,120 @@ def change_remark_mtproto(link, new_remark):
     clean_link = re.sub(r'&name=[^&]*', '', link)
     return f"{clean_link}&name={urllib.parse.quote(new_remark)}"
 
+# ==========================================
+# توابع مخصوص ساخت فایل نپسترنت (.npvt)
+# ==========================================
+def parse_vless_to_v2ray(uri):
+    try:
+        main, name = uri.split("#", 1) if "#" in uri else (uri, "")
+        main = main.replace("vless://", "")
+        uuid_str, hostport_params = main.split("@", 1)
+        host_port, query_str = hostport_params.split("?", 1) if "?" in hostport_params else (hostport_params, "")
+        host, port = host_port.split(":")
+        
+        params = urllib.parse.parse_qs(query_str)
+        params = {k: v[0] for k,v in params.items()}
+        
+        stream = {
+            "network": params.get("type", "tcp"),
+            "security": params.get("security", "none"),
+            "tlsSettings": {}, "realitySettings": {}, "wsSettings": {}, "grpcSettings": {}, "tcpSettings": {}
+        }
+        
+        if stream["security"] == "tls":
+            stream["tlsSettings"] = {"serverName": params.get("sni", ""), "fingerprint": params.get("fp", "")}
+        elif stream["security"] == "reality":
+            stream["realitySettings"] = {"serverName": params.get("sni", ""), "fingerprint": params.get("fp", ""), "publicKey": params.get("pbk", ""), "shortId": params.get("sid", "")}
+            
+        if stream["network"] == "ws":
+            stream["wsSettings"] = {"path": params.get("path", "/"), "headers": {"Host": params.get("host", "")}}
+        elif stream["network"] == "grpc":
+            stream["grpcSettings"] = {"serviceName": params.get("serviceName", "")}
+            
+        return {
+            "tag": "proxy",
+            "protocol": "vless",
+            "settings": {"vnext": [{"address": host, "port": int(port), "users": [{"id": uuid_str, "encryption": "none", "flow": params.get("flow", "")}]}]},
+            "streamSettings": stream
+        }
+    except:
+        return None
+
+def parse_vmess_to_v2ray(uri):
+    try:
+        b64 = uri.replace("vmess://", "")
+        b64 += '=' * (-len(b64) % 4)
+        data = json.loads(base64.b64decode(b64).decode('utf-8'))
+        stream = {"network": data.get("net", "tcp"), "security": "tls" if data.get("tls", "") == "tls" else "none", "tlsSettings": {}, "wsSettings": {}}
+        if stream["network"] == "ws":
+            stream["wsSettings"] = {"path": data.get("path", "/"), "headers": {"Host": data.get("host", "")}}
+            
+        return {
+            "tag": "proxy",
+            "protocol": "vmess",
+            "settings": {"vnext": [{"address": data.get("add", ""), "port": int(data.get("port", 443)), "users": [{"id": data.get("id", ""), "alterId": int(data.get("aid", 0)), "security": "auto"}]}]},
+            "streamSettings": stream
+        }
+    except:
+        return None
+
+def build_npvt_config(v2ray_links):
+    outbounds = []
+    for i, link in enumerate(v2ray_links):
+        outbound = parse_vless_to_v2ray(link) if link.startswith("vless://") else parse_vmess_to_v2ray(link)
+        if outbound:
+            outbound["tag"] = f"proxy-{i+1}"
+            outbounds.append(outbound)
+            
+    if not outbounds:
+        return None
+        
+    config = {
+        "log": {"loglevel": "warning"},
+        "inbounds": [{"port": 10808, "listen": "127.0.0.1", "protocol": "socks", "settings": {"udp": True}}],
+        "outbounds": outbounds + [
+            {"tag": "direct", "protocol": "freedom", "settings": {}},
+            {"tag": "block", "protocol": "blackhole", "settings": {}}
+        ],
+        "routing": {
+            "domainStrategy": "IPIfNonMatch",
+            "balancers": [{"tag": "proxy-balancer", "selector": ["proxy-"]}],
+            "rules": [
+                {"type": "field", "outboundTag": "block", "domain": ["geosite:category-ads-all"]},
+                {"type": "field", "outboundTag": "direct", "domain": ["geosite:ir", "domain:ir"]},
+                {"type": "field", "outboundTag": "direct", "ip": ["geoip:ir", "geoip:private"]},
+                {"type": "field", "outboundTag": "proxy-balancer", "network": "tcp,udp"}
+            ]
+        }
+    }
+    return json.dumps(config, indent=2)
+
+def send_npvt_file(configs_to_post, original_configs_posted):
+    save_sent_config(original_configs_posted)
+    date_str, time_str = get_tehran_time()
+    
+    npvt_content = build_npvt_config(configs_to_post)
+    if not npvt_content:
+        print("ساخت فایل npvt با خطا مواجه شد.")
+        return
+        
+    caption = f"""📦 فایل کانفیگ نپسترنت (NapsternetV)
+        
+✅ شامل {len(configs_to_post)} سرور تست‌شده و سالم
+🧠 به همراه قوانین مسیریابی هوشمند (سایت‌های ایرانی مستقیم، بلاک تبلیغات)
+🆕 آخرین به روز رسانی {date_str} ساعت {time_str}
+
+👇 فایل را دانلود و در برنامه NapsternetV وارد کنید
+@goololgoo"""
+
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendDocument"
+    files = {'document': ('goololgoo.npvt', io.StringIO(npvt_content))}
+    data = {'chat_id': CHANNEL_USERNAME, 'caption': caption}
+    requests.post(url, files=files, data=data)
+    print("فایل npvt با موفقیت پست شد.")
+# ==========================================
+
 def send_post(configs_to_post, original_configs_posted, post_type):
-    # فقط برای V2ray در فایل حافظه ذخیره می‌کند تا تکراری پست نشود
     if post_type == "v2ray":
         save_sent_config(original_configs_posted)
         
@@ -208,11 +314,7 @@ Hiddify
 
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     
-    # ==========================================
-    # تفاوت در نحوه نمایش کانفیگ‌ها
-    # ==========================================
     if post_type == "v2ray":
-        # کادری خاکستری برای کپی شدن با یک ضربه
         all_configs_str = "\n\n".join(configs_to_post)
         safe_configs_str = html.escape(all_configs_str)
         configs_text = f"<pre>{safe_configs_str}</pre>"
@@ -221,13 +323,11 @@ Hiddify
         payload = {"chat_id": CHANNEL_USERNAME, "text": full_message, "parse_mode": "HTML"}
         requests.post(url, json=payload)
     else:
-        # لینک‌های متنی قابل کلیک و قابل کپی برای اشتراک در گروه
         links_html = []
         for i, cfg in enumerate(configs_to_post, 1):
             safe_cfg = html.escape(cfg)
             links_html.append(f'<a href="{safe_cfg}">🚀 Proxy {i}</a>')
         
-        # قرار دادن ۳ لینک در هر ردیف (جدا شده با خط عمودی برای نظم بیشتر)
         rows = []
         for i in range(0, len(links_html), 3):
             row_links = links_html[i:i+3]
@@ -237,7 +337,6 @@ Hiddify
         full_message = header + configs_text + footer
         payload = {"chat_id": CHANNEL_USERNAME, "text": full_message, "parse_mode": "HTML"}
         requests.post(url, json=payload)
-    # ==========================================
     
     print(f"{len(configs_to_post)} کانفیگ {post_type} با موفقیت پست شد.")
 
@@ -254,7 +353,7 @@ def main():
     all_ips = []
     
     try:
-        if target_type == "v2ray":
+        if target_type == "v2ray" or target_type == "npvt":
             print("در حال دریافت کانفیگ‌ها از گیت‌هاب...")
             response = requests.get(SOURCE_URL)
             response.raise_for_status()
@@ -283,7 +382,6 @@ def main():
                     tg_response = requests.get(tg_url, timeout=10)
                     if tg_response.status_code == 200:
                         soup = BeautifulSoup(tg_response.text, 'html.parser')
-                        
                         all_messages = soup.find_all('div', class_='tgme_widget_message')
                         recent_messages = all_messages[-5:] if len(all_messages) >= 5 else all_messages
                         
@@ -294,18 +392,15 @@ def main():
                                 matches = re.findall(r'(https://t.me/proxy\?server=[^\s]+|tg://proxy\?server=[^\s]+)', text)
                                 for match in matches:
                                     found_proxies.add(match)
-                                    
                             buttons = msg.find_all('a', href=True)
                             for btn in buttons:
                                 href = btn['href']
                                 if "tg://proxy" in href or "https://t.me/proxy" in href:
                                     found_proxies.add(href)
-                                    
                         print(f"از کانال @{src_chan} - ۵ پست آخر بررسی شد.")
                 except:
                     pass
                     
-            # برای MTProto، بدون بررسی تکراری بودن، همه پروکسی‌های پیدا شده را اضافه می‌کند
             for proxy_link in found_proxies:
                 ip, port = extract_ip_port(proxy_link)
                 target_data.append({"original": proxy_link, "ip": ip, "port": port})
@@ -325,7 +420,7 @@ def main():
                 
                 final_remark = f"{flag} {CUSTOM_REMARK}"
                 
-                if target_type == "v2ray":
+                if target_type == "v2ray" or target_type == "npvt":
                     if check_port(item["ip"], item["port"]):
                         modified = change_remark_v2ray(item["original"], final_remark)
                         valid_configs.append({"original": item["original"], "modified": modified})
@@ -338,12 +433,15 @@ def main():
                     print(f"✅ اضافه شد: {item['original']}")
 
             if valid_configs:
-                # انتخاب تعداد مناسب بر اساس نوع پست
                 limit = MAX_MTPROTO_POST if target_type == "mtproto" else MAX_V2RAY_POST
                 selected = random.sample(valid_configs, min(len(valid_configs), limit))
                 configs_to_post = [x["modified"] for x in selected]
                 originals = [x["original"] for x in selected]
-                send_post(configs_to_post, originals, target_type)
+                
+                if target_type == "npvt":
+                    send_npvt_file(configs_to_post, originals)
+                else:
+                    send_post(configs_to_post, originals, target_type)
             else:
                 print(f"هیچ کانفیگ {target_type} زنده‌ای پیدا نشد.")
         else:
