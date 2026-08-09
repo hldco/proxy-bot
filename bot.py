@@ -28,7 +28,7 @@ CUSTOM_REMARK = "@goololgoo 🔐 وی‌پی‌ان رایگان | Free Proxy�
 
 # تعداد کانفیگ‌ها در هر پست
 MAX_V2RAY_POST = 5   # ۵ تا برای پست V2ray (کپی شونده)
-MAX_MTPROTO_POST = 12 # ۱۲ تا برای پست MTProto (دکمه شیشه‌ای)
+MAX_MTPROTO_POST = 12 # ۱۲ تا برای پست MTProto (لینک متنی)
 # ==========================================
 
 SENT_FILE = "sent_configs.txt"
@@ -49,7 +49,12 @@ def get_tehran_time():
     return date_str, time_str
 
 def get_next_post_type():
-    return "mtproto"
+    tz = pytz.timezone('Asia/Tehran')
+    now = datetime.now(tz)
+    if now.minute < 30:
+        return "v2ray"
+    else:
+        return "mtproto"
 
 def get_sent_configs():
     if not os.path.exists(SENT_FILE):
@@ -135,7 +140,10 @@ def change_remark_mtproto(link, new_remark):
     return f"{clean_link}&name={urllib.parse.quote(new_remark)}"
 
 def send_post(configs_to_post, original_configs_posted, post_type):
-    save_sent_config(original_configs_posted)
+    # فقط برای V2ray در فایل حافظه ذخیره می‌کند تا تکراری پست نشود
+    if post_type == "v2ray":
+        save_sent_config(original_configs_posted)
+        
     date_str, time_str = get_tehran_time()
     
     if post_type == "v2ray":
@@ -219,10 +227,11 @@ Hiddify
             safe_cfg = html.escape(cfg)
             links_html.append(f'<a href="{safe_cfg}">🚀 Proxy {i}</a>')
         
-        # قرار دادن ۴ لینک در هر ردیف (جدا شده با ۴ فاصله)
+        # قرار دادن ۳ لینک در هر ردیف (جدا شده با خط عمودی برای نظم بیشتر)
         rows = []
-        for i in range(0, len(links_html), 4):
-            rows.append("    ".join(links_html[i:i+4]))
+        for i in range(0, len(links_html), 3):
+            row_links = links_html[i:i+3]
+            rows.append("  |  ".join(row_links))
         configs_text = "\n\n".join(rows)
         
         full_message = header + configs_text + footer
@@ -296,12 +305,12 @@ def main():
                 except:
                     pass
                     
+            # برای MTProto، بدون بررسی تکراری بودن، همه پروکسی‌های پیدا شده را اضافه می‌کند
             for proxy_link in found_proxies:
-                if proxy_link not in sent_configs:
-                    ip, port = extract_ip_port(proxy_link)
-                    target_data.append({"original": proxy_link, "ip": ip, "port": port})
-                    if ip:
-                        all_ips.append(ip)
+                ip, port = extract_ip_port(proxy_link)
+                target_data.append({"original": proxy_link, "ip": ip, "port": port})
+                if ip:
+                    all_ips.append(ip)
                                 
         if target_data:
             print(f"در مجموع {len(target_data)} کانفیگ {target_type} جدید پیدا شد.")
