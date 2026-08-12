@@ -19,7 +19,7 @@ BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 CHANNEL_USERNAME = "@goololgoo"
 
 # منبع اول: گیت‌هاب (برای V2ray)
-SOURCE_URL = "https://raw.githubusercontent.com/prominbro/sub/refs/heads/main/212.txt"
+SOURCE_URL = "https://raw.githubusercontent.com/barry-far/V2ray-config/main/Sub2.txt"
 
 # منبع دوم: کانال‌های تلگرام (برای MTProto) - ۵ کانال را بدون @ وارد کنید
 SOURCE_CHANNELS = ["PinkProxy", "Myporoxy", "ProxyWR" , "P500Y", "ProxyMTProto"] 
