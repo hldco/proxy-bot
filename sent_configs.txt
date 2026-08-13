@@ -3,3 +3,8 @@ trojan://humanity@chat.openai.com:443?path=/assignment&security=tls&insecure=0&h
 ss://YWVzLTEyOC1nY206U3lTV0RhUDhybTFORUswd2RMZG9hVjVDbGtTakZEZnc@antony.athforce.ir:51058#@ghand_sheken
 trojan://humanity@198.62.62.23:443?path=/assignment&security=tls&insecure=0&host=www.calmlunch.com&type=ws&allowInsecure=0&sni=www.calmlunch.com#TEL;Father_vpn
 trojan://humanity@104.16.174.12:443?path=/assignment&security=tls&insecure=0&host=www.ignitelimit.com&type=ws&allowInsecure=0&sni=www.ignitelimit.com#چنل عضو شو @v2ra_config
+vless://dbdf1950-b40e-4533-88bb-05ebca375781@www.speedtest.net:8443?path=%2F&security=tls&encryption=none&host=dig.jhju.ir&fp=chrome&type=ws&sni=dig.jhju.ir#AntiAbani
+vless://290a1fba-93a3-4004-bd56-0565a956a209@185.143.235.200:80?path=%2Farvancloud.ir&security=none&encryption=none&host=taraneh.pointspeed.ir&type=ws#%F0%9F%87%A9%F0%9F%87%AA%40FreakConfig
+vless://95b3ac43-0c3a-4735-ba3d-54d5a189ff84@khan-net.ir:51363?encryption=none&security=none&type=tcp#%F0%9F%87%A6%F0%9F%87%AA%20United%20Arab%20Emirates%20%7C%20%E2%8F%B1359ms%20%7C%20%E2%9A%A1161KB%2Fs%20%7C%20%40NamazVPN
+vless://de9f46e2-5785-4978-b1d0-c6b308a66b35@199.181.197.159:8880?path=%2F250e&security=none&encryption=none&host=mmik.lorqino.ir&type=httpupgrade#Telegram%3A+%40Red2Ray+5.13+%F0%9F%98%8E
+vless://160201ba-df99-4a03-a0c2-9c4aa7a5fb57@1213tr12213safsadfsaf.clonecloudcenter.ir:44607?mode=packet-up&path=%2F&security=reality&encryption=none&pbk=nnHXxcgDfH9G80UhHw4a_49rqpDljsEaDKfWua_80EU&fp=chrome&type=xhttp&sni=icloud.com&sid=a16506792b1a28e4#%F0%9F%87%B9%F0%9F%87%B7%202%20-%20%40TheFreeConfigs
