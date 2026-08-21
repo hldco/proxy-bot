@@ -783,3 +783,8 @@ vless://95da2faa-ef78-4662-8ec5-e336003fca1c@cbd489865088.sueeostarrs.ir:443?sec
 vless://bb221e43-7272-4d7f-a66d-7fb00dc537cd@respina.msphnx.ir:2019?encryption=none&fp=chrome&pbk=RYUCFGttyeR0jJRoAwx5RkkT7gVwtaj06hDf66GhuXU&security=reality&sid=35951be3&sni=digikala.com&spx=%2F52ed73bf3a627a7&type=tcp#[🇮🇷]t.me/ConfigsHub
 vless://59086073-d6da-44ed-b604-241ecdf03e97@neth.me.hoomaxconnect.ir:2056?encryption=none&type=tcp&headerType=http&host=play.google.com&path=/&security=none#[🏁]t.me/ConfigsHub
 vless://c164613c-ab89-4b34-a1d7-d526fadcd5b6@de-11.th3store.ir:8080?path=%2Fplay&security=none&encryption=mlkem768x25519plus.native.0rtt.xv7sk1D2Us-JXkjuqIRno-kcLA8kqeKy6seL9gXGB2M&host=de-11.th3store.ir&type=httpupgrade#[🇨🇦]t.me/ConfigsHub
+vless://bf58f3cd-7c8c-4650-bd7a-028df18b3ba0@104.17.121.110:8880?path=%2F%3Fed%3D2560&security=none&encryption=none&host=rtr.codinos.ir&type=httpupgrade#ProxyMtpVPN-350
+vless://474651c3-72c6-49c4-b747-ca7e2c838564@usa.zelnora.ir:64584?security=&encryption=none&headerType=none&type=tcp#%F0%9F%87%BA%F0%9F%87%B8148188%20%7C%20%E2%9A%A1%EF%B8%8FTelegram%20%3D%20%40GalaxyMVPN
+vless://f32b9470-4c85-4185-817a-b524ed94ffd9@cpanel.linux-panel.com:2044?encryption=none&security=none&type=tcp&headerType=http&path=%2F&host=testspeed-foreign.tci.ir#%F0%9F%87%BA%F0%9F%87%B8148243%20%7C%20%E2%9A%A1%EF%B8%8FTelegram%20%3D%20%40GalaxyMVPN
+trojan://521314@millionaire.levikogjgfdd.ir:443?path=%2FLeviko_v2ray&security=tls&insecure=0&host=tjplay.lxdxo.kdns.fr&type=ws&allowInsecure=0&sni=tjplay.lxdxo.kdns.fr#%40outline_ir
+vless://67122aab-4fa3-44c9-94fc-200b4c1df027@ir.speedit.ir:443?encryption=none&security=none&type=tcp#%F0%9F%87%AE%F0%9F%87%B7%202%20-%20%40TheFreeConfigs
