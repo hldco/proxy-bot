@@ -10,6 +10,7 @@ import time
 import html
 import re
 import socket
+import io
 from datetime import datetime
 from bs4 import BeautifulSoup
 
@@ -18,17 +19,14 @@ from bs4 import BeautifulSoup
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "") 
 CHANNEL_USERNAME = "@goololgoo"
 
-# منبع اول: گیت‌هاب (برای V2ray)
-SOURCE_URL = "https://raw.githubusercontent.com/fifthidea/sub/refs/heads/main/sub/ir.txt"
-
-# منبع دوم: کانال‌های تلگرام (برای MTProto) - ۵ کانال را بدون @ وارد کنید
+# منابع
+SOURCE_URL = "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/refs/heads/main/configtg.txt"
 SOURCE_CHANNELS = ["PinkProxy", "Myporoxy", "ProxyWR" , "P500Y", "ProxyMTProto"] 
 
 CUSTOM_REMARK = "@goololgoo 🔐 وی‌پی‌ان رایگان | Free Proxy💥"
 
-# تعداد کانفیگ‌ها در هر پست
-MAX_V2RAY_POST = 5   # ۵ تا برای پست V2ray (کپی شونده)
-MAX_MTPROTO_POST = 12 # ۱۲ تا برای پست MTProto (لینک متنی)
+MAX_V2RAY_POST = 5
+MAX_MTPROTO_POST = 12
 # ==========================================
 
 SENT_FILE = "sent_configs.txt"
@@ -51,7 +49,9 @@ def get_tehran_time():
 def get_next_post_type():
     tz = pytz.timezone('Asia/Tehran')
     now = datetime.now(tz)
-    if now.minute < 30:
+    if now.minute < 30 and now.hour in [9, 15, 21]:
+        return "npvt"
+    elif now.minute < 30:
         return "v2ray"
     else:
         return "mtproto"
@@ -139,8 +139,132 @@ def change_remark_mtproto(link, new_remark):
     clean_link = re.sub(r'&name=[^&]*', '', link)
     return f"{clean_link}&name={urllib.parse.quote(new_remark)}"
 
+# ==========================================
+# توابع مخصوص ساخت فایل JSON نپسترنت
+# ==========================================
+def parse_vless_to_v2ray(uri):
+    try:
+        main, name = uri.split("#", 1) if "#" in uri else (uri, "")
+        main = main.replace("vless://", "")
+        uuid_str, hostport_params = main.split("@", 1)
+        host_port, query_str = hostport_params.split("?", 1) if "?" in hostport_params else (hostport_params, "")
+        host, port = host_port.split(":")
+        
+        params = urllib.parse.parse_qs(query_str)
+        params = {k: v[0] for k,v in params.items()}
+        
+        stream = {
+            "network": params.get("type", "tcp"),
+            "security": params.get("security", "none"),
+            "tlsSettings": {}, "realitySettings": {}, "wsSettings": {}, "grpcSettings": {}, "tcpSettings": {}
+        }
+        
+        if stream["security"] == "tls":
+            stream["tlsSettings"] = {"allowInsecure": False, "serverName": params.get("sni", ""), "fingerprint": params.get("fp", "")}
+        elif stream["security"] == "reality":
+            stream["realitySettings"] = {"serverName": params.get("sni", ""), "fingerprint": params.get("fp", ""), "publicKey": params.get("pbk", ""), "shortId": params.get("sid", "")}
+            
+        if stream["network"] == "ws":
+            stream["wsSettings"] = {"path": params.get("path", "/"), "headers": {"Host": params.get("host", "")}}
+        elif stream["network"] == "grpc":
+            stream["grpcSettings"] = {"serviceName": params.get("serviceName", "")}
+            
+        return {
+            "protocol": "vless",
+            "settings": {"vnext": [{"address": host, "port": int(port), "users": [{"id": uuid_str, "encryption": "none", "flow": params.get("flow", "")}]}]},
+            "streamSettings": stream,
+            "mux": {"enabled": False, "concurrency": -1}
+        }
+    except:
+        return None
+
+def parse_vmess_to_v2ray(uri):
+    try:
+        b64 = uri.replace("vmess://", "")
+        b64 += '=' * (-len(b64) % 4)
+        data = json.loads(base64.b64decode(b64).decode('utf-8'))
+        stream = {"network": data.get("net", "tcp"), "security": "tls" if data.get("tls", "") == "tls" else "none", "tlsSettings": {}, "wsSettings": {}}
+        if stream["network"] == "ws":
+            stream["wsSettings"] = {"path": data.get("path", "/"), "headers": {"Host": data.get("host", "")}}
+            
+        return {
+            "protocol": "vmess",
+            "settings": {"vnext": [{"address": data.get("add", ""), "port": int(data.get("port", 443)), "users": [{"id": data.get("id", ""), "alterId": int(data.get("aid", 0)), "security": "auto"}]}]},
+            "streamSettings": stream,
+            "mux": {"enabled": False, "concurrency": -1}
+        }
+    except:
+        return None
+
+def build_json_config(v2ray_links, custom_remark):
+    outbounds = []
+    for i, link in enumerate(v2ray_links):
+        outbound = parse_vless_to_v2ray(link) if link.startswith("vless://") else parse_vmess_to_v2ray(link)
+        if outbound:
+            outbound["tag"] = f"proxy-{i+1}"
+            outbounds.append(outbound)
+            
+    if not outbounds:
+        return None
+        
+    config = {
+        "remarks": custom_remark,
+        "log": {"loglevel": "warning"},
+        "inbounds": [{"tag": "socks", "port": 10808, "protocol": "socks", "settings": {"auth": "noauth", "udp": True, "userLevel": 8}, "sniffing": {"enabled": True, "destOverride": ["http", "tls"], "routeOnly": False}}],
+        "outbounds": outbounds + [
+            {"tag": "direct", "protocol": "freedom", "settings": {"domainStrategy": "UseIP"}, "mux": {"enabled": False, "concurrency": 8}},
+            {"tag": "block", "protocol": "blackhole", "settings": {"response": {"type": "http"}}, "mux": {"enabled": False, "concurrency": 8}}
+        ],
+        "dns": {
+            "servers": ["1.1.1.1"],
+            "hosts": {
+                "domain:googleapis.cn": "googleapis.com",
+                "dns.alidns.com": ["223.5.5.5", "223.6.6.6"],
+                "one.one.one.one": ["1.1.1.1", "1.0.0.1"],
+                "dot.pub": ["1.12.12.12", "120.53.53.53"],
+                "dns.google": ["8.8.8.8", "8.8.4.4"],
+                "dns.quad9.net": ["9.9.9.9", "149.112.112.112"],
+                "common.dot.dns.yandex.net": ["77.88.8.8", "77.88.8.1"]
+            }
+        },
+        "routing": {
+            "domainStrategy": "IPIfNonMatch",
+            "balancers": [{"tag": "proxy-balancer", "selector": ["proxy-"]}],
+            "rules": [
+                {"type": "field", "ip": ["1.1.1.1"], "outboundTag": "proxy-balancer", "port": "53"},
+                {"type": "field", "ip": ["223.5.5.5"], "outboundTag": "direct", "port": "53"},
+                {"type": "field", "outboundTag": "proxy-balancer", "network": "tcp,udp"}
+            ]
+        }
+    }
+    return json.dumps(config, indent=2)
+
+def send_json_file(configs_to_post, original_configs_posted):
+    save_sent_config(original_configs_posted)
+    date_str, time_str = get_tehran_time()
+    
+    json_content = build_json_config(configs_to_post, CUSTOM_REMARK)
+    if not json_content:
+        print("ساخت فایل JSON با خطا مواجه شد.")
+        return
+        
+    caption = f"""📦 فایل کانفیگ نپسترنت (NapsternetV)
+        
+✅ شامل {len(configs_to_post)} سرور تست‌شده و سالم
+🧠 به همراه قوانین مسیریابی هوشمند (DNS و Routing)
+🆕 آخرین به روز رسانی {date_str} ساعت {time_str}
+
+👇 فایل را دانلود و در برنامه NapsternetV وارد کنید (Import V2Ray JSON config)
+@goololgoo"""
+
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendDocument"
+    files = {'document': ('goololgoo.json', io.StringIO(json_content))}
+    data = {'chat_id': CHANNEL_USERNAME, 'caption': caption}
+    requests.post(url, files=files, data=data)
+    print("فایل JSON با موفقیت پست شد.")
+# ==========================================
+
 def send_post(configs_to_post, original_configs_posted, post_type):
-    # فقط برای V2ray در فایل حافظه ذخیره می‌کند تا تکراری پست نشود
     if post_type == "v2ray":
         save_sent_config(original_configs_posted)
         
@@ -208,11 +332,7 @@ Hiddify
 
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     
-    # ==========================================
-    # تفاوت در نحوه نمایش کانفیگ‌ها
-    # ==========================================
     if post_type == "v2ray":
-        # کادری خاکستری برای کپی شدن با یک ضربه
         all_configs_str = "\n\n".join(configs_to_post)
         safe_configs_str = html.escape(all_configs_str)
         configs_text = f"<pre>{safe_configs_str}</pre>"
@@ -221,13 +341,11 @@ Hiddify
         payload = {"chat_id": CHANNEL_USERNAME, "text": full_message, "parse_mode": "HTML"}
         requests.post(url, json=payload)
     else:
-        # لینک‌های متنی قابل کلیک و قابل کپی برای اشتراک در گروه
         links_html = []
         for i, cfg in enumerate(configs_to_post, 1):
             safe_cfg = html.escape(cfg)
             links_html.append(f'<a href="{safe_cfg}">🚀 Proxy {i}</a>')
         
-        # قرار دادن ۳ لینک در هر ردیف (جدا شده با خط عمودی برای نظم بیشتر)
         rows = []
         for i in range(0, len(links_html), 3):
             row_links = links_html[i:i+3]
@@ -237,7 +355,6 @@ Hiddify
         full_message = header + configs_text + footer
         payload = {"chat_id": CHANNEL_USERNAME, "text": full_message, "parse_mode": "HTML"}
         requests.post(url, json=payload)
-    # ==========================================
     
     print(f"{len(configs_to_post)} کانفیگ {post_type} با موفقیت پست شد.")
 
@@ -254,7 +371,7 @@ def main():
     all_ips = []
     
     try:
-        if target_type == "v2ray":
+        if target_type == "v2ray" or target_type == "npvt":
             print("در حال دریافت کانفیگ‌ها از گیت‌هاب...")
             response = requests.get(SOURCE_URL)
             response.raise_for_status()
@@ -283,7 +400,6 @@ def main():
                     tg_response = requests.get(tg_url, timeout=10)
                     if tg_response.status_code == 200:
                         soup = BeautifulSoup(tg_response.text, 'html.parser')
-                        
                         all_messages = soup.find_all('div', class_='tgme_widget_message')
                         recent_messages = all_messages[-5:] if len(all_messages) >= 5 else all_messages
                         
@@ -294,18 +410,15 @@ def main():
                                 matches = re.findall(r'(https://t.me/proxy\?server=[^\s]+|tg://proxy\?server=[^\s]+)', text)
                                 for match in matches:
                                     found_proxies.add(match)
-                                    
                             buttons = msg.find_all('a', href=True)
                             for btn in buttons:
                                 href = btn['href']
                                 if "tg://proxy" in href or "https://t.me/proxy" in href:
                                     found_proxies.add(href)
-                                    
                         print(f"از کانال @{src_chan} - ۵ پست آخر بررسی شد.")
                 except:
                     pass
                     
-            # برای MTProto، بدون بررسی تکراری بودن، همه پروکسی‌های پیدا شده را اضافه می‌کند
             for proxy_link in found_proxies:
                 ip, port = extract_ip_port(proxy_link)
                 target_data.append({"original": proxy_link, "ip": ip, "port": port})
@@ -325,7 +438,7 @@ def main():
                 
                 final_remark = f"{flag} {CUSTOM_REMARK}"
                 
-                if target_type == "v2ray":
+                if target_type == "v2ray" or target_type == "npvt":
                     if check_port(item["ip"], item["port"]):
                         modified = change_remark_v2ray(item["original"], final_remark)
                         valid_configs.append({"original": item["original"], "modified": modified})
@@ -338,12 +451,15 @@ def main():
                     print(f"✅ اضافه شد: {item['original']}")
 
             if valid_configs:
-                # انتخاب تعداد مناسب بر اساس نوع پست
                 limit = MAX_MTPROTO_POST if target_type == "mtproto" else MAX_V2RAY_POST
                 selected = random.sample(valid_configs, min(len(valid_configs), limit))
                 configs_to_post = [x["modified"] for x in selected]
                 originals = [x["original"] for x in selected]
-                send_post(configs_to_post, originals, target_type)
+                
+                if target_type == "npvt":
+                    send_json_file(configs_to_post, originals)
+                else:
+                    send_post(configs_to_post, originals, target_type)
             else:
                 print(f"هیچ کانفیگ {target_type} زنده‌ای پیدا نشد.")
         else:
