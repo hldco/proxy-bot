@@ -25,8 +25,9 @@ jobs:
           
       - name: Run Bot
         run: python bot.py
-        env:
-          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+        
+      - name: Pull remote changes
+        run: git pull --rebase origin main || true
         
       - name: Save sent configs
         uses: stefanzweifel/git-auto-commit-action@v5
