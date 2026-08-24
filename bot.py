@@ -240,7 +240,9 @@ def build_json_config(v2ray_links, custom_remark):
     return json.dumps(config, indent=2)
 
 def send_json_file(configs_to_post, original_configs_posted):
+    # برای اینکه گیت‌هاب ارور ندهد، فایل را ذخیره می‌کنیم تا تغییر کند
     save_sent_config(original_configs_posted)
+    
     date_str, time_str = get_tehran_time()
     
     json_content = build_json_config(configs_to_post, CUSTOM_REMARK)
@@ -254,7 +256,7 @@ def send_json_file(configs_to_post, original_configs_posted):
 🧠 به همراه قوانین مسیریابی هوشمند (DNS و Routing)
 🆕 آخرین به روز رسانی {date_str} ساعت {time_str}
 
-👇 فایل را دانلود و در برنامه NapsternetV وارد کنید (Import V2Ray JSON config)
+👇 فایل را دانلود و در برنامه NapsternetV وارد کنید
 @goololgoo"""
 
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendDocument"
@@ -385,7 +387,11 @@ def main():
                 
             for config in configs:
                 config = config.strip()
-                if config.startswith(("vless://", "vmess://", "trojan://", "ss://")) and config not in sent_configs:
+                if config.startswith(("vless://", "vmess://", "trojan://", "ss://")):
+                    # فقط برای V2ray کانفیگ‌های تکراری حذف میشوند، اما NPVT مجاز است دوباره از آن‌ها فایل بسازد
+                    if target_type == "v2ray" and config in sent_configs:
+                        continue
+                    
                     ip, port = extract_ip_port(config)
                     if ip:
                         target_data.append({"original": config, "ip": ip, "port": port})
