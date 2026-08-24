@@ -32,6 +32,7 @@ MAX_TESTS_PER_RUN = 100
 # ==========================================
 
 SENT_FILE = "sent_configs.txt"
+SENT_IPS_FILE = "sent_ips.txt" 
 STATE_FILE = "state.txt"
 
 def to_persian_digits(text):
@@ -70,6 +71,16 @@ def save_sent_config(configs_list):
     with open(SENT_FILE, "a", encoding="utf-8") as f:
         for config in configs_list:
             f.write(config + "\n")
+
+def get_sent_ips():
+    if not os.path.exists(SENT_IPS_FILE):
+        return set()
+    with open(SENT_IPS_FILE, "r") as f:
+        return set(line.strip() for line in f)
+
+def save_sent_ip(ip, port):
+    with open(SENT_IPS_FILE, "a") as f:
+        f.write(f"{ip}:{port}\n")
 
 def extract_ip_port(config):
     try:
@@ -146,53 +157,103 @@ def change_remark_mtproto(link, new_remark):
 # ==========================================
 # توابع مخصوص ساخت فایل JSON نپسترنت
 # ==========================================
-def parse_vless_to_v2ray(uri):
+def parse_uri_to_v2ray(uri):
     try:
-        main, name = uri.split("#", 1) if "#" in uri else (uri, "")
-        main = main.replace("vless://", "")
-        uuid_str, hostport_params = main.split("@", 1)
-        host_port, query_str = hostport_params.split("?", 1) if "?" in hostport_params else (hostport_params, "")
-        host, port = host_port.split(":")
-        
-        params = urllib.parse.parse_qs(query_str)
-        params = {k: v[0] for k,v in params.items()}
-        
-        stream = {"network": params.get("type", "tcp"), "security": params.get("security", "none"), "tlsSettings": {}, "realitySettings": {}, "wsSettings": {}, "grpcSettings": {}, "tcpSettings": {}}
-        
-        if stream["security"] == "tls":
-            stream["tlsSettings"] = {"allowInsecure": False, "serverName": params.get("sni", ""), "fingerprint": params.get("fp", "")}
-        elif stream["security"] == "reality":
-            stream["realitySettings"] = {"serverName": params.get("sni", ""), "fingerprint": params.get("fp", ""), "publicKey": params.get("pbk", ""), "shortId": params.get("sid", "")}
+        if uri.startswith("vless://"):
+            main, name = uri.split("#", 1) if "#" in uri else (uri, "")
+            main = main.replace("vless://", "")
+            uuid_str, hostport_params = main.split("@", 1)
+            if "?" in hostport_params:
+                host_port, query_str = hostport_params.split("?", 1)
+            else:
+                host_port, query_str = hostport_params, ""
             
-        if stream["network"] == "ws":
-            stream["wsSettings"] = {"path": params.get("path", "/"), "headers": {"Host": params.get("host", "")}}
-        elif stream["network"] == "grpc":
-            stream["grpcSettings"] = {"serviceName": params.get("serviceName", "")}
+            parts = host_port.split(":")
+            if len(parts) != 2: return None
+            host, port = parts
             
-        return {"protocol": "vless", "settings": {"vnext": [{"address": host, "port": int(port), "users": [{"id": uuid_str, "encryption": "none", "flow": params.get("flow", "")}]}]}, "streamSettings": stream, "mux": {"enabled": False, "concurrency": -1}}
-    except:
-        return None
+            params = urllib.parse.parse_qs(query_str)
+            params = {k: v[0] for k,v in params.items()}
+            
+            stream = {"network": params.get("type", "tcp"), "security": params.get("security", "none"), "tlsSettings": {}, "realitySettings": {}, "wsSettings": {}, "grpcSettings": {}, "tcpSettings": {}}
+            
+            if stream["security"] == "tls":
+                stream["tlsSettings"] = {"allowInsecure": False, "serverName": params.get("sni", ""), "fingerprint": params.get("fp", "")}
+            elif stream["security"] == "reality":
+                stream["realitySettings"] = {"serverName": params.get("sni", ""), "fingerprint": params.get("fp", ""), "publicKey": params.get("pbk", ""), "shortId": params.get("sid", "")}
+                
+            if stream["network"] == "ws":
+                stream["wsSettings"] = {"path": params.get("path", "/"), "headers": {"Host": params.get("host", "")}}
+            elif stream["network"] == "grpc":
+                stream["grpcSettings"] = {"serviceName": params.get("serviceName", "")}
+                
+            return {"protocol": "vless", "settings": {"vnext": [{"address": host, "port": int(port), "users": [{"id": uuid_str, "encryption": "none", "flow": params.get("flow", "")}]}]}, "streamSettings": stream, "mux": {"enabled": False, "concurrency": -1}}
+            
+        elif uri.startswith("vmess://"):
+            b64 = uri.replace("vmess://", "")
+            b64 += '=' * (-len(b64) % 4)
+            data = json.loads(base64.b64decode(b64).decode('utf-8'))
+            stream = {"network": data.get("net", "tcp"), "security": "tls" if data.get("tls", "") == "tls" else "none", "tlsSettings": {}, "wsSettings": {}}
+            if stream["network"] == "ws":
+                stream["wsSettings"] = {"path": data.get("path", "/"), "headers": {"Host": data.get("host", "")}}
+            return {"protocol": "vmess", "settings": {"vnext": [{"address": data.get("add", ""), "port": int(data.get("port", 443)), "users": [{"id": data.get("id", ""), "alterId": int(data.get("aid", 0)), "security": "auto"}]}]}, "streamSettings": stream, "mux": {"enabled": False, "concurrency": -1}}
+            
+        elif uri.startswith("trojan://"):
+            main, name = uri.split("#", 1) if "#" in uri else (uri, "")
+            main = main.replace("trojan://", "")
+            password, hostport_params = main.split("@", 1)
+            if "?" in hostport_params:
+                host_port, query_str = hostport_params.split("?", 1)
+            else:
+                host_port, query_str = hostport_params, ""
+            parts = host_port.split(":")
+            if len(parts) != 2: return None
+            host, port = parts
+            params = urllib.parse.parse_qs(query_str)
+            params = {k: v[0] for k,v in params.items()}
+            
+            stream = {"network": params.get("type", "tcp"), "security": params.get("security", "tls"), "tlsSettings": {"serverName": params.get("sni", host)}}
+            return {"protocol": "trojan", "settings": {"servers": [{"address": host, "port": int(port), "password": password}]}, "streamSettings": stream, "mux": {"enabled": False, "concurrency": -1}}
 
-def parse_vmess_to_v2ray(uri):
-    try:
-        b64 = uri.replace("vmess://", "")
-        b64 += '=' * (-len(b64) % 4)
-        data = json.loads(base64.b64decode(b64).decode('utf-8'))
-        stream = {"network": data.get("net", "tcp"), "security": "tls" if data.get("tls", "") == "tls" else "none", "tlsSettings": {}, "wsSettings": {}}
-        if stream["network"] == "ws":
-            stream["wsSettings"] = {"path": data.get("path", "/"), "headers": {"Host": data.get("host", "")}}
-        return {"protocol": "vmess", "settings": {"vnext": [{"address": data.get("add", ""), "port": int(data.get("port", 443)), "users": [{"id": data.get("id", ""), "alterId": int(data.get("aid", 0)), "security": "auto"}]}]}, "streamSettings": stream, "mux": {"enabled": False, "concurrency": -1}}
-    except:
+        elif uri.startswith("ss://"):
+            main, name = uri.split("#", 1) if "#" in uri else (uri, "")
+            main = main.replace("ss://", "")
+            if "@" in main:
+                b64_part, host_port = main.split("@", 1)
+                try:
+                    b64_part += '=' * (-len(b64_part) % 4)
+                    method_pass = base64.b64decode(b64_part).decode('utf-8')
+                    method, password = method_pass.split(":", 1)
+                except:
+                    method, password = "aes-256-gcm", "password"
+            else:
+                try:
+                    b64_part = main
+                    b64_part += '=' * (-len(b64_part) % 4)
+                    decoded = base64.b64decode(b64_part).decode('utf-8')
+                    method_pass, host_port = decoded.split("@", 1)
+                    method, password = method_pass.split(":", 1)
+                except:
+                    return None
+
+            parts = host_port.split(":")
+            if len(parts) != 2: return None
+            host, port = parts
+            
+            return {"protocol": "shadowsocks", "settings": {"servers": [{"address": host, "port": int(port), "method": method, "password": password}]}, "streamSettings": {"network": "tcp", "security": "none"}, "mux": {"enabled": False, "concurrency": -1}}
+            
+    except Exception as e:
         return None
 
 def build_json_config(v2ray_links, custom_remark):
     outbounds = []
     for i, link in enumerate(v2ray_links):
-        outbound = parse_vless_to_v2ray(link) if link.startswith("vless://") else parse_vmess_to_v2ray(link)
+        outbound = parse_uri_to_v2ray(link)
         if outbound:
             outbound["tag"] = f"proxy-{i+1}"
             outbounds.append(outbound)
-    if not outbounds: return None
+    if not outbounds: 
+        return None
     
     config = {
         "remarks": custom_remark, "log": {"loglevel": "warning"},
@@ -297,15 +358,13 @@ def main():
     time.sleep(delay_seconds)
 
     sent_configs = get_sent_configs()
+    sent_ips = get_sent_ips() 
     target_type = get_state()
     print(f"نوبت ارسال برای: {target_type}")
     
     valid_configs = []
     originals_to_save = []
     all_ips = []
-    
-    # فیلتر تکراری‌ها در یک اجرا
-    seen_ip_ports_in_this_run = set()
     
     try:
         if target_type == "v2ray" or target_type == "npvt":
@@ -333,17 +392,27 @@ def main():
                     
                 ip, port = extract_ip_port(config)
                 if ip:
-                    # بررسی تکراری نبودن آی‌پی و پورت در همین الان
-                    if (ip, port) in seen_ip_ports_in_this_run:
-                        print(f"⏭️ تکراری در این دور: {ip}:{port}")
+                    ip_port_str = f"{ip}:{port}"
+                    
+                    if ip_port_str in sent_ips:
+                        print(f"⏭️ آی‌پی تکراری در تاریخچه: {ip_port_str}")
                         continue
-                    seen_ip_ports_in_this_run.add((ip, port))
                     
                     all_ips.append(ip)
                     if check_port(ip, port):
                         modified = change_remark_v2ray(config, f"{get_flags_batch([ip]).get(ip, '🌐')} {CUSTOM_REMARK}")
+                        
+                        # بررسی اینکه آیا کانفیگ قابل تبدیل به JSON هست یا خیر (فقط برای NPVT)
+                        if target_type == "npvt":
+                            if not parse_uri_to_v2ray(modified):
+                                print(f"⏭️ قابل تبدیل به JSON نیست، رد می‌شود: {ip}:{port}")
+                                continue
+                        
                         valid_configs.append({"original": config, "modified": modified})
                         print(f"✅ زنده است: {ip}:{port} (تا الان {len(valid_configs)} پیدا کردیم)")
+                        
+                        save_sent_ip(ip, port)
+                        sent_ips.add(ip_port_str)
                         
                         if len(valid_configs) >= target_limit:
                             print(f"به حد نصاب ({target_limit}) رسیدیم! تست متوقف می‌شود.")
