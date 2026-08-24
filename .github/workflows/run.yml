@@ -32,7 +32,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add sent_configs.txt state.txt
+          git add sent_configs.txt state.txt sent_ips.txt
           git diff --staged --quiet || git commit -m "Update memory files"
           for i in 1 2 3; do
             git pull --rebase origin main
