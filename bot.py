@@ -304,6 +304,9 @@ def main():
     originals_to_save = []
     all_ips = []
     
+    # فیلتر تکراری‌ها در یک اجرا
+    seen_ip_ports_in_this_run = set()
+    
     try:
         if target_type == "v2ray" or target_type == "npvt":
             print("در حال دریافت کانفیگ‌ها از گیت‌هاب...")
@@ -330,6 +333,12 @@ def main():
                     
                 ip, port = extract_ip_port(config)
                 if ip:
+                    # بررسی تکراری نبودن آی‌پی و پورت در همین الان
+                    if (ip, port) in seen_ip_ports_in_this_run:
+                        print(f"⏭️ تکراری در این دور: {ip}:{port}")
+                        continue
+                    seen_ip_ports_in_this_run.add((ip, port))
+                    
                     all_ips.append(ip)
                     if check_port(ip, port):
                         modified = change_remark_v2ray(config, f"{get_flags_batch([ip]).get(ip, '🌐')} {CUSTOM_REMARK}")
