@@ -28,7 +28,7 @@ CUSTOM_REMARK = "@goololgoo 🔐 وی‌پی‌ان رایگان | Free Proxy�
 MAX_V2RAY_POST = 5
 MAX_MTPROTO_POST = 12
 MAX_NPVT_POST = 5
-MAX_TESTS_PER_RUN = 100 # حداکثر تست در هر اجرا
+MAX_TESTS_PER_RUN = 100
 # ==========================================
 
 SENT_FILE = "sent_configs.txt"
@@ -210,7 +210,9 @@ def send_json_file(configs_to_post, original_configs_posted):
     save_sent_config(original_configs_posted)
     date_str, time_str = get_tehran_time()
     json_content = build_json_config(configs_to_post, CUSTOM_REMARK)
-    if not json_content: return
+    if not json_content:
+        print("ساخت فایل JSON با خطا مواجه شد.")
+        return
         
     caption = f"""📦 فایل کانفیگ نپسترنت (NapsternetV)
 ✅ شامل {len(configs_to_post)} سرور تست‌شده و سالم
@@ -222,8 +224,13 @@ def send_json_file(configs_to_post, original_configs_posted):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendDocument"
     files = {'document': ('goololgoo.json', io.StringIO(json_content))}
     data = {'chat_id': CHANNEL_USERNAME, 'caption': caption}
-    requests.post(url, files=files, data=data)
-    print("فایل JSON با موفقیت پست شد.")
+    
+    try:
+        tg_response = requests.post(url, files=files, data=data)
+        print("Telegram Response:", tg_response.text)
+        print("فایل JSON با موفقیت پست شد.")
+    except Exception as e:
+        print("Error in sending JSON:", e)
 # ==========================================
 
 def send_post(configs_to_post, original_configs_posted, post_type):
@@ -265,18 +272,27 @@ def send_post(configs_to_post, original_configs_posted, post_type):
         configs_text = f"<pre>{safe_configs_str}</pre>"
         full_message = header + configs_text + footer
         payload = {"chat_id": CHANNEL_USERNAME, "text": full_message, "parse_mode": "HTML"}
-        requests.post(url, json=payload)
+        try:
+            tg_response = requests.post(url, json=payload)
+            print("Telegram Response:", tg_response.text)
+            print(f"{len(configs_to_post)} کانفیگ {post_type} با موفقیت پست شد.")
+        except Exception as e:
+            print("Error:", e)
     else:
         links_html = [f'<a href="{html.escape(cfg)}">🚀 Proxy {i}</a>' for i, cfg in enumerate(configs_to_post, 1)]
         rows = ["  |  ".join(links_html[i:i+3]) for i in range(0, len(links_html), 3)]
         configs_text = "\n\n".join(rows)
         full_message = header + configs_text + footer
         payload = {"chat_id": CHANNEL_USERNAME, "text": full_message, "parse_mode": "HTML"}
-        requests.post(url, json=payload)
-    print(f"{len(configs_to_post)} کانفیگ {post_type} با موفقیت پست شد.")
+        try:
+            tg_response = requests.post(url, json=payload)
+            print("Telegram Response:", tg_response.text)
+            print(f"{len(configs_to_post)} کانفیگ {post_type} با موفقیت پست شد.")
+        except Exception as e:
+            print("Error:", e)
 
 def main():
-    delay_seconds = random.randint(0, 60) # تاخیر را کم کردیم تا سریع‌تر اجرا شود
+    delay_seconds = random.randint(0, 60)
     print(f"ربات برای طبیعی بودن، {delay_seconds} ثانیه صبر می‌کند...")
     time.sleep(delay_seconds)
 
@@ -305,7 +321,6 @@ def main():
                 config = config.strip()
                 if not config.startswith(("vless://", "vmess://", "trojan://", "ss://")): continue
                 
-                # برای NPVT کانفیگ‌های تکراری هم استفاده میشوند تا فایل پر شود
                 if target_type == "v2ray" and config in sent_configs: continue
                 
                 test_count += 1
@@ -372,7 +387,6 @@ def main():
             else:
                 print("هیچ پروکسی MTProto پیدا نشد.")
                 
-        # آپدیت نوبت برای دفعه بعد
         update_state(target_type)
             
     except Exception as e:
