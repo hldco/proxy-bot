@@ -10,7 +10,6 @@ import time
 import html
 import re
 import socket
-import io
 from datetime import datetime
 from bs4 import BeautifulSoup
 
@@ -27,7 +26,6 @@ CUSTOM_REMARK = "@goololgoo 🔐 وی‌پی‌ان رایگان | Free Proxy�
 
 MAX_V2RAY_POST = 5
 MAX_MTPROTO_POST = 12
-MAX_NPVT_POST = 5
 MAX_TESTS_PER_RUN = 100
 # ==========================================
 
@@ -54,10 +52,13 @@ def get_state():
     if not os.path.exists(STATE_FILE):
         return "v2ray"
     with open(STATE_FILE, "r") as f:
-        return f.read().strip()
+        state = f.read().strip()
+        if state not in ["v2ray", "mtproto"]:
+            return "v2ray"
+        return state
 
 def update_state(current):
-    nxt = {"v2ray": "mtproto", "mtproto": "npvt", "npvt": "v2ray"}
+    nxt = {"v2ray": "mtproto", "mtproto": "v2ray"}
     with open(STATE_FILE, "w") as f:
         f.write(nxt.get(current, "v2ray"))
 
@@ -154,146 +155,6 @@ def change_remark_mtproto(link, new_remark):
     clean_link = re.sub(r'&name=[^&]*', '', link)
     return f"{clean_link}&name={urllib.parse.quote(new_remark)}"
 
-# ==========================================
-# توابع مخصوص ساخت فایل JSON نپسترنت
-# ==========================================
-def parse_uri_to_v2ray(uri):
-    try:
-        if uri.startswith("vless://"):
-            main, name = uri.split("#", 1) if "#" in uri else (uri, "")
-            main = main.replace("vless://", "")
-            uuid_str, hostport_params = main.split("@", 1)
-            if "?" in hostport_params:
-                host_port, query_str = hostport_params.split("?", 1)
-            else:
-                host_port, query_str = hostport_params, ""
-            
-            parts = host_port.split(":")
-            if len(parts) != 2: return None
-            host, port = parts
-            
-            params = urllib.parse.parse_qs(query_str)
-            params = {k: v[0] for k,v in params.items()}
-            
-            stream = {"network": params.get("type", "tcp"), "security": params.get("security", "none"), "tlsSettings": {}, "realitySettings": {}, "wsSettings": {}, "grpcSettings": {}, "tcpSettings": {}}
-            
-            if stream["security"] == "tls":
-                stream["tlsSettings"] = {"allowInsecure": False, "serverName": params.get("sni", ""), "fingerprint": params.get("fp", "")}
-            elif stream["security"] == "reality":
-                stream["realitySettings"] = {"serverName": params.get("sni", ""), "fingerprint": params.get("fp", ""), "publicKey": params.get("pbk", ""), "shortId": params.get("sid", "")}
-                
-            if stream["network"] == "ws":
-                stream["wsSettings"] = {"path": params.get("path", "/"), "headers": {"Host": params.get("host", "")}}
-            elif stream["network"] == "grpc":
-                stream["grpcSettings"] = {"serviceName": params.get("serviceName", "")}
-                
-            return {"protocol": "vless", "settings": {"vnext": [{"address": host, "port": int(port), "users": [{"id": uuid_str, "encryption": "none", "flow": params.get("flow", "")}]}]}, "streamSettings": stream, "mux": {"enabled": False, "concurrency": -1}}
-            
-        elif uri.startswith("vmess://"):
-            b64 = uri.replace("vmess://", "")
-            b64 += '=' * (-len(b64) % 4)
-            data = json.loads(base64.b64decode(b64).decode('utf-8'))
-            stream = {"network": data.get("net", "tcp"), "security": "tls" if data.get("tls", "") == "tls" else "none", "tlsSettings": {}, "wsSettings": {}}
-            if stream["network"] == "ws":
-                stream["wsSettings"] = {"path": data.get("path", "/"), "headers": {"Host": data.get("host", "")}}
-            return {"protocol": "vmess", "settings": {"vnext": [{"address": data.get("add", ""), "port": int(data.get("port", 443)), "users": [{"id": data.get("id", ""), "alterId": int(data.get("aid", 0)), "security": "auto"}]}]}, "streamSettings": stream, "mux": {"enabled": False, "concurrency": -1}}
-            
-        elif uri.startswith("trojan://"):
-            main, name = uri.split("#", 1) if "#" in uri else (uri, "")
-            main = main.replace("trojan://", "")
-            password, hostport_params = main.split("@", 1)
-            if "?" in hostport_params:
-                host_port, query_str = hostport_params.split("?", 1)
-            else:
-                host_port, query_str = hostport_params, ""
-            parts = host_port.split(":")
-            if len(parts) != 2: return None
-            host, port = parts
-            params = urllib.parse.parse_qs(query_str)
-            params = {k: v[0] for k,v in params.items()}
-            
-            stream = {"network": params.get("type", "tcp"), "security": params.get("security", "tls"), "tlsSettings": {"serverName": params.get("sni", host)}}
-            return {"protocol": "trojan", "settings": {"servers": [{"address": host, "port": int(port), "password": password}]}, "streamSettings": stream, "mux": {"enabled": False, "concurrency": -1}}
-
-        elif uri.startswith("ss://"):
-            main, name = uri.split("#", 1) if "#" in uri else (uri, "")
-            main = main.replace("ss://", "")
-            if "@" in main:
-                b64_part, host_port = main.split("@", 1)
-                try:
-                    b64_part += '=' * (-len(b64_part) % 4)
-                    method_pass = base64.b64decode(b64_part).decode('utf-8')
-                    method, password = method_pass.split(":", 1)
-                except:
-                    method, password = "aes-256-gcm", "password"
-            else:
-                try:
-                    b64_part = main
-                    b64_part += '=' * (-len(b64_part) % 4)
-                    decoded = base64.b64decode(b64_part).decode('utf-8')
-                    method_pass, host_port = decoded.split("@", 1)
-                    method, password = method_pass.split(":", 1)
-                except:
-                    return None
-
-            parts = host_port.split(":")
-            if len(parts) != 2: return None
-            host, port = parts
-            
-            return {"protocol": "shadowsocks", "settings": {"servers": [{"address": host, "port": int(port), "method": method, "password": password}]}, "streamSettings": {"network": "tcp", "security": "none"}, "mux": {"enabled": False, "concurrency": -1}}
-            
-    except Exception as e:
-        return None
-
-def build_json_config(v2ray_links, custom_remark):
-    outbounds = []
-    for i, link in enumerate(v2ray_links):
-        outbound = parse_uri_to_v2ray(link)
-        if outbound:
-            outbound["tag"] = f"proxy-{i+1}"
-            outbounds.append(outbound)
-    if not outbounds: 
-        return None
-    
-    config = {
-        "remarks": custom_remark, "log": {"loglevel": "warning"},
-        "inbounds": [{"tag": "socks", "port": 10808, "protocol": "socks", "settings": {"auth": "noauth", "udp": True, "userLevel": 8}, "sniffing": {"enabled": True, "destOverride": ["http", "tls"], "routeOnly": False}}],
-        "outbounds": outbounds + [
-            {"tag": "direct", "protocol": "freedom", "settings": {"domainStrategy": "UseIP"}, "mux": {"enabled": False, "concurrency": 8}},
-            {"tag": "block", "protocol": "blackhole", "settings": {"response": {"type": "http"}}, "mux": {"enabled": False, "concurrency": 8}}
-        ],
-        "dns": {"servers": ["1.1.1.1"], "hosts": {"domain:googleapis.cn": "googleapis.com", "dns.alidns.com": ["223.5.5.5", "223.6.6.6"], "one.one.one.one": ["1.1.1.1", "1.0.0.1"], "dot.pub": ["1.12.12.12", "120.53.53.53"], "dns.google": ["8.8.8.8", "8.8.4.4"], "dns.quad9.net": ["9.9.9.9", "149.112.112.112"], "common.dot.dns.yandex.net": ["77.88.8.8", "77.88.8.1"]}},
-        "routing": {"domainStrategy": "IPIfNonMatch", "balancers": [{"tag": "proxy-balancer", "selector": ["proxy-"]}], "rules": [{"type": "field", "ip": ["1.1.1.1"], "outboundTag": "proxy-balancer", "port": "53"}, {"type": "field", "ip": ["223.5.5.5"], "outboundTag": "direct", "port": "53"}, {"type": "field", "outboundTag": "proxy-balancer", "network": "tcp,udp"}]}
-    }
-    return json.dumps(config, indent=2)
-
-def send_json_file(configs_to_post, original_configs_posted):
-    save_sent_config(original_configs_posted)
-    date_str, time_str = get_tehran_time()
-    json_content = build_json_config(configs_to_post, CUSTOM_REMARK)
-    if not json_content:
-        print("ساخت فایل JSON با خطا مواجه شد.")
-        return
-        
-    caption = f"""📦 فایل کانفیگ نپسترنت (NapsternetV)
-✅ شامل {len(configs_to_post)} سرور تست‌شده و سالم
-🧠 به همراه قوانین مسیریابی هوشمند (DNS و Routing)
-🆕 آخرین به روز رسانی {date_str} ساعت {time_str}
-👇 فایل را دانلود و در برنامه NapsternetV وارد کنید
-@goololgoo"""
-
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendDocument"
-    files = {'document': ('goololgoo.json', io.StringIO(json_content))}
-    data = {'chat_id': CHANNEL_USERNAME, 'caption': caption}
-    
-    try:
-        tg_response = requests.post(url, files=files, data=data)
-        print("Telegram Response:", tg_response.text)
-        print("فایل JSON با موفقیت پست شد.")
-    except Exception as e:
-        print("Error in sending JSON:", e)
-# ==========================================
-
 def send_post(configs_to_post, original_configs_posted, post_type):
     if post_type == "v2ray":
         save_sent_config(original_configs_posted)
@@ -367,7 +228,7 @@ def main():
     all_ips = []
     
     try:
-        if target_type == "v2ray" or target_type == "npvt":
+        if target_type == "v2ray":
             print("در حال دریافت کانفیگ‌ها از گیت‌هاب...")
             response = requests.get(SOURCE_URL)
             content = response.text
@@ -376,14 +237,14 @@ def main():
             except:
                 configs = content.strip().split('\n')
                 
-            target_limit = MAX_NPVT_POST if target_type == "npvt" else MAX_V2RAY_POST
+            target_limit = MAX_V2RAY_POST
             test_count = 0
             
             for config in configs:
                 config = config.strip()
                 if not config.startswith(("vless://", "vmess://", "trojan://", "ss://")): continue
                 
-                if target_type == "v2ray" and config in sent_configs: continue
+                if config in sent_configs: continue
                 
                 test_count += 1
                 if test_count > MAX_TESTS_PER_RUN:
@@ -401,13 +262,6 @@ def main():
                     all_ips.append(ip)
                     if check_port(ip, port):
                         modified = change_remark_v2ray(config, f"{get_flags_batch([ip]).get(ip, '🌐')} {CUSTOM_REMARK}")
-                        
-                        # بررسی اینکه آیا کانفیگ قابل تبدیل به JSON هست یا خیر (فقط برای NPVT)
-                        if target_type == "npvt":
-                            if not parse_uri_to_v2ray(modified):
-                                print(f"⏭️ قابل تبدیل به JSON نیست، رد می‌شود: {ip}:{port}")
-                                continue
-                        
                         valid_configs.append({"original": config, "modified": modified})
                         print(f"✅ زنده است: {ip}:{port} (تا الان {len(valid_configs)} پیدا کردیم)")
                         
@@ -423,10 +277,7 @@ def main():
             if valid_configs:
                 configs_to_post = [x["modified"] for x in valid_configs]
                 originals = [x["original"] for x in valid_configs]
-                if target_type == "npvt":
-                    send_json_file(configs_to_post, originals)
-                else:
-                    send_post(configs_to_post, originals, target_type)
+                send_post(configs_to_post, originals, target_type)
             else:
                 print("هیچ کانفیگ زنده‌ای پیدا نشد.")
                 
