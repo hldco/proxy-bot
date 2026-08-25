@@ -38,3 +38,8 @@ tun2.pcapps.ir:2082
 tun3.applly.ir:2083
 141.253.107.174:22345
 r3mrcg001287h3p.cybervena.com:50099
+147.15.47.5:59319
+switcher-nick-croquet.freesocks.work:443
+20.234.20.89:443
+51.195.126.38:8388
+89.125.33.16:1234
