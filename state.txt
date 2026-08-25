@@ -1,1 +1,1 @@
-mtproto
+v2ray
