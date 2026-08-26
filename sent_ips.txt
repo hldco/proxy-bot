@@ -55,3 +55,4 @@ autodiscover.fuzzyaytor.cyou:42982
 sh.neqazhcomp.ir:3333
 tw.lampcomputervz.ir:9403
 104.249.22.75:43377
+e3.cover20.ir:56985
