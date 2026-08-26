@@ -26,7 +26,6 @@ CUSTOM_REMARK = "@goololgoo 🔐 وی‌پی‌ان رایگان | Free Proxy�
 
 MAX_V2RAY_POST = 5
 MAX_MTPROTO_POST = 12
-MAX_TESTS_PER_RUN = 100
 # ==========================================
 
 SENT_FILE = "sent_configs.txt"
@@ -106,7 +105,7 @@ def extract_ip_port(config):
 def check_port(ip, port):
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(3)
+        sock.settimeout(1.5) # زمان تست را کم کردیم تا ربات سریع‌تر باشد و تایم‌اوت نشود
         result = sock.connect_ex((ip, int(port)))
         sock.close()
         return result == 0
@@ -238,7 +237,6 @@ def main():
                 configs = content.strip().split('\n')
                 
             target_limit = MAX_V2RAY_POST
-            test_count = 0
             
             for config in configs:
                 config = config.strip()
@@ -246,11 +244,6 @@ def main():
                 
                 if config in sent_configs: continue
                 
-                test_count += 1
-                if test_count > MAX_TESTS_PER_RUN:
-                    print(f"به حداکثر تست ({MAX_TESTS_PER_RUN}) رسیدیم.")
-                    break
-                    
                 ip, port = extract_ip_port(config)
                 if ip:
                     ip_port_str = f"{ip}:{port}"
