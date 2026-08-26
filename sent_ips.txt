@@ -87,3 +87,8 @@ vkvd8bpskvxgjwdvcidxgoccr.javanbaghe.workers.dev:80
 172.67.190.211:2082
 172.67.74.10:2087
 104.16.241.253:80
+bpb-panel-4e2c.sakwra939.workers.dev:443
+118.26.59.85:443
+54.38.138.175:443
+magazin2.mervi.icu:443
+172.67.177.228:8443
