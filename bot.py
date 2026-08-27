@@ -19,7 +19,7 @@ BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 CHANNEL_USERNAME = "@goololgoo"
 
 # منابع
-SOURCE_URL = "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/refs/heads/main/Protocols/vless.txt"
+SOURCE_URL = "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/refs/heads/main/configtg.txt"
 SOURCE_CHANNELS = ["PinkProxy", "Myporoxy", "ProxyWR" , "P500Y", "ProxyMTProto"] 
 
 CUSTOM_REMARK = "@goololgoo 🔐 وی‌پی‌ان رایگان | Free Proxy💥"
@@ -78,9 +78,11 @@ def get_sent_ips():
     with open(SENT_IPS_FILE, "r") as f:
         return set(line.strip() for line in f)
 
-def save_sent_ip(ip, port):
-    with open(SENT_IPS_FILE, "a") as f:
-        f.write(f"{ip}:{port}\n")
+def save_sent_ip(ip_list):
+    # اینجا تغییر کرد که کل فایل رو بازنویسی کنه تا وقتی پاک میشه دیگه خط تکراری نمونه
+    with open(SENT_IPS_FILE, "w") as f:
+        for ip_port in ip_list:
+            f.write(f"{ip_port}\n")
 
 def extract_ip_port(config):
     try:
@@ -105,7 +107,7 @@ def extract_ip_port(config):
 def check_port(ip, port):
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(1.5) # زمان تست را کم کردیم تا ربات سریع‌تر باشد و تایم‌اوت نشود
+        sock.settimeout(1.5) 
         result = sock.connect_ex((ip, int(port)))
         sock.close()
         return result == 0
@@ -189,7 +191,8 @@ def send_post(configs_to_post, original_configs_posted, post_type):
     
     if post_type == "v2ray":
         all_configs_str = "\n\n".join(configs_to_post)
-        safe_configs_str = html.escape(all_configs_str)
+        # رفع باگ &amp; با جایگزینی دستی کاراکترها
+        safe_configs_str = all_configs_str.replace("<", "&lt;").replace(">", "&gt;")
         configs_text = f"<pre>{safe_configs_str}</pre>"
         full_message = header + configs_text + footer
         payload = {"chat_id": CHANNEL_USERNAME, "text": full_message, "parse_mode": "HTML"}
@@ -237,12 +240,11 @@ def main():
                 configs = content.strip().split('\n')
                 
             target_limit = MAX_V2RAY_POST
+            new_ips_found = False
             
             for config in configs:
                 config = config.strip()
                 if not config.startswith(("vless://", "vmess://", "trojan://", "ss://")): continue
-                
-                if config in sent_configs: continue
                 
                 ip, port = extract_ip_port(config)
                 if ip:
@@ -252,13 +254,13 @@ def main():
                         print(f"⏭️ آی‌پی تکراری در تاریخچه: {ip_port_str}")
                         continue
                     
+                    new_ips_found = True
                     all_ips.append(ip)
                     if check_port(ip, port):
                         modified = change_remark_v2ray(config, f"{get_flags_batch([ip]).get(ip, '🌐')} {CUSTOM_REMARK}")
                         valid_configs.append({"original": config, "modified": modified})
                         print(f"✅ زنده است: {ip}:{port} (تا الان {len(valid_configs)} پیدا کردیم)")
                         
-                        save_sent_ip(ip, port)
                         sent_ips.add(ip_port_str)
                         
                         if len(valid_configs) >= target_limit:
@@ -267,10 +269,34 @@ def main():
                     else:
                         print(f"❌ مرده است: {ip}:{port}")
 
+            # اگر هیچ آی‌پی جدیدی پیدا نشده بود، یعنی منبع گیت‌هاب آپدیت نشده
+            # پس حافظه را پاک میکنیم تا از همان کانفیگ‌های قبلی استفاده کنیم و کانال خالی نماند
+            if not new_ips_found and len(valid_configs) == 0:
+                print("💡 منبع آپدیت نشده. حافظه آی‌پی‌ها پاک می‌شود تا از کانفیگ‌های فعلی استفاده شود.")
+                sent_ips.clear()
+                if os.path.exists(SENT_IPS_FILE):
+                    os.remove(SENT_IPS_FILE)
+                
+                # یک دور دیگر فایل را می‌خوانیم تا 5 تا کانفیگ زنده پیدا کنیم
+                for config in configs:
+                    config = config.strip()
+                    if not config.startswith(("vless://", "vmess://", "trojan://", "ss://")): continue
+                    ip, port = extract_ip_port(config)
+                    if ip:
+                        all_ips.append(ip)
+                        if check_port(ip, port):
+                            modified = change_remark_v2ray(config, f"{get_flags_batch([ip]).get(ip, '🌐')} {CUSTOM_REMARK}")
+                            valid_configs.append({"original": config, "modified": modified})
+                            print(f"♻️ کانفیگ قبلی زنده است: {ip}:{port} (تا الان {len(valid_configs)} پیدا کردیم)")
+                            sent_ips.add(f"{ip}:{port}")
+                            if len(valid_configs) >= target_limit:
+                                break
+
             if valid_configs:
                 configs_to_post = [x["modified"] for x in valid_configs]
                 originals = [x["original"] for x in valid_configs]
                 send_post(configs_to_post, originals, target_type)
+                save_sent_ip(list(sent_ips)) # ذخیره مجدد آی‌پی‌ها
             else:
                 print("هیچ کانفیگ زنده‌ای پیدا نشد.")
                 
