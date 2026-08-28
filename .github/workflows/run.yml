@@ -1,11 +1,11 @@
 name: Run V2ray Bot
 on:
   schedule:
-    - cron: '*/30 * * * *' # هر 30 دقیقه یکبار اجرا می‌شود
+    - cron: '*/30 * * * *'
   workflow_dispatch:
 
 permissions:
-  contents: write # اجازه ذخیره فایل‌های حافظه در گیت‌هاب
+  contents: write
 
 jobs:
   run_bot:
@@ -26,12 +26,12 @@ jobs:
       - name: Run Bot
         run: python bot.py
         env:
-          BOT_TOKEN: ${{ secrets.BOT_TOKEN }} # پاس دادن توکن مخفی به کد پایتون
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           
       - name: Save memory files
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add sent_configs.txt state.txt sent_ips.txt || true
-          git diff --staged --quiet || git commit -m "Update memory files"
-          git push origin main --force
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Update memory files
+          file_pattern: sent_ips.txt state.txt
+          commit_user_name: github-actions[bot]
+          commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
