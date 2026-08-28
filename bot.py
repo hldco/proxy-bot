@@ -1,4 +1,3 @@
-
 import requests
 import base64
 import json
@@ -13,6 +12,7 @@ import re
 import socket
 from datetime import datetime
 from bs4 import BeautifulSoup
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # ==========================================
 # تنظیمات ربات
@@ -62,17 +62,6 @@ def update_state(current):
     with open(STATE_FILE, "w") as f:
         f.write(nxt.get(current, "v2ray"))
 
-def get_sent_configs():
-    if not os.path.exists(SENT_FILE):
-        return set()
-    with open(SENT_FILE, "r", encoding="utf-8") as f:
-        return set(line.strip() for line in f)
-
-def save_sent_config(configs_list):
-    with open(SENT_FILE, "a", encoding="utf-8") as f:
-        for config in configs_list:
-            f.write(config + "\n")
-
 def get_sent_ips():
     if not os.path.exists(SENT_IPS_FILE):
         return set()
@@ -107,7 +96,7 @@ def extract_ip_port(config):
 def check_port(ip, port):
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(1.5) 
+        sock.settimeout(1.0) 
         result = sock.connect_ex((ip, int(port)))
         sock.close()
         return result == 0
@@ -156,10 +145,17 @@ def change_remark_mtproto(link, new_remark):
     clean_link = re.sub(r'&name=[^&]*', '', link)
     return f"{clean_link}&name={urllib.parse.quote(new_remark)}"
 
-def send_post(configs_to_post, original_configs_posted, post_type):
-    if post_type == "v2ray":
-        save_sent_config(original_configs_posted)
-        
+# تابع تست همزمان (Threading)
+def test_single_config(config, sent_ips):
+    ip, port = extract_ip_port(config)
+    if not ip: return None
+    ip_port_str = f"{ip}:{port}"
+    is_new = ip_port_str not in sent_ips
+    if check_port(ip, port):
+        return {"config": config, "ip_port": ip_port_str, "is_new": is_new}
+    return None
+
+def send_post(configs_to_post, post_type):
     date_str, time_str = get_tehran_time()
     
     if post_type == "v2ray":
@@ -194,37 +190,29 @@ def send_post(configs_to_post, original_configs_posted, post_type):
         safe_configs_str = all_configs_str.replace("<", "&lt;").replace(">", "&gt;")
         configs_text = f"<pre>{safe_configs_str}</pre>"
         full_message = header + configs_text + footer
-        payload = {"chat_id": CHANNEL_USERNAME, "text": full_message, "parse_mode": "HTML"}
-        try:
-            requests.post(url, json=payload)
-            print(f"{len(configs_to_post)} کانفیگ {post_type} با موفقیت پست شد.")
-        except Exception as e:
-            print("Error:", e)
     else:
         links_html = [f'<a href="{html.escape(cfg)}">🚀 Proxy {i}</a>' for i, cfg in enumerate(configs_to_post, 1)]
         rows = ["  |  ".join(links_html[i:i+3]) for i in range(0, len(links_html), 3)]
         configs_text = "\n\n".join(rows)
         full_message = header + configs_text + footer
-        payload = {"chat_id": CHANNEL_USERNAME, "text": full_message, "parse_mode": "HTML"}
-        try:
-            requests.post(url, json=payload)
-            print(f"{len(configs_to_post)} کانفیگ {post_type} با موفقیت پست شد.")
-        except Exception as e:
-            print("Error:", e)
+        
+    payload = {"chat_id": CHANNEL_USERNAME, "text": full_message, "parse_mode": "HTML"}
+    try:
+        requests.post(url, json=payload)
+        print(f"{len(configs_to_post)} کانفیگ {post_type} با موفقیت پست شد.")
+    except Exception as e:
+        print("Error:", e)
 
 def main():
     delay_seconds = random.randint(0, 60)
     print(f"ربات برای طبیعی بودن، {delay_seconds} ثانیه صبر می‌کند...")
     time.sleep(delay_seconds)
 
-    sent_configs = get_sent_configs()
     sent_ips = get_sent_ips() 
     target_type = get_state()
     print(f"نوبت ارسال برای: {target_type}")
     
-    valid_configs = []
-    originals_to_save = []
-    all_ips = []
+    configs_to_post = []
     
     try:
         if target_type == "v2ray":
@@ -236,60 +224,52 @@ def main():
             except:
                 configs = content.strip().split('\n')
                 
-            target_limit = MAX_V2RAY_POST
-            new_ips_found = False
+            valid_raw_configs = [c.strip() for c in configs if c.strip().startswith(("vless://", "vmess://", "trojan://", "ss://"))]
+            print(f"تعداد {len(valid_raw_configs)} کانفیگ پیدا شد. در حال تست همزمان (سرعت بالا)...")
+
+            alive_new = []
+            alive_old = []
             
-            for config in configs:
-                config = config.strip()
-                if not config.startswith(("vless://", "vmess://", "trojan://", "ss://")): continue
-                
-                ip, port = extract_ip_port(config)
-                if ip:
-                    ip_port_str = f"{ip}:{port}"
-                    
-                    if ip_port_str in sent_ips:
-                        print(f"⏭️ آی‌پی تکراری در تاریخچه: {ip_port_str}")
-                        continue
-                    
-                    new_ips_found = True
-                    all_ips.append(ip)
-                    if check_port(ip, port):
-                        modified = change_remark_v2ray(config, f"{get_flags_batch([ip]).get(ip, '🌐')} {CUSTOM_REMARK}")
-                        valid_configs.append({"original": config, "modified": modified})
-                        print(f"✅ زنده است: {ip}:{port} (تا الان {len(valid_configs)} پیدا کردیم)")
-                        
-                        sent_ips.add(ip_port_str)
-                        
-                        if len(valid_configs) >= target_limit:
-                            print(f"به حد نصاب ({target_limit}) رسیدیم! تست متوقف می‌شود.")
-                            break
-                    else:
-                        print(f"❌ مرده است: {ip}:{port}")
+            # تست همزمان 50 کانفیگ در آنِ واحد
+            with ThreadPoolExecutor(max_workers=50) as executor:
+                futures = {executor.submit(test_single_config, cfg, sent_ips): cfg for cfg in valid_raw_configs}
+                for future in as_completed(futures):
+                    result = future.result()
+                    if result:
+                        if result["is_new"]:
+                            alive_new.append(result)
+                        else:
+                            alive_old.append(result)
 
-            if not new_ips_found and len(valid_configs) == 0:
-                print("💡 منبع آپدیت نشده. حافظه آی‌پی‌ها پاک می‌شود تا از کانفیگ‌های فعلی استفاده شود.")
+            print(f"تست پایان یافت. {len(alive_new)} کانفیگ جدید و {len(alive_old)} کانفیگ قبلی زنده هستند.")
+
+            selected_data = []
+            
+            # اول جدیدها را می‌گذاریم
+            for item in alive_new:
+                if len(selected_data) < MAX_V2RAY_POST:
+                    selected_data.append(item)
+                    sent_ips.add(item["ip_port"])
+
+            # اگر جدیدها کم بود، حافظه را پاک می‌کنیم و قبلی‌ها را می‌گذاریم
+            if len(selected_data) < MAX_V2RAY_POST:
+                print("کانفیگ جدید کافی نبود، حافظه پاک شد و از کانفیگ‌های قبلی استفاده می‌شود.")
                 sent_ips.clear()
-                if os.path.exists(SENT_IPS_FILE):
-                    os.remove(SENT_IPS_FILE)
-                
-                for config in configs:
-                    config = config.strip()
-                    if not config.startswith(("vless://", "vmess://", "trojan://", "ss://")): continue
-                    ip, port = extract_ip_port(config)
-                    if ip:
-                        all_ips.append(ip)
-                        if check_port(ip, port):
-                            modified = change_remark_v2ray(config, f"{get_flags_batch([ip]).get(ip, '🌐')} {CUSTOM_REMARK}")
-                            valid_configs.append({"original": config, "modified": modified})
-                            print(f"♻️ کانفیگ قبلی زنده است: {ip}:{port} (تا الان {len(valid_configs)} پیدا کردیم)")
-                            sent_ips.add(f"{ip}:{port}")
-                            if len(valid_configs) >= target_limit:
-                                break
+                for item in selected_data:
+                    sent_ips.add(item["ip_port"])
+                    
+                for item in alive_old:
+                    if len(selected_data) < MAX_V2RAY_POST:
+                        selected_data.append(item)
+                        sent_ips.add(item["ip_port"])
 
-            if valid_configs:
-                configs_to_post = [x["modified"] for x in valid_configs]
-                originals = [x["original"] for x in valid_configs]
-                send_post(configs_to_post, originals, target_type)
+            if selected_data:
+                for item in selected_data:
+                    ip, port = extract_ip_port(item["config"])
+                    modified = change_remark_v2ray(item["config"], f"{get_flags_batch([ip]).get(ip, '🌐')} {CUSTOM_REMARK}")
+                    configs_to_post.append(modified)
+                
+                send_post(configs_to_post, target_type)
                 save_sent_ip(list(sent_ips))
             else:
                 print("هیچ کانفیگ زنده‌ای پیدا نشد.")
@@ -297,6 +277,7 @@ def main():
         else: # MTProto
             print("در حال دریافت پروکسی‌ها از کانال‌های تلگرام...")
             found_proxies = set()
+            all_ips = []
             for src_chan in SOURCE_CHANNELS:
                 tg_url = f"https://t.me/s/{src_chan}"
                 try:
@@ -321,11 +302,9 @@ def main():
                     ip, port = extract_ip_port(proxy)
                     if ip: all_ips.append(ip)
                     flag = get_flags_batch(all_ips).get(ip, "🌐")
-                    valid_configs.append({"original": proxy, "modified": change_remark_mtproto(proxy, f"{flag} {CUSTOM_REMARK}")})
+                    configs_to_post.append(change_remark_mtproto(proxy, f"{flag} {CUSTOM_REMARK}"))
                 
-                configs_to_post = [x["modified"] for x in valid_configs]
-                originals = [x["original"] for x in valid_configs]
-                send_post(configs_to_post, originals, "mtproto")
+                send_post(configs_to_post, "mtproto")
             else:
                 print("هیچ پروکسی MTProto پیدا نشد.")
                 
