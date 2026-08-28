@@ -26,6 +26,7 @@ CUSTOM_REMARK = "@goololgoo 🔐 وی‌پی‌ان رایگان | Free Proxy�
 
 MAX_V2RAY_POST = 5
 MAX_MTPROTO_POST = 12
+BATCH_SIZE = 200          # هر بار چند تا تست شود
 # ==========================================
 
 SENT_IPS_FILE = "sent_ips.txt"
@@ -55,6 +56,27 @@ def save_sent_ips(ip_set):
     with open(SENT_IPS_FILE, "w") as f:
         for ip_port in sorted(ip_set):
             f.write(f"{ip_port}\n")
+
+def is_valid_config(config: str) -> bool:
+    if not config or not isinstance(config, str):
+        return False
+
+    config = config.strip()
+
+    if not config.startswith(("vless://", "vmess://", "trojan://", "ss://")):
+        return False
+
+    if any(c in config for c in ['{', '}', '`', '\n', '\r']):
+        return False
+
+    if config.startswith(("vless://", "trojan://", "ss://")):
+        if "@" not in config or ":" not in config.split("@")[-1]:
+            return False
+
+    if config.count("#") > 1:
+        return False
+
+    return True
 
 def extract_ip_port(config):
     try:
@@ -132,6 +154,9 @@ def change_remark_mtproto(link, new_remark):
     return f"{clean_link}&name={urllib.parse.quote(new_remark)}"
 
 def test_single_config(config, sent_ips):
+    if not is_valid_config(config):
+        return None
+
     ip, port = extract_ip_port(config)
     if not ip or not port:
         return None
@@ -141,33 +166,123 @@ def test_single_config(config, sent_ips):
         return {"config": config, "ip_port": ip_port_str, "is_new": is_new, "ip": ip}
     return None
 
+def get_random_header_footer(post_type, date_str, time_str):
+    if post_type == "v2ray":
+        headers = [
+            f"""⚡️ پروکسی v2ray مخصوص اینستاگرام و دانلود
+
+⛽️ جدید، پرسرعت و پایدار
+🆕 آخرین به‌روزرسانی {date_str} ساعت {time_str}
+تست شده و فعال ✅
+مناسب تمام اپراتورها
+📍 همراه اول، ایرانسل، رایتل، مخابرات
+📌 برنامه‌های پیشنهادی: V2rayNG، MahsaNG، Hiddify
+🔘 با یک ضربه کپی می‌شود
+
+""",
+            f"""🚀 کانفیگ‌های جدید v2ray
+
+✅ تست شده و آماده استفاده
+🕒 به‌روزرسانی: {date_str} - {time_str}
+مناسب برای اینستاگرام، یوتیوب و دانلود
+پشتیبانی از تمام اپراتورها
+برنامه‌های پیشنهادی: MahsaNG و Hiddify
+
+""",
+            f"""🔥 v2ray تازه و پایدار
+
+آخرین به‌روزرسانی: {date_str} ساعت {time_str}
+تست شده روی اپراتورهای مختلف
+مناسب گوشی و کامپیوتر
+برنامه‌های مورد نیاز: V2rayNG، Hiddify، MahsaNG
+
+"""
+        ]
+
+        footers = [
+            """
+برای دانلود آخرین نسخه برنامه‌ها به پست پین‌شده مراجعه کنید
+با دوستانتان به اشتراک بگذارید
+
+روی کدام اپراتور وصل شدی؟ در نظرات بگو 👇
+@goololgoo
+@goololgoo_group
+""",
+            """
+اگر سرعت خوبی داشت، برای دوستانت بفرست
+کدام کانفیگ بهتر کار کرد؟ نظرت را بنویس
+
+@goololgoo
+@goololgoo_group
+""",
+            """
+سوالی داشتی در گروه بپرس
+تجربه‌ات از این کانفیگ‌ها را در نظرات بنویس
+
+@goololgoo
+@goololgoo_group
+"""
+        ]
+
+    else:
+        headers = [
+            f"""☄ پروکسی MTProto مخصوص تلگرام
+
+🆕 آخرین به‌روزرسانی {date_str} ساعت {time_str}
+تست شده و فعال ✅
+مناسب تمام اپراتورها
+📍 همراه اول، ایرانسل، رایتل
+👇 برای اتصال کلیک کنید
+
+""",
+            f"""🚀 پروکسی‌های جدید تلگرام
+
+✅ تست شده و آماده
+🕒 به‌روزرسانی: {date_str} - {time_str}
+مناسب برای دور زدن فیلتر تلگرام
+روی اکثر اپراتورها کار می‌کند
+
+""",
+            f"""🔥 MTProto تازه و پایدار
+
+آخرین به‌روزرسانی: {date_str} ساعت {time_str}
+تست شده و فعال
+برای اتصال روی لینک مورد نظر کلیک کنید
+
+"""
+        ]
+
+        footers = [
+            """
+با دوستانتان به اشتراک بگذارید
+
+روی کدام اپراتور وصل شدی؟ در نظرات بگو 👇
+@goololgoo
+@goololgoo_group
+""",
+            """
+اگر خوب کار کرد، برای دیگران هم بفرست
+تجربه‌ات را در نظرات بنویس
+
+@goololgoo
+@goololgoo_group
+""",
+            """
+سوالی داشتی در گروه مطرح کن
+کدام پروکسی بهتر بود؟ بگو
+
+@goololgoo
+@goololgoo_group
+"""
+        ]
+
+    header = random.choice(headers)
+    footer = random.choice(footers)
+    return header, footer
+
 def send_post(configs_to_post, post_type):
     date_str, time_str = get_tehran_time()
-
-    if post_type == "v2ray":
-        header = f"""⚡️ پروکسی v2ray مخصوص اینستاگرام و دانلود ✌️
-
-⛽️ جدید پر سرعت و پایدار  💦
-🆕 آخرین به روز رسانی {date_str} ساعت {time_str}  🕘
-تست شده و فعال✅
-تمام اپراتور ها📱
-📍رایتل ، همراه اول ، ایرانسل ، مخابرات 📍
-📌 برنامه مورد نیاز: V2rayNG, MahsaNG, Hiddify 
-🔘با ضربه 👇 کپی میشود🔘
-
-"""
-        footer = "\nبرای دانلود آخرین نسخه برنامه ها به پست پین شده کانال مراجعه کنید\n♨️با دوستان خود به اشتراک بگذارید ♨️\n#MahsaNG #v2ray #فیلترشکن #hiddify #proxy #اینترنت_مجانی \n#پروکسی \n👇همین الان عضو بشید👇\n@goololgoo\n@goololgoo_group\n💬نظرات خود را با ما به اشتراک بگذارید 👇"
-    else:
-        header = f"""☄ پروکسی MTProto مخصوص تلگرام 🔥
-
-🆕 آخرین به روز رسانی {date_str} ساعت {time_str} 🕘
-تست شده و فعال✅
-تمام اپراتور ها📱
-📍رایتل ، همراه اول ، ایرانسل ، مخابرات 📍
-👇برای اتصال کلیک کنید / برای اشتراک کپی کنید👇
-
-"""
-        footer = "\n♨️با دوستان خود به اشتراک بگذارید ♨️\n#MTProto #MahsaNG #v2ray #فیلترشکن #hiddify #proxy #هوش_مصنوعی \n#پروکسی #تلگرام #telegram\n👇همین الان عضو بشید👇\n@goololgoo\n@goololgoo_group\n💬نظرات خود را با ما به اشتراک بگذارید 👇"
+    header, footer = get_random_header_footer(post_type, date_str, time_str)
 
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
 
@@ -198,6 +313,32 @@ def send_post(configs_to_post, post_type):
     except Exception as e:
         print(f"❌ Error sending {post_type}: {e}")
 
+def collect_alive_batch(config_list, sent_ips, max_needed):
+    """تست دسته‌ای - به محض رسیدن به تعداد مورد نیاز متوقف می‌شود"""
+    alive = []
+    used_ips = set()
+    random.shuffle(config_list)  # قاطی کردن برای شانس بهتر
+
+    for i in range(0, len(config_list), BATCH_SIZE):
+        batch = config_list[i:i + BATCH_SIZE]
+        print(f"در حال تست دسته {i // BATCH_SIZE + 1} ({len(batch)} کانفیگ)...")
+
+        with ThreadPoolExecutor(max_workers=40) as executor:
+            futures = {executor.submit(test_single_config, cfg, sent_ips): cfg for cfg in batch}
+            for future in as_completed(futures):
+                result = future.result()
+                if result and result["ip_port"] not in used_ips:
+                    alive.append(result)
+                    used_ips.add(result["ip_port"])
+                    if len(alive) >= max_needed:
+                        print(f"✅ به {max_needed} کانفیگ سالم رسیدیم. توقف تست.")
+                        return alive
+
+        if len(alive) >= max_needed:
+            break
+
+    return alive
+
 def get_v2ray_configs(sent_ips):
     print("در حال دریافت کانفیگ‌ها از گیت‌هاب...")
     try:
@@ -211,10 +352,9 @@ def get_v2ray_configs(sent_ips):
         print(f"خطا در دریافت از گیت‌هاب: {e}")
         return []
 
-    valid_raw = [c.strip() for c in configs if c.strip().startswith(("vless://", "vmess://", "trojan://", "ss://"))]
-    print(f"تعداد {len(valid_raw)} کانفیگ پیدا شد.")
+    valid_raw = [c.strip() for c in configs if is_valid_config(c.strip())]
+    print(f"تعداد {len(valid_raw)} کانفیگ معتبر پیدا شد.")
 
-    # جدا کردن جدید و قدیمی
     new_configs = []
     old_configs = []
     for cfg in valid_raw:
@@ -230,43 +370,27 @@ def get_v2ray_configs(sent_ips):
     print(f"جدید: {len(new_configs)} | قبلی: {len(old_configs)}")
 
     selected = []
-    used_ips = set()
 
-    def collect_alive(config_list, max_needed):
-        alive = []
-        with ThreadPoolExecutor(max_workers=40) as executor:
-            futures = {executor.submit(test_single_config, cfg, sent_ips): cfg for cfg in config_list}
-            for future in as_completed(futures):
-                result = future.result()
-                if result and result["ip_port"] not in used_ips:
-                    alive.append(result)
-                    used_ips.add(result["ip_port"])
-                    if len(alive) >= max_needed:
-                        # بقیه رو کنسل نمی‌کنیم چون ساده‌تره، ولی دیگه اضافه نمی‌کنیم
-                        break
-        return alive
-
-    # اول فقط جدیدها
+    # اول کانفیگ‌های جدید را دسته‌ای تست کن
     if new_configs:
-        print("در حال تست کانفیگ‌های جدید...")
-        alive_new = collect_alive(new_configs, MAX_V2RAY_POST)
+        print("شروع تست کانفیگ‌های جدید (دسته‌ای)...")
+        alive_new = collect_alive_batch(new_configs, sent_ips, MAX_V2RAY_POST)
         selected.extend(alive_new)
         print(f"{len(alive_new)} کانفیگ جدید سالم پیدا شد.")
 
     # اگر کافی نبود، از قدیمی‌ها
     if len(selected) < MAX_V2RAY_POST and old_configs:
-        print("کانفیگ جدید کافی نبود، در حال تست کانفیگ‌های قبلی...")
+        print("کانفیگ جدید کافی نبود، شروع تست کانفیگ‌های قبلی...")
         needed = MAX_V2RAY_POST - len(selected)
-        alive_old = collect_alive(old_configs, needed)
+        alive_old = collect_alive_batch(old_configs, sent_ips, needed)
         selected.extend(alive_old)
         print(f"{len(alive_old)} کانفیگ قبلی سالم اضافه شد.")
 
-    # اگر هنوز کم بود و حافظه پر بوده، پاک کردن و تست مجدد از همه
+    # اگر هنوز کم بود، حافظه را پاک کن و از همه تست کن
     if len(selected) < MAX_V2RAY_POST:
-        print("حافظه تقریباً پر بود. پاک کردن حافظه و تست مجدد از کل لیست...")
+        print("حافظه تقریباً پر بود. پاک کردن حافظه و تست مجدد...")
         sent_ips.clear()
-        used_ips.clear()
-        selected = collect_alive(valid_raw, MAX_V2RAY_POST)
+        selected = collect_alive_batch(valid_raw, sent_ips, MAX_V2RAY_POST)
 
     return selected
 
@@ -283,12 +407,10 @@ def get_mtproto_proxies(sent_ips):
             soup = BeautifulSoup(resp.text, 'html.parser')
             messages = soup.find_all('div', class_='tgme_widget_message')[-8:]
             for msg in messages:
-                # متن پیام
                 text_div = msg.find('div', class_='tgme_widget_message_text')
                 if text_div:
                     matches = re.findall(r'(https://t\.me/proxy\?[^\s<>"\']+|tg://proxy\?[^\s<>"\']+)', text_div.get_text())
                     found.extend(matches)
-                # دکمه‌ها
                 for btn in msg.find_all('a', href=True):
                     href = btn['href']
                     if "tg://proxy" in href or "https://t.me/proxy" in href:
@@ -297,8 +419,7 @@ def get_mtproto_proxies(sent_ips):
             print(f"خطا در کانال {src_chan}: {e}")
             continue
 
-    # یکتا کردن
-    unique = list(dict.fromkeys(found))  # حفظ ترتیب
+    unique = list(dict.fromkeys(found))
     print(f"تعداد {len(unique)} پروکسی یکتا پیدا شد.")
 
     new_proxies = []
@@ -315,15 +436,12 @@ def get_mtproto_proxies(sent_ips):
             old_proxies.append(proxy)
 
     selected = []
-    # اولویت با جدید
     selected.extend(new_proxies[:MAX_MTPROTO_POST])
 
-    # اگر کم بود از قدیمی‌ها
     if len(selected) < MAX_MTPROTO_POST:
         needed = MAX_MTPROTO_POST - len(selected)
         selected.extend(old_proxies[:needed])
 
-    # اگر هنوز کم بود، از همه به صورت رندم
     if len(selected) < MAX_MTPROTO_POST and unique:
         remaining = [p for p in unique if p not in selected]
         random.shuffle(remaining)
@@ -332,7 +450,6 @@ def get_mtproto_proxies(sent_ips):
     return selected[:MAX_MTPROTO_POST]
 
 def main():
-    # تأخیر رندم اول کار (۰ تا ۱۲۰ ثانیه)
     delay = random.randint(0, 120)
     print(f"ربات برای طبیعی بودن {delay} ثانیه صبر می‌کند...")
     time.sleep(delay)
@@ -340,7 +457,6 @@ def main():
     sent_ips = get_sent_ips()
     print(f"تعداد IPهای ذخیره‌شده قبلی: {len(sent_ips)}")
 
-    # ========== V2Ray ==========
     print("\n" + "="*40)
     print("شروع دور V2Ray")
     print("="*40)
@@ -362,12 +478,10 @@ def main():
     else:
         print("هیچ کانفیگ V2Ray زنده‌ای پیدا نشد.")
 
-    # تأخیر رندم بین دو پست (۳ تا ۱۲ دقیقه)
     between_delay = random.randint(180, 720)
     print(f"\n⏳ فاصله رندم بین دو پست: {between_delay // 60} دقیقه و {between_delay % 60} ثانیه...")
     time.sleep(between_delay)
 
-    # ========== MTProto ==========
     print("\n" + "="*40)
     print("شروع دور MTProto")
     print("="*40)
@@ -396,7 +510,6 @@ def main():
     else:
         print("هیچ پروکسی MTProto پیدا نشد.")
 
-    # ذخیره نهایی
     save_sent_ips(sent_ips)
     print(f"\n✅ حافظه ذخیره شد. تعداد کل IPهای ثبت‌شده: {len(sent_ips)}")
 
