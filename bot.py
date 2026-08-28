@@ -29,7 +29,6 @@ MAX_V2RAY_POST = 5
 MAX_MTPROTO_POST = 12
 # ==========================================
 
-SENT_FILE = "sent_configs.txt"
 SENT_IPS_FILE = "sent_ips.txt" 
 STATE_FILE = "state.txt"
 
@@ -145,7 +144,6 @@ def change_remark_mtproto(link, new_remark):
     clean_link = re.sub(r'&name=[^&]*', '', link)
     return f"{clean_link}&name={urllib.parse.quote(new_remark)}"
 
-# تابع تست همزمان (Threading)
 def test_single_config(config, sent_ips):
     ip, port = extract_ip_port(config)
     if not ip: return None
@@ -225,12 +223,11 @@ def main():
                 configs = content.strip().split('\n')
                 
             valid_raw_configs = [c.strip() for c in configs if c.strip().startswith(("vless://", "vmess://", "trojan://", "ss://"))]
-            print(f"تعداد {len(valid_raw_configs)} کانفیگ پیدا شد. در حال تست همزمان (سرعت بالا)...")
+            print(f"تعداد {len(valid_raw_configs)} کانفیگ پیدا شد. در حال تست همزمان...")
 
             alive_new = []
             alive_old = []
             
-            # تست همزمان 50 کانفیگ در آنِ واحد
             with ThreadPoolExecutor(max_workers=50) as executor:
                 futures = {executor.submit(test_single_config, cfg, sent_ips): cfg for cfg in valid_raw_configs}
                 for future in as_completed(futures):
@@ -245,13 +242,11 @@ def main():
 
             selected_data = []
             
-            # اول جدیدها را می‌گذاریم
             for item in alive_new:
                 if len(selected_data) < MAX_V2RAY_POST:
                     selected_data.append(item)
                     sent_ips.add(item["ip_port"])
 
-            # اگر جدیدها کم بود، حافظه را پاک می‌کنیم و قبلی‌ها را می‌گذاریم
             if len(selected_data) < MAX_V2RAY_POST:
                 print("کانفیگ جدید کافی نبود، حافظه پاک شد و از کانفیگ‌های قبلی استفاده می‌شود.")
                 sent_ips.clear()
