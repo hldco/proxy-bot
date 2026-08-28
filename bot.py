@@ -79,7 +79,6 @@ def get_sent_ips():
         return set(line.strip() for line in f)
 
 def save_sent_ip(ip_list):
-    # اینجا تغییر کرد که کل فایل رو بازنویسی کنه تا وقتی پاک میشه دیگه خط تکراری نمونه
     with open(SENT_IPS_FILE, "w") as f:
         for ip_port in ip_list:
             f.write(f"{ip_port}\n")
@@ -191,14 +190,12 @@ def send_post(configs_to_post, original_configs_posted, post_type):
     
     if post_type == "v2ray":
         all_configs_str = "\n\n".join(configs_to_post)
-        # رفع باگ &amp; با جایگزینی دستی کاراکترها
         safe_configs_str = all_configs_str.replace("<", "&lt;").replace(">", "&gt;")
         configs_text = f"<pre>{safe_configs_str}</pre>"
         full_message = header + configs_text + footer
         payload = {"chat_id": CHANNEL_USERNAME, "text": full_message, "parse_mode": "HTML"}
         try:
-            tg_response = requests.post(url, json=payload)
-            print("Telegram Response:", tg_response.text)
+            requests.post(url, json=payload)
             print(f"{len(configs_to_post)} کانفیگ {post_type} با موفقیت پست شد.")
         except Exception as e:
             print("Error:", e)
@@ -209,8 +206,7 @@ def send_post(configs_to_post, original_configs_posted, post_type):
         full_message = header + configs_text + footer
         payload = {"chat_id": CHANNEL_USERNAME, "text": full_message, "parse_mode": "HTML"}
         try:
-            tg_response = requests.post(url, json=payload)
-            print("Telegram Response:", tg_response.text)
+            requests.post(url, json=payload)
             print(f"{len(configs_to_post)} کانفیگ {post_type} با موفقیت پست شد.")
         except Exception as e:
             print("Error:", e)
@@ -269,15 +265,12 @@ def main():
                     else:
                         print(f"❌ مرده است: {ip}:{port}")
 
-            # اگر هیچ آی‌پی جدیدی پیدا نشده بود، یعنی منبع گیت‌هاب آپدیت نشده
-            # پس حافظه را پاک میکنیم تا از همان کانفیگ‌های قبلی استفاده کنیم و کانال خالی نماند
             if not new_ips_found and len(valid_configs) == 0:
                 print("💡 منبع آپدیت نشده. حافظه آی‌پی‌ها پاک می‌شود تا از کانفیگ‌های فعلی استفاده شود.")
                 sent_ips.clear()
                 if os.path.exists(SENT_IPS_FILE):
                     os.remove(SENT_IPS_FILE)
                 
-                # یک دور دیگر فایل را می‌خوانیم تا 5 تا کانفیگ زنده پیدا کنیم
                 for config in configs:
                     config = config.strip()
                     if not config.startswith(("vless://", "vmess://", "trojan://", "ss://")): continue
@@ -296,7 +289,7 @@ def main():
                 configs_to_post = [x["modified"] for x in valid_configs]
                 originals = [x["original"] for x in valid_configs]
                 send_post(configs_to_post, originals, target_type)
-                save_sent_ip(list(sent_ips)) # ذخیره مجدد آی‌پی‌ها
+                save_sent_ip(list(sent_ips))
             else:
                 print("هیچ کانفیگ زنده‌ای پیدا نشد.")
                 
