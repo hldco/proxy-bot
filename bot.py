@@ -58,11 +58,33 @@ def save_sent_ips(ip_set):
             f.write(f"{ip_port}\n")
 
 def is_valid_config(config: str) -> bool:
-    """فیلتر خیلی ساده و سبک"""
     if not config or not isinstance(config, str):
         return False
+
     config = config.strip()
-    return config.startswith(("vless://", "vmess://", "trojan://", "ss://"))
+
+    if not config.startswith(("vless://", "vmess://", "trojan://", "ss://")):
+        return False
+
+    # قسمت قبل از # را جدا می‌کنیم
+    main_part = config.split("#")[0]
+
+    # اگر در قسمت اصلی { یا } خام باشد → رد (مثل extra={...})
+    if "{" in main_part or "}" in main_part:
+        return False
+
+    # کاراکترهای خطرناک دیگر
+    if any(c in config for c in ['`', '\n', '\r']):
+        return False
+
+    if config.startswith(("vless://", "trojan://", "ss://")):
+        if "@" not in config or ":" not in config.split("@")[-1]:
+            return False
+
+    if config.count("#") > 1:
+        return False
+
+    return True
 
 def extract_ip_port(config):
     try:
@@ -331,9 +353,7 @@ def get_v2ray_configs(sent_ips):
         print(f"وضعیت پاسخ: {response.status_code}")
         content = response.text.strip()
         print(f"طول محتوا: {len(content)} کاراکتر")
-        print(f"اولین ۱۰۰ کاراکتر: {content[:100]}")
 
-        # اول سعی می‌کنیم base64 نباشد
         if content.startswith("vless://") or content.startswith("vmess://") or "vless://" in content[:200]:
             configs = content.splitlines()
         else:
