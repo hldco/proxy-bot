@@ -58,26 +58,11 @@ def save_sent_ips(ip_set):
             f.write(f"{ip_port}\n")
 
 def is_valid_config(config: str) -> bool:
+    """فیلتر خیلی ساده و سبک"""
     if not config or not isinstance(config, str):
         return False
-
     config = config.strip()
-
-    if not config.startswith(("vless://", "vmess://", "trojan://", "ss://")):
-        return False
-
-    # فقط کاراکترهای واقعاً خطرناک را رد می‌کنیم (دیگر { و } را رد نمی‌کنیم)
-    if any(c in config for c in ['`', '\n', '\r']):
-        return False
-
-    if config.startswith(("vless://", "trojan://", "ss://")):
-        if "@" not in config or ":" not in config.split("@")[-1]:
-            return False
-
-    if config.count("#") > 1:
-        return False
-
-    return True
+    return config.startswith(("vless://", "vmess://", "trojan://", "ss://"))
 
 def extract_ip_port(config):
     try:
@@ -342,18 +327,31 @@ def collect_alive_batch(config_list, sent_ips, max_needed):
 def get_v2ray_configs(sent_ips):
     print("در حال دریافت کانفیگ‌ها از گیت‌هاب...")
     try:
-        response = requests.get(SOURCE_URL, timeout=20)
+        response = requests.get(SOURCE_URL, timeout=30)
+        print(f"وضعیت پاسخ: {response.status_code}")
         content = response.text.strip()
-        try:
-            configs = base64.b64decode(content).decode('utf-8').strip().split('\n')
-        except:
-            configs = content.split('\n')
+        print(f"طول محتوا: {len(content)} کاراکتر")
+        print(f"اولین ۱۰۰ کاراکتر: {content[:100]}")
+
+        # اول سعی می‌کنیم base64 نباشد
+        if content.startswith("vless://") or content.startswith("vmess://") or "vless://" in content[:200]:
+            configs = content.splitlines()
+        else:
+            try:
+                configs = base64.b64decode(content).decode('utf-8').strip().splitlines()
+            except:
+                configs = content.splitlines()
+
+        print(f"تعداد خطوط بعد از split: {len(configs)}")
     except Exception as e:
         print(f"خطا در دریافت از گیت‌هاب: {e}")
         return []
 
     valid_raw = [c.strip() for c in configs if is_valid_config(c.strip())]
     print(f"تعداد {len(valid_raw)} کانفیگ معتبر پیدا شد.")
+
+    if len(valid_raw) > 0:
+        print(f"نمونه اولین کانفیگ معتبر: {valid_raw[0][:80]}...")
 
     new_configs = []
     old_configs = []
@@ -384,7 +382,7 @@ def get_v2ray_configs(sent_ips):
         selected.extend(alive_old)
         print(f"{len(alive_old)} کانفیگ قبلی سالم اضافه شد.")
 
-    if len(selected) < MAX_V2RAY_POST:
+    if len(selected) < MAX_V2RAY_POST and valid_raw:
         print("حافظه تقریباً پر بود. پاک کردن حافظه و تست مجدد...")
         sent_ips.clear()
         selected = collect_alive_batch(valid_raw, sent_ips, MAX_V2RAY_POST)
