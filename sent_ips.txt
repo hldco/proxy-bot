@@ -6,7 +6,7 @@ evo.foriran.co.uk:443
 gen.foriran.co.uk:443
 jadid.zhigool.co.uk:25565
 naro.guguli.co.uk:8443
+ping-pong.mangom-kangom.info:443
 qadim.zhigool.co.uk:22
 rana.irankhodro.co.uk:8443
 s5.foriran.co.uk:443
-world-mordak.maraton-co.info.:443
