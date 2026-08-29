@@ -66,14 +66,10 @@ def is_valid_config(config: str) -> bool:
     if not config.startswith(("vless://", "vmess://", "trojan://", "ss://")):
         return False
 
-    # قسمت قبل از # را جدا می‌کنیم
-    main_part = config.split("#")[0]
-
-    # اگر در قسمت اصلی { یا } خام باشد → رد (مثل extra={...})
-    if "{" in main_part or "}" in main_part:
+    # فقط کانفیگ‌هایی که extra= با JSON خام دارند رد می‌شوند
+    if "extra={" in config:
         return False
 
-    # کاراکترهای خطرناک دیگر
     if any(c in config for c in ['`', '\n', '\r']):
         return False
 
