@@ -66,15 +66,18 @@ def is_valid_config(config: str) -> bool:
     if not config.startswith(("vless://", "vmess://", "trojan://", "ss://")):
         return False
 
-    # فقط کانفیگ‌هایی که extra= با JSON خام دارند رد می‌شوند
+    # رد کردن کانفیگ‌های خراب با extra={...} خام
     if "extra={" in config:
         return False
 
     if any(c in config for c in ['`', '\n', '\r']):
         return False
 
+    # فقط قسمت قبل از # را چک می‌کنیم (تا @ داخل remark مشکل نسازد)
+    main_part = config.split("#")[0]
+
     if config.startswith(("vless://", "trojan://", "ss://")):
-        if "@" not in config or ":" not in config.split("@")[-1]:
+        if "@" not in main_part or ":" not in main_part.split("@")[-1]:
             return False
 
     if config.count("#") > 1:
