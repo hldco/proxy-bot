@@ -26,7 +26,7 @@ CUSTOM_REMARK = "@goololgoo 🔐 وی‌پی‌ان رایگان | Free Proxy�
 
 MAX_V2RAY_POST = 5
 MAX_MTPROTO_POST = 12
-BATCH_SIZE = 200          # هر بار چند تا تست شود
+BATCH_SIZE = 200
 # ==========================================
 
 SENT_IPS_FILE = "sent_ips.txt"
@@ -66,6 +66,9 @@ def is_valid_config(config: str) -> bool:
     if not config.startswith(("vless://", "vmess://", "trojan://", "ss://")):
         return False
 
+    # فقط کاراکترهای واقعاً خطرناک را رد می‌کنیم (دیگر { و } را رد نمی‌کنیم)
+    if any(c in config for c in ['`', '\n', '\r']):
+        return False
 
     if config.startswith(("vless://", "trojan://", "ss://")):
         if "@" not in config or ":" not in config.split("@")[-1]:
@@ -312,10 +315,9 @@ def send_post(configs_to_post, post_type):
         print(f"❌ Error sending {post_type}: {e}")
 
 def collect_alive_batch(config_list, sent_ips, max_needed):
-    """تست دسته‌ای - به محض رسیدن به تعداد مورد نیاز متوقف می‌شود"""
     alive = []
     used_ips = set()
-    random.shuffle(config_list)  # قاطی کردن برای شانس بهتر
+    random.shuffle(config_list)
 
     for i in range(0, len(config_list), BATCH_SIZE):
         batch = config_list[i:i + BATCH_SIZE]
@@ -369,14 +371,12 @@ def get_v2ray_configs(sent_ips):
 
     selected = []
 
-    # اول کانفیگ‌های جدید را دسته‌ای تست کن
     if new_configs:
         print("شروع تست کانفیگ‌های جدید (دسته‌ای)...")
         alive_new = collect_alive_batch(new_configs, sent_ips, MAX_V2RAY_POST)
         selected.extend(alive_new)
         print(f"{len(alive_new)} کانفیگ جدید سالم پیدا شد.")
 
-    # اگر کافی نبود، از قدیمی‌ها
     if len(selected) < MAX_V2RAY_POST and old_configs:
         print("کانفیگ جدید کافی نبود، شروع تست کانفیگ‌های قبلی...")
         needed = MAX_V2RAY_POST - len(selected)
@@ -384,7 +384,6 @@ def get_v2ray_configs(sent_ips):
         selected.extend(alive_old)
         print(f"{len(alive_old)} کانفیگ قبلی سالم اضافه شد.")
 
-    # اگر هنوز کم بود، حافظه را پاک کن و از همه تست کن
     if len(selected) < MAX_V2RAY_POST:
         print("حافظه تقریباً پر بود. پاک کردن حافظه و تست مجدد...")
         sent_ips.clear()
