@@ -66,7 +66,7 @@ def is_valid_config(config: str) -> bool:
     if not config.startswith(("vless://", "vmess://", "trojan://", "ss://")):
         return False
 
-    if any(c in config for c in ['{', '}', '`', '\n', '\r']):
+    if any(c in config for c in ['`', '\n', '\r']):
         return False
 
     if config.startswith(("vless://", "trojan://", "ss://")):
