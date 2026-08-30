@@ -61,7 +61,7 @@ def get_tehran_time():
     hour = to_persian_digits(str(now.hour).zfill(2))
     minute = to_persian_digits(str(now.minute).zfill(2))
     time_str = f"{hour}:{minute}"
-    return date_str, time_str, now.hour
+    return date_str, time_str
 
 def get_sent_ips():
     if not os.path.exists(SENT_IPS_FILE):
@@ -308,7 +308,7 @@ def get_random_header_footer(post_type, date_str, time_str):
     return random.choice(headers), random.choice(footers)
 
 def send_post(configs_to_post, post_type):
-    date_str, time_str, _ = get_tehran_time()
+    date_str, time_str = get_tehran_time()
     header, footer = get_random_header_footer(post_type, date_str, time_str)
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
 
@@ -387,7 +387,6 @@ def update_subscription():
     all_configs = []
     seen = set()
 
-    # اولویت ۱: کانال‌ها
     for ch in SOURCE_CHANNELS:
         print(f"در حال دریافت از کانال @{ch} ...")
         configs = collect_from_channel(ch)
@@ -401,7 +400,6 @@ def update_subscription():
                     all_configs.append(modified)
         print(f"  → {len(configs)} کانفیگ پیدا شد")
 
-    # اولویت ۲: لینک‌های ساب
     for sub_url in SOURCE_SUBS:
         print(f"در حال دریافت از ساب ...")
         configs = collect_from_sub(sub_url)
@@ -415,7 +413,6 @@ def update_subscription():
                     all_configs.append(modified)
         print(f"  → {len(configs)} کانفیگ پیدا شد")
 
-    # ساب قبلی را هم نگه می‌داریم
     old_sub = load_subscription()
     for cfg in old_sub:
         ip, port = extract_ip_port(cfg)
@@ -439,7 +436,6 @@ def get_v2ray_from_sub(sent_ips):
     print(f"تعداد کانفیگ در ساب: {len(sub_configs)}")
     random.shuffle(sub_configs)
 
-    selected = []
     used_ips = set()
 
     def collect_alive(config_list, max_needed):
@@ -512,67 +508,66 @@ def get_mtproto_proxies(sent_ips):
     return selected[:MAX_MTPROTO_POST]
 
 def main():
-    # تأخیر رندم تا سر ساعت دقیق نباشد
-    delay = random.randint(30, 180)
+    # تأخیر رندم اول کار
+    delay = random.randint(40, 160)
     print(f"ربات برای طبیعی بودن {delay} ثانیه صبر می‌کند...")
     time.sleep(delay)
 
     sent_ips = get_sent_ips()
     print(f"تعداد IPهای ذخیره‌شده قبلی: {len(sent_ips)}")
 
-    # همیشه ساب را آپدیت کن
+    # ۱. همیشه ساب را آپدیت کن
     update_subscription()
 
-    # تشخیص ساعت زوج یا فرد (به وقت تهران)
-    _, _, current_hour = get_tehran_time()
-    is_even_hour = current_hour % 2 == 0
+    # ۲. پست V2Ray (از ساب خودمان)
+    print("\n" + "="*40)
+    print("شروع دور V2Ray (از ساب خودمان)")
+    print("="*40)
 
-    if is_even_hour:
-        print(f"\nساعت {current_hour} زوج است → پست V2Ray")
-        print("="*40)
-        print("شروع دور V2Ray (از ساب خودمان)")
-        print("="*40)
+    v2ray_results = get_v2ray_from_sub(sent_ips)
 
-        v2ray_results = get_v2ray_from_sub(sent_ips)
-
-        if v2ray_results:
-            ips_for_flag = [item["ip"] for item in v2ray_results]
-            flags = get_flags_batch(ips_for_flag)
-            configs_to_post = []
-            for item in v2ray_results:
-                flag = flags.get(item["ip"], "🌐")
-                modified = change_remark_v2ray(item["config"], f"{flag} {CUSTOM_REMARK}")
-                configs_to_post.append(modified)
-                sent_ips.add(item["ip_port"])
-            send_post(configs_to_post, "v2ray")
-        else:
-            print("هیچ کانفیگ V2Ray زنده‌ای از ساب پیدا نشد.")
-
+    if v2ray_results:
+        ips_for_flag = [item["ip"] for item in v2ray_results]
+        flags = get_flags_batch(ips_for_flag)
+        configs_to_post = []
+        for item in v2ray_results:
+            flag = flags.get(item["ip"], "🌐")
+            modified = change_remark_v2ray(item["config"], f"{flag} {CUSTOM_REMARK}")
+            configs_to_post.append(modified)
+            sent_ips.add(item["ip_port"])
+        send_post(configs_to_post, "v2ray")
     else:
-        print(f"\nساعت {current_hour} فرد است → پست MTProto")
-        print("="*40)
-        print("شروع دور MTProto")
-        print("="*40)
+        print("هیچ کانفیگ V2Ray زنده‌ای از ساب پیدا نشد.")
 
-        mt_proxies = get_mtproto_proxies(sent_ips)
-        if mt_proxies:
-            all_ips = []
-            for proxy in mt_proxies:
-                ip, _ = extract_ip_port(proxy)
-                if ip:
-                    all_ips.append(ip)
-            flags = get_flags_batch(all_ips)
-            configs_to_post = []
-            for proxy in mt_proxies:
-                ip, port = extract_ip_port(proxy)
-                flag = flags.get(ip, "🌐") if ip else "🌐"
-                modified = change_remark_mtproto(proxy, f"{flag} {CUSTOM_REMARK}")
-                configs_to_post.append(modified)
-                if ip and port:
-                    sent_ips.add(f"{ip}:{port}")
-            send_post(configs_to_post, "mtproto")
-        else:
-            print("هیچ پروکسی MTProto پیدا نشد.")
+    # فاصله رندم بین دو پست (۳ تا ۱۲ دقیقه)
+    between_delay = random.randint(180, 720)
+    print(f"\n⏳ فاصله رندم بین دو پست: {between_delay // 60} دقیقه و {between_delay % 60} ثانیه...")
+    time.sleep(between_delay)
+
+    # ۳. پست MTProto
+    print("\n" + "="*40)
+    print("شروع دور MTProto")
+    print("="*40)
+
+    mt_proxies = get_mtproto_proxies(sent_ips)
+    if mt_proxies:
+        all_ips = []
+        for proxy in mt_proxies:
+            ip, _ = extract_ip_port(proxy)
+            if ip:
+                all_ips.append(ip)
+        flags = get_flags_batch(all_ips)
+        configs_to_post = []
+        for proxy in mt_proxies:
+            ip, port = extract_ip_port(proxy)
+            flag = flags.get(ip, "🌐") if ip else "🌐"
+            modified = change_remark_mtproto(proxy, f"{flag} {CUSTOM_REMARK}")
+            configs_to_post.append(modified)
+            if ip and port:
+                sent_ips.add(f"{ip}:{port}")
+        send_post(configs_to_post, "mtproto")
+    else:
+        print("هیچ پروکسی MTProto پیدا نشد.")
 
     save_sent_ips(sent_ips)
     print(f"\n✅ حافظه ذخیره شد. تعداد کل IPهای ثبت‌شده: {len(sent_ips)}")
