@@ -12,15 +12,19 @@
 104.21.12.116:8880
 104.21.16.1:80
 104.21.38.220:80
+104.21.70.21:443
 104.21.71.238:443
 104.21.89.30:2096
 104.24.19.99:443
 116.202.189.213:8443
 116.202.189.239:8443
 135.181.74.178:443
+149.112.84.49:54237
 151.101.1.242:443
 151.101.129.57:80
 151.101.2.219:80
+156.146.38.167:443
+156.146.38.170:443
 162.159.0.8:443
 162.19.229.93:443
 172.64.145.2:443
@@ -40,6 +44,7 @@
 51.250.81.95:443
 63.141.128.22:443
 69.46.46.112:443
+82.198.246.250:180
 94.184.39.100.aprawood.ir:2020
 94.184.39.101.aprawood.ir:2020
 94.184.39.102.aprawood.ir:2020
@@ -72,6 +77,7 @@ bo0ji.co.uk.:443
 brisket.varomax.co.uk.:44300
 ccc.horizon555.co.uk:8443
 cdn3.cdnwave.org:443
+cdn7.cdnwave.org:443
 chatgpt.com:2096
 danmarki.tokhmemorgh.info.:7799
 dns.speed-benz.co.uk:8443
@@ -80,6 +86,7 @@ forever.startnetwork.shop:443
 freeconnect.lol:443
 gate.24starsmarket.ru:443
 gen.foriran.co.uk:443
+help.joumalanet.co.uk:443
 help.nettoyou2.co.uk:443
 iran.billblog.co.uk.:8443
 irancell-mci-rightell-adsl.visalawyer.co.uk.:443
@@ -88,6 +95,7 @@ irancell.ir.irancell.ir.irancell.ir.irancell.ir.rah-toro-mikhanad.info.:44300
 jadid.zhigool.co.uk:25565
 kurd.tryzub-it.co.uk.:8443
 love.ns.cloudflare.com:80
+media6.happtg.org:443
 megaconnect.click:443
 mio.mozitop.co.uk:8443
 naro.guguli.co.uk:8443
@@ -102,8 +110,11 @@ rana.irankhodro.co.uk:8443
 relay.rknsosi.shop:443
 resturant.zereshkpolo.info.:7799
 rootssh2.co.uk.:4455
+run.helloworld.surf:443
 s5.foriran.co.uk:443
+s8.assetflux.org:443
 severjadid.co.uk:4455
+shin.startnetwork.shop:443
 should.be.wake.up.ir.yfdhjderkig.info.:88
 sioms.co.uk:25565
 skein.chunkycorp.shop:8443
