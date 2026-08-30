@@ -27,7 +27,7 @@ SOURCE_CHANNELS = [
     "v2rayNG_Matsuri",
     "ConfigsHUB",
     "proxy_mtm",
-    "mehrosaboran"
+    "mehrosaboran",
     "makvaslim"
 ]
 
@@ -89,7 +89,6 @@ def save_subscription(configs):
     print(f"✅ ساب ذخیره شد. تعداد: {len(configs)}")
 
 def is_valid_config(config: str) -> bool:
-    """فیلتر خیلی ساده - فقط پروتکل را چک می‌کند"""
     if not config or not isinstance(config, str):
         return False
     config = config.strip()
@@ -336,7 +335,7 @@ def collect_from_channel(channel):
         if resp.status_code != 200:
             return found
         soup = BeautifulSoup(resp.text, 'html.parser')
-        messages = soup.find_all('div', class_='tgme_widget_message')[-20:]  # بیشتر از قبل
+        messages = soup.find_all('div', class_='tgme_widget_message')[-20:]
         for msg in messages:
             text_div = msg.find('div', class_='tgme_widget_message_text')
             if text_div:
@@ -370,16 +369,17 @@ def collect_from_sub(url):
     return found
 
 def update_subscription():
-    print("\n" + "="*40)
-    print("شروع به‌روزرسانی ساب")
-    print("="*40)
+    print("\n" + "="*50)
+    print("مرحله ۱: ساخت / به‌روزرسانی ساب")
+    print("="*50)
 
     all_configs = []
     seen = set()
 
     for ch in SOURCE_CHANNELS:
-        print(f"در حال دریافت از کانال @{ch} ...")
+        print(f"→ در حال دریافت از کانال @{ch} ...")
         configs = collect_from_channel(ch)
+        added = 0
         for cfg in configs:
             if is_valid_config(cfg):
                 ip, port = extract_ip_port(cfg)
@@ -388,11 +388,13 @@ def update_subscription():
                     seen.add(key)
                     modified = change_remark_v2ray(cfg, CUSTOM_REMARK)
                     all_configs.append(modified)
-        print(f"  → {len(configs)} کانفیگ پیدا شد")
+                    added += 1
+        print(f"  پیدا شد: {len(configs)} | اضافه شد: {added}")
 
     for sub_url in SOURCE_SUBS:
-        print(f"در حال دریافت از ساب ...")
+        print(f"→ در حال دریافت از لینک ساب ...")
         configs = collect_from_sub(sub_url)
+        added = 0
         for cfg in configs:
             if is_valid_config(cfg):
                 ip, port = extract_ip_port(cfg)
@@ -401,15 +403,19 @@ def update_subscription():
                     seen.add(key)
                     modified = change_remark_v2ray(cfg, CUSTOM_REMARK)
                     all_configs.append(modified)
-        print(f"  → {len(configs)} کانفیگ پیدا شد")
+                    added += 1
+        print(f"  پیدا شد: {len(configs)} | اضافه شد: {added}")
 
     old_sub = load_subscription()
+    kept = 0
     for cfg in old_sub:
         ip, port = extract_ip_port(cfg)
         key = f"{ip}:{port}" if ip else cfg[:80]
         if key not in seen:
             seen.add(key)
             all_configs.append(cfg)
+            kept += 1
+    print(f"→ از ساب قبلی نگه داشته شد: {kept}")
 
     if len(all_configs) > MAX_SUB_SIZE:
         all_configs = all_configs[-MAX_SUB_SIZE:]
@@ -418,12 +424,16 @@ def update_subscription():
     return all_configs
 
 def get_v2ray_from_sub(sent_ips):
+    print("\n" + "="*50)
+    print("مرحله ۲: انتخاب ۵ کانفیگ از ساب خودمان + تست")
+    print("="*50)
+
     sub_configs = load_subscription()
     if not sub_configs:
-        print("ساب خالی است.")
+        print("❌ ساب خالی است. نمی‌توان پست V2Ray فرستاد.")
         return []
 
-    print(f"تعداد کانفیگ در ساب: {len(sub_configs)}")
+    print(f"تعداد کانفیگ موجود در ساب: {len(sub_configs)}")
     random.shuffle(sub_configs)
 
     used_ips = set()
@@ -441,16 +451,21 @@ def get_v2ray_from_sub(sent_ips):
                         alive.append(result)
                         used_ips.add(result["ip_port"])
                         if len(alive) >= max_needed:
+                            print(f"✅ به {max_needed} کانفیگ سالم رسیدیم.")
                             return alive
             if len(alive) >= max_needed:
                 break
         return alive
 
     alive = collect_alive(sub_configs, MAX_V2RAY_POST)
+    print(f"نتیجه تست: {len(alive)} کانفیگ سالم از ساب پیدا شد.")
     return alive
 
 def get_mtproto_proxies(sent_ips):
-    print("در حال دریافت پروکسی‌های MTProto از کانال‌ها...")
+    print("\n" + "="*50)
+    print("مرحله ۳: دریافت پروکسی‌های MTProto")
+    print("="*50)
+
     found = []
     for src_chan in MTPROTO_CHANNELS:
         tg_url = f"https://t.me/s/{src_chan}"
@@ -474,7 +489,7 @@ def get_mtproto_proxies(sent_ips):
             continue
 
     unique = list(dict.fromkeys(found))
-    print(f"تعداد {len(unique)} پروکسی یکتا پیدا شد.")
+    print(f"تعداد پروکسی یکتا پیدا شد: {len(unique)}")
 
     new_proxies = []
     old_proxies = []
@@ -505,13 +520,12 @@ def main():
     sent_ips = get_sent_ips()
     print(f"تعداد IPهای ذخیره‌شده قبلی: {len(sent_ips)}")
 
-    # ۱. آپدیت ساب
-    update_subscription()
+    # ترتیب درست:
+    # ۱. ساخت ساب
+    # ۲. پست V2Ray از ساب
+    # ۳. پست MTProto
 
-    # ۲. پست V2Ray از ساب خودمان
-    print("\n" + "="*40)
-    print("شروع دور V2Ray (از ساب خودمان)")
-    print("="*40)
+    update_subscription()
 
     v2ray_results = get_v2ray_from_sub(sent_ips)
 
@@ -528,15 +542,9 @@ def main():
     else:
         print("هیچ کانفیگ V2Ray زنده‌ای از ساب پیدا نشد.")
 
-    # فاصله رندم بین دو پست
     between_delay = random.randint(180, 720)
     print(f"\n⏳ فاصله رندم بین دو پست: {between_delay // 60} دقیقه و {between_delay % 60} ثانیه...")
     time.sleep(between_delay)
-
-    # ۳. پست MTProto
-    print("\n" + "="*40)
-    print("شروع دور MTProto")
-    print("="*40)
 
     mt_proxies = get_mtproto_proxies(sent_ips)
     if mt_proxies:
@@ -559,7 +567,7 @@ def main():
         print("هیچ پروکسی MTProto پیدا نشد.")
 
     save_sent_ips(sent_ips)
-    print(f"\n✅ حافظه ذخیره شد. تعداد کل IPهای ثبت‌شده: {len(sent_ips)}")
+    print(f"\n✅ کار تمام شد. تعداد IPهای ثبت‌شده: {len(sent_ips)}")
 
 if __name__ == "__main__":
     main()
