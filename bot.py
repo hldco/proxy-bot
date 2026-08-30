@@ -88,22 +88,11 @@ def save_subscription(configs):
     print(f"✅ ساب ذخیره شد. تعداد: {len(configs)}")
 
 def is_valid_config(config: str) -> bool:
+    """فیلتر خیلی ساده - فقط پروتکل را چک می‌کند"""
     if not config or not isinstance(config, str):
         return False
     config = config.strip()
-    if not config.startswith(("vless://", "vmess://", "trojan://", "ss://")):
-        return False
-    if "extra={" in config:
-        return False
-    if any(c in config for c in ['`', '\n', '\r']):
-        return False
-    main_part = config.split("#")[0]
-    if config.startswith(("vless://", "trojan://", "ss://")):
-        if "@" not in main_part or ":" not in main_part.split("@")[-1]:
-            return False
-    if config.count("#") > 1:
-        return False
-    return True
+    return config.startswith(("vless://", "vmess://", "trojan://", "ss://"))
 
 def extract_ip_port(config):
     try:
@@ -346,7 +335,7 @@ def collect_from_channel(channel):
         if resp.status_code != 200:
             return found
         soup = BeautifulSoup(resp.text, 'html.parser')
-        messages = soup.find_all('div', class_='tgme_widget_message')[-12:]
+        messages = soup.find_all('div', class_='tgme_widget_message')[-20:]  # بیشتر از قبل
         for msg in messages:
             text_div = msg.find('div', class_='tgme_widget_message_text')
             if text_div:
@@ -393,7 +382,7 @@ def update_subscription():
         for cfg in configs:
             if is_valid_config(cfg):
                 ip, port = extract_ip_port(cfg)
-                key = f"{ip}:{port}" if ip else cfg
+                key = f"{ip}:{port}" if ip else cfg[:80]
                 if key not in seen:
                     seen.add(key)
                     modified = change_remark_v2ray(cfg, CUSTOM_REMARK)
@@ -406,7 +395,7 @@ def update_subscription():
         for cfg in configs:
             if is_valid_config(cfg):
                 ip, port = extract_ip_port(cfg)
-                key = f"{ip}:{port}" if ip else cfg
+                key = f"{ip}:{port}" if ip else cfg[:80]
                 if key not in seen:
                     seen.add(key)
                     modified = change_remark_v2ray(cfg, CUSTOM_REMARK)
@@ -416,7 +405,7 @@ def update_subscription():
     old_sub = load_subscription()
     for cfg in old_sub:
         ip, port = extract_ip_port(cfg)
-        key = f"{ip}:{port}" if ip else cfg
+        key = f"{ip}:{port}" if ip else cfg[:80]
         if key not in seen:
             seen.add(key)
             all_configs.append(cfg)
@@ -508,7 +497,6 @@ def get_mtproto_proxies(sent_ips):
     return selected[:MAX_MTPROTO_POST]
 
 def main():
-    # تأخیر رندم اول کار
     delay = random.randint(40, 160)
     print(f"ربات برای طبیعی بودن {delay} ثانیه صبر می‌کند...")
     time.sleep(delay)
@@ -516,10 +504,10 @@ def main():
     sent_ips = get_sent_ips()
     print(f"تعداد IPهای ذخیره‌شده قبلی: {len(sent_ips)}")
 
-    # ۱. همیشه ساب را آپدیت کن
+    # ۱. آپدیت ساب
     update_subscription()
 
-    # ۲. پست V2Ray (از ساب خودمان)
+    # ۲. پست V2Ray از ساب خودمان
     print("\n" + "="*40)
     print("شروع دور V2Ray (از ساب خودمان)")
     print("="*40)
@@ -539,7 +527,7 @@ def main():
     else:
         print("هیچ کانفیگ V2Ray زنده‌ای از ساب پیدا نشد.")
 
-    # فاصله رندم بین دو پست (۳ تا ۱۲ دقیقه)
+    # فاصله رندم بین دو پست
     between_delay = random.randint(180, 720)
     print(f"\n⏳ فاصله رندم بین دو پست: {between_delay // 60} دقیقه و {between_delay % 60} ثانیه...")
     time.sleep(between_delay)
