@@ -25,9 +25,10 @@ SOURCE_CHANNELS = [
     "proxy_kafee",
     "daily_configs",
     "v2rayNG_Matsuri",
-    "meliproxyy",
+    "ConfigsHUB",
     "proxy_mtm",
     "mehrosaboran"
+    "makvaslim"
 ]
 
 SOURCE_SUBS = [
