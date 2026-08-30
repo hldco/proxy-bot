@@ -8,6 +8,7 @@
 104.17.214.146:2095
 104.17.97.131:80
 104.18.37.228:443
+104.18.45.4:80
 104.21.12.116:8880
 104.21.16.1:80
 104.21.38.220:80
@@ -17,11 +18,14 @@
 116.202.189.213:8443
 116.202.189.239:8443
 135.181.74.178:443
+151.101.1.242:443
 151.101.129.57:80
 151.101.2.219:80
 162.159.0.8:443
 162.19.229.93:443
 172.64.145.2:443
+172.67.74.10:2087
+188.114.97.3:443
 188.114.97.6:443
 188.114.97.6:8080
 188.114.99.0:443
@@ -30,6 +34,7 @@
 199.232.78.159:443
 31.hide.newflamingodomain.co.uk:8443
 41.hide.newflamingodomain.co.uk:8443
+45.135.235.30:8880
 45.80.108.182:443
 45.80.111.7:443
 51.250.81.95:443
@@ -83,10 +88,13 @@ irancell.ir.irancell.ir.irancell.ir.irancell.ir.rah-toro-mikhanad.info.:44300
 jadid.zhigool.co.uk:25565
 kurd.tryzub-it.co.uk.:8443
 love.ns.cloudflare.com:80
+megaconnect.click:443
 mio.mozitop.co.uk:8443
 naro.guguli.co.uk:8443
+node.easyproxy.cfd:443
 nyakawai.shop:443
 opeenhostings.co.uk.:443
+premium.speed-benz.co.uk:8443
 proxtstar.live:443
 puot.mozitop.co.uk:8443
 qadim.zhigool.co.uk:22
