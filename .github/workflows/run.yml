@@ -2,7 +2,7 @@ name: Run V2ray Bot
 
 on:
   schedule:
-    - cron: '10 */2 * * *'   # هر ۲ ساعت یک‌بار (در دقیقه ۱۰)
+    - cron: '20 */2 * * *'   # هر ۲ ساعت یک‌بار (دقیقه ۲۰)
   workflow_dispatch:
 
 permissions:
@@ -33,7 +33,7 @@ jobs:
         if: always()
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: Update sent_ips.txt
-          file_pattern: sent_ips.txt
+          commit_message: Update subscription and sent_ips
+          file_pattern: subscription.txt sent_ips.txt
           commit_user_name: github-actions[bot]
           commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
