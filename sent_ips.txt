@@ -1,0 +1,17 @@
+156.146.38.167:443
+172.64.154.8:2052
+172.64.154.8:8080
+66.33.22.220:24276
+Berke.Wikimoon.sale:443
+admin.valmira.co.uk:25565
+bala.hastim.co.uk:443
+beer.crona-extra.co.uk:8443
+danmarki.tokhmemorgh.info.:7799
+evo.foriran.co.uk:443
+gen.foriran.co.uk:443
+jadid.zhigool.co.uk:25565
+naro.guguli.co.uk:8443
+qadim.zhigool.co.uk:22
+rana.irankhodro.co.uk:8443
+s5.foriran.co.uk:443
+www.speedtest.net:443
