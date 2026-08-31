@@ -2,7 +2,7 @@ name: Run V2ray Bot
 
 on:
   schedule:
-    - cron: '20 */2 * * *'   # هر ۲ ساعت یک‌بار (دقیقه ۲۰)
+    - cron: '25 * * * *'   # هر ۱ ساعت، دقیقه ۲۵
   workflow_dispatch:
 
 permissions:
