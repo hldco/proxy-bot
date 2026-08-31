@@ -344,32 +344,38 @@ def collect_from_channel(channel):
             return found
 
         soup = BeautifulSoup(resp.text, 'html.parser')
-        messages = soup.find_all('div', class_='tgme_widget_message')[-25:]
-        pattern = r'(vless://[^\s<>"\']+|vmess://[^\s<>"\']+|trojan://[^\s<>"\']+|ss://[^\s<>"\']+)'
+        messages = soup.find_all('div', class_='tgme_widget_message')[-30:]
+        pattern = r'(?:^|[\s\n\r\"\'>]|\d+\.\s*)((?:vless|vmess|trojan|ss)://[^\s<>"\']+)'
 
         for msg in messages:
             full_text = msg.get_text(separator="\n")
-            matches = re.findall(pattern, full_text)
+            matches = re.findall(pattern, full_text, flags=re.IGNORECASE | re.MULTILINE)
             found.extend(matches)
 
             for tag in msg.find_all(['code', 'pre']):
                 code_text = tag.get_text()
-                matches = re.findall(pattern, code_text)
+                matches = re.findall(pattern, code_text, flags=re.IGNORECASE | re.MULTILINE)
                 found.extend(matches)
 
             for a in msg.find_all('a', href=True):
                 href = a.get('href', '')
-                if any(href.startswith(p) for p in ("vless://", "vmess://", "trojan://", "ss://")):
+                if any(href.lower().startswith(p) for p in ("vless://", "vmess://", "trojan://", "ss://")):
                     found.append(href)
 
             raw_html = str(msg)
-            matches = re.findall(pattern, raw_html)
+            matches = re.findall(pattern, raw_html, flags=re.IGNORECASE | re.MULTILINE)
             found.extend(matches)
 
     except Exception as e:
         print(f"خطا در کانال {channel}: {e}")
 
-    return list(dict.fromkeys(found))
+    cleaned = []
+    for item in found:
+        item = item.strip().strip('"').strip("'")
+        if is_valid_config(item):
+            cleaned.append(item)
+
+    return list(dict.fromkeys(cleaned))
 
 def collect_from_sub(url):
     found = []
