@@ -19,13 +19,13 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
 CHANNEL_USERNAME = "@goololgoo"
 
-# منابع ساب (اولویت با کانال‌ها)
 SOURCE_CHANNELS = [
     "persianvpnhub",
     "proxy_kafee",
     "daily_configs",
     "v2rayNG_Matsuri",
     "ConfigsHUB",
+    "ConfigsHUB2",
     "proxy_mtm",
     "mehrosaboran",
     "makvaslim"
@@ -35,7 +35,6 @@ SOURCE_SUBS = [
     "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/refs/heads/main/top100.txt"
 ]
 
-# منابع پروکسی تلگرام (MTProto)
 MTPROTO_CHANNELS = ["PinkProxy", "Myporoxy", "ProxyWR", "P500Y", "ProxyMTProto"]
 
 CUSTOM_REMARK = "@goololgoo 🔐 وی‌پی‌ان رایگان | Free Proxy💥"
@@ -44,6 +43,11 @@ MAX_V2RAY_POST = 5
 MAX_MTPROTO_POST = 12
 MAX_SUB_SIZE = 600
 BATCH_SIZE = 200
+
+PREFERRED_COUNTRIES = {
+    "NL", "DE", "FI", "FR", "SE", "GB", "PL", "IT", "ES", "BE",
+    "AT", "CH", "NO", "DK", "CZ", "RO", "HU", "IE", "PT", "GR"
+}
 # ==========================================
 
 SENT_IPS_FILE = "sent_ips.txt"
@@ -114,7 +118,7 @@ def extract_ip_port(config):
         pass
     return None, None
 
-def check_port(ip, port, timeout=2.5):
+def check_port(ip, port, timeout=4.0):
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.settimeout(timeout)
@@ -124,27 +128,30 @@ def check_port(ip, port, timeout=2.5):
     except:
         return False
 
-def get_flags_batch(ip_list):
-    flags = {}
+def get_country_and_flag(ip_list):
+    result = {}
     valid_ips = [ip for ip in ip_list if ip and re.match(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$', ip)]
     if not valid_ips:
-        return {ip: "🌐" for ip in ip_list}
+        return {ip: {"code": "", "flag": "🌐"} for ip in ip_list}
+
     try:
         payload = [{"query": ip, "fields": "query,countryCode"} for ip in valid_ips]
         res = requests.post("http://ip-api.com/batch", json=payload, timeout=12).json()
         for item in res:
             ip = item.get("query")
-            code = item.get("countryCode", "")
+            code = item.get("countryCode", "") or ""
             if len(code) == 2:
-                flags[ip] = chr(0x1F1E6 + ord(code[0]) - ord('A')) + chr(0x1F1E6 + ord(code[1]) - ord('A'))
+                flag = chr(0x1F1E6 + ord(code[0]) - ord('A')) + chr(0x1F1E6 + ord(code[1]) - ord('A'))
             else:
-                flags[ip] = "🌐"
+                flag = "🌐"
+            result[ip] = {"code": code, "flag": flag}
     except:
         pass
+
     for ip in ip_list:
-        if ip not in flags:
-            flags[ip] = "🌐"
-    return flags
+        if ip not in result:
+            result[ip] = {"code": "", "flag": "🌐"}
+    return result
 
 def change_remark_v2ray(config, new_remark):
     try:
@@ -333,22 +340,36 @@ def collect_from_channel(channel):
     try:
         resp = requests.get(tg_url, timeout=15)
         if resp.status_code != 200:
+            print(f"  ⚠️ وضعیت پاسخ {resp.status_code} برای @{channel}")
             return found
+
         soup = BeautifulSoup(resp.text, 'html.parser')
-        messages = soup.find_all('div', class_='tgme_widget_message')[-20:]
+        messages = soup.find_all('div', class_='tgme_widget_message')[-25:]
+        pattern = r'(vless://[^\s<>"\']+|vmess://[^\s<>"\']+|trojan://[^\s<>"\']+|ss://[^\s<>"\']+)'
+
         for msg in messages:
-            text_div = msg.find('div', class_='tgme_widget_message_text')
-            if text_div:
-                text = text_div.get_text()
-                matches = re.findall(r'(vless://[^\s<>"\']+|vmess://[^\s<>"\']+|trojan://[^\s<>"\']+|ss://[^\s<>"\']+)', text)
+            full_text = msg.get_text(separator="\n")
+            matches = re.findall(pattern, full_text)
+            found.extend(matches)
+
+            for tag in msg.find_all(['code', 'pre']):
+                code_text = tag.get_text()
+                matches = re.findall(pattern, code_text)
                 found.extend(matches)
+
             for a in msg.find_all('a', href=True):
-                href = a['href']
+                href = a.get('href', '')
                 if any(href.startswith(p) for p in ("vless://", "vmess://", "trojan://", "ss://")):
                     found.append(href)
+
+            raw_html = str(msg)
+            matches = re.findall(pattern, raw_html)
+            found.extend(matches)
+
     except Exception as e:
         print(f"خطا در کانال {channel}: {e}")
-    return found
+
+    return list(dict.fromkeys(found))
 
 def collect_from_sub(url):
     found = []
@@ -425,41 +446,63 @@ def update_subscription():
 
 def get_v2ray_from_sub(sent_ips):
     print("\n" + "="*50)
-    print("مرحله ۲: انتخاب ۵ کانفیگ از ساب خودمان + تست")
+    print("مرحله ۲: انتخاب ۵ کانفیگ از ساب (اولویت اروپا)")
     print("="*50)
 
     sub_configs = load_subscription()
     if not sub_configs:
-        print("❌ ساب خالی است. نمی‌توان پست V2Ray فرستاد.")
+        print("❌ ساب خالی است.")
         return []
 
-    print(f"تعداد کانفیگ موجود در ساب: {len(sub_configs)}")
+    print(f"تعداد کانفیگ در ساب: {len(sub_configs)}")
     random.shuffle(sub_configs)
 
+    candidates = []
     used_ips = set()
+    target_candidates = 20
 
-    def collect_alive(config_list, max_needed):
-        alive = []
-        for i in range(0, len(config_list), BATCH_SIZE):
-            batch = config_list[i:i + BATCH_SIZE]
-            print(f"در حال تست دسته {i // BATCH_SIZE + 1} ({len(batch)} کانفیگ)...")
-            with ThreadPoolExecutor(max_workers=40) as executor:
-                futures = {executor.submit(test_single_config, cfg, sent_ips): cfg for cfg in batch}
-                for future in as_completed(futures):
-                    result = future.result()
-                    if result and result["ip_port"] not in used_ips:
-                        alive.append(result)
-                        used_ips.add(result["ip_port"])
-                        if len(alive) >= max_needed:
-                            print(f"✅ به {max_needed} کانفیگ سالم رسیدیم.")
-                            return alive
-            if len(alive) >= max_needed:
-                break
-        return alive
+    for i in range(0, len(sub_configs), BATCH_SIZE):
+        batch = sub_configs[i:i + BATCH_SIZE]
+        print(f"در حال تست دسته {i // BATCH_SIZE + 1} ({len(batch)} کانفیگ)...")
+        with ThreadPoolExecutor(max_workers=40) as executor:
+            futures = {executor.submit(test_single_config, cfg, sent_ips): cfg for cfg in batch}
+            for future in as_completed(futures):
+                result = future.result()
+                if result and result["ip_port"] not in used_ips:
+                    candidates.append(result)
+                    used_ips.add(result["ip_port"])
+                    if len(candidates) >= target_candidates:
+                        break
+        if len(candidates) >= target_candidates:
+            break
 
-    alive = collect_alive(sub_configs, MAX_V2RAY_POST)
-    print(f"نتیجه تست: {len(alive)} کانفیگ سالم از ساب پیدا شد.")
-    return alive
+    print(f"تعداد کاندیدای سالم: {len(candidates)}")
+    if not candidates:
+        return []
+
+    ips = [c["ip"] for c in candidates]
+    country_info = get_country_and_flag(ips)
+
+    europe = []
+    others = []
+    for c in candidates:
+        code = country_info.get(c["ip"], {}).get("code", "")
+        c["country_code"] = code
+        c["flag"] = country_info.get(c["ip"], {}).get("flag", "🌐")
+        if code in PREFERRED_COUNTRIES:
+            europe.append(c)
+        else:
+            others.append(c)
+
+    print(f"اروپایی: {len(europe)} | بقیه: {len(others)}")
+
+    selected = europe[:MAX_V2RAY_POST]
+    if len(selected) < MAX_V2RAY_POST:
+        needed = MAX_V2RAY_POST - len(selected)
+        selected.extend(others[:needed])
+
+    print(f"نهایی انتخاب شده: {len(selected)} (اولویت با اروپا)")
+    return selected
 
 def get_mtproto_proxies(sent_ips):
     print("\n" + "="*50)
@@ -489,7 +532,7 @@ def get_mtproto_proxies(sent_ips):
             continue
 
     unique = list(dict.fromkeys(found))
-    print(f"تعداد پروکسی یکتا پیدا شد: {len(unique)}")
+    print(f"تعداد پروکسی یکتا: {len(unique)}")
 
     new_proxies = []
     old_proxies = []
@@ -520,32 +563,29 @@ def main():
     sent_ips = get_sent_ips()
     print(f"تعداد IPهای ذخیره‌شده قبلی: {len(sent_ips)}")
 
-    # ترتیب درست:
     # ۱. ساخت ساب
-    # ۲. پست V2Ray از ساب
-    # ۳. پست MTProto
-
     update_subscription()
 
+    # ۲. پست V2Ray از ساب (اولویت اروپا)
     v2ray_results = get_v2ray_from_sub(sent_ips)
 
     if v2ray_results:
-        ips_for_flag = [item["ip"] for item in v2ray_results]
-        flags = get_flags_batch(ips_for_flag)
         configs_to_post = []
         for item in v2ray_results:
-            flag = flags.get(item["ip"], "🌐")
+            flag = item.get("flag", "🌐")
             modified = change_remark_v2ray(item["config"], f"{flag} {CUSTOM_REMARK}")
             configs_to_post.append(modified)
             sent_ips.add(item["ip_port"])
         send_post(configs_to_post, "v2ray")
     else:
-        print("هیچ کانفیگ V2Ray زنده‌ای از ساب پیدا نشد.")
+        print("هیچ کانفیگ V2Ray زنده‌ای پیدا نشد.")
 
+    # فاصله رندم
     between_delay = random.randint(180, 720)
     print(f"\n⏳ فاصله رندم بین دو پست: {between_delay // 60} دقیقه و {between_delay % 60} ثانیه...")
     time.sleep(between_delay)
 
+    # ۳. پست MTProto
     mt_proxies = get_mtproto_proxies(sent_ips)
     if mt_proxies:
         all_ips = []
@@ -553,11 +593,11 @@ def main():
             ip, _ = extract_ip_port(proxy)
             if ip:
                 all_ips.append(ip)
-        flags = get_flags_batch(all_ips)
+        country_info = get_country_and_flag(all_ips)
         configs_to_post = []
         for proxy in mt_proxies:
             ip, port = extract_ip_port(proxy)
-            flag = flags.get(ip, "🌐") if ip else "🌐"
+            flag = country_info.get(ip, {}).get("flag", "🌐") if ip else "🌐"
             modified = change_remark_mtproto(proxy, f"{flag} {CUSTOM_REMARK}")
             configs_to_post.append(modified)
             if ip and port:
