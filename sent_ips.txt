@@ -2,6 +2,7 @@
 104.17.108.128:443
 104.21.71.238:443
 116.202.189.213:8443
+129.121.95.159:443
 138.199.238.202:8443
 162.159.38.127:2052
 162.19.229.93:443
@@ -14,6 +15,8 @@
 172.67.225.147:8443
 173.245.59.162:443
 185.207.196.48:443
+185.209.15.198:443
+185.226.172.8:8008
 185.254.205.79:19842
 188.114.97.6:2082
 192.155.87.188:10092
@@ -34,6 +37,7 @@
 64.23.229.123:443
 65.109.208.75:4466
 65.109.211.87:4466
+81.18.48.97:2053
 87.58.153.39:8443
 91.107.241.228:443
 94.184.39.100.aprawood.ir:2020
@@ -50,6 +54,7 @@
 Berke.Wikimoon.sale:443
 Lashboy.muzanesghy.co.uk:4455
 New.nchnch.co.uk:4455
+ad1.arixo.shop:443
 admin.valmira.co.uk:25565
 app.what-ever.co.uk:443
 bala.hastim.co.uk:443
@@ -86,11 +91,13 @@ rootssh2.co.uk.:4455
 s5.foriran.co.uk:443
 setion-two.co.uk.:443
 severjadid.co.uk:4455
+skein.chunkycorp.shop:8443
 ssh.meow0.co.uk:22
 support.infinityhalo.co.uk.:8443
 t.meow-network.com:443
 turk.dasy2k1.co.uk.:8443
 uptime.speed-benz.co.uk:8443
+ving.mozitop.co.uk:8443
 world-mordak.maraton-co.info.:443
 x.shmelproxy.top:443
 yarypple.co.uk.:4455
