@@ -1,6 +1,9 @@
+1.hide.newflamingodomain.co.uk:8443
 103.161.35.23:443
 104.16.104.71:443
+104.16.205.53:443
 104.16.72.101:443
+104.16.79.73:443
 104.17.108.128:443
 104.18.151.69:2083
 104.18.155.141:8443
@@ -37,9 +40,12 @@
 172.64.229.2:80
 172.64.42.85:80
 172.64.52.6:2052
+172.64.52.6:8080
 172.66.44.97:443
 172.67.130.187:2053
+172.67.152.71:8880
 172.67.225.147:8443
+172.67.74.10:443
 173.245.59.162:443
 185.207.196.48:443
 185.209.15.198:443
@@ -54,6 +60,7 @@
 199.232.78.159:80
 199.232.78.160:443
 209.200.246.148:443
+21.hide.newflamingodomain.co.uk:8443
 212.23.221.62:443
 213.130.137.170:443
 213.130.137.20:443
@@ -98,6 +105,7 @@
 Berke.Wikimoon.sale:443
 Cysecy12.global.ssl.fastly.net:80
 Golden.Peachsoft.co.uk.:443
+Jet-motor.iran.proxy.ir.kkhfkasfhkasdx.info.:7443
 Lashboy.muzanesghy.co.uk:4455
 New.nchnch.co.uk:4455
 Speed-speed.co.uk.:443
@@ -107,6 +115,7 @@ api2.medhata.org:2443
 app.what-ever.co.uk:443
 bala.hastim.co.uk:443
 beam.whitelist.cyou:443
+bedo-bedo.ir.kjhsdjhads.info.:7443
 beer.crona-extra.co.uk:8443
 beest-sellerst.co.uk.:443
 bfesedv.uk.:4455
@@ -116,6 +125,7 @@ bo0ji.co.uk.:443
 ccc.horizon555.co.uk:8443
 cdn3.cdnwave.org:443
 danmarki.tokhmemorgh.info.:7799
+davande.ir.kjhsdjhads.info.:7443
 del-tange-toam.ir.kkhfkasfhkasdx.info.:7443
 dns.speed-benz.co.uk:8443
 eshkal-nadare.vasledada.info:8443
@@ -134,6 +144,8 @@ iranian.billblog.co.uk:8443
 jadid.zhigool.co.uk:25565
 joon.jinxandjack.co.uk:8443
 kurd.tryzub-it.co.uk.:8443
+mamadali.co.uk:4455
+mamadgoli.co.uk:4455
 media2.happtg.org:443
 media7.happtg.org:443
 megaconnect.click:443
@@ -145,6 +157,7 @@ node.easyproxy.cfd:443
 nontanori.noshabekoka.info.:7799
 nyakawai.shop:443
 poland.vechnostnet.study:443
+porsorate.co.uk:4455
 premium.speed-benz.co.uk:8443
 proxtstar.live:443
 puot.mozitop.co.uk:8443
@@ -164,11 +177,15 @@ strait-of-hormuz.ir.khdakjahdskj.info.:443
 support.infinityhalo.co.uk.:8443
 support.joumalanet.co.uk:443
 t.meow-network.com:443
+teranhavaei.charkhofalak.info.:7799
+topproxt.asia:443
 turk.dasy2k1.co.uk.:8443
 ultr.helloworld.surf:443
 uptime.speed-benz.co.uk:8443
 vase-hamas.ir.kjhsdjhads.info.:7443
 ving.mozitop.co.uk:8443
 world-mordak.maraton-co.info.:443
+wow.mtproto.baby:443
 x.shmelproxy.top:443
 yarypple.co.uk.:4455
+yeke-jahan.mohearn.co.uk.:443
