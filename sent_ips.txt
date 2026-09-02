@@ -22,6 +22,7 @@
 151.101.129.242:443
 160.123.255.78:443
 162.159.0.169:2052
+162.159.0.53:80
 162.159.24.131:2095
 162.159.38.127:2052
 162.159.43.187:2086
@@ -40,7 +41,9 @@
 172.64.229.2:80
 172.64.42.85:80
 172.64.52.6:2052
+172.64.52.6:80
 172.64.52.6:8080
+172.64.52.6:8880
 172.66.44.97:443
 172.67.130.187:2053
 172.67.152.71:8880
@@ -89,6 +92,7 @@
 87.58.153.39:8443
 88.198.197.199:4466
 91.107.140.144:443
+91.107.160.196:443
 91.107.174.164:443
 91.107.241.228:443
 94.184.39.100.aprawood.ir:2020
@@ -105,10 +109,12 @@
 Berke.Wikimoon.sale:443
 Cysecy12.global.ssl.fastly.net:80
 Golden.Peachsoft.co.uk.:443
+Hel-hi.co.uk.:443
 Jet-motor.iran.proxy.ir.kkhfkasfhkasdx.info.:7443
 Lashboy.muzanesghy.co.uk:4455
 New.nchnch.co.uk:4455
 Speed-speed.co.uk.:443
+Suodbo.co.uk.:443
 ad1.arixo.shop:443
 admin.valmira.co.uk:25565
 api2.medhata.org:2443
@@ -144,6 +150,7 @@ iranian.billblog.co.uk:8443
 jadid.zhigool.co.uk:25565
 joon.jinxandjack.co.uk:8443
 kurd.tryzub-it.co.uk.:8443
+lazeyka-2-5.getvelora.space:443
 mamadali.co.uk:4455
 mamadgoli.co.uk:4455
 media2.happtg.org:443
@@ -156,6 +163,7 @@ naro.guguli.co.uk:8443
 node.easyproxy.cfd:443
 nontanori.noshabekoka.info.:7799
 nyakawai.shop:443
+one.horizon555.co.uk:8443
 poland.vechnostnet.study:443
 porsorate.co.uk:4455
 premium.speed-benz.co.uk:8443
@@ -163,6 +171,7 @@ proxtstar.live:443
 puot.mozitop.co.uk:8443
 qadim.zhigool.co.uk:22
 rana.irankhodro.co.uk:8443
+region.lovely.lat:443
 relay.rknsosi.shop:443
 resturant.zereshkpolo.info.:7799
 rootssh2.co.uk.:4455
@@ -176,6 +185,7 @@ ssh.meow0.co.uk:22
 strait-of-hormuz.ir.khdakjahdskj.info.:443
 support.infinityhalo.co.uk.:8443
 support.joumalanet.co.uk:443
+sync.lovely.lat:443
 t.meow-network.com:443
 teranhavaei.charkhofalak.info.:7799
 topproxt.asia:443
