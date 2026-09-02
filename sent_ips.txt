@@ -27,6 +27,7 @@
 162.159.0.53:80
 162.159.24.131:2095
 162.159.38.127:2052
+162.159.38.127:2086
 162.159.43.187:2086
 162.19.229.93:443
 162.35.231.31:443
@@ -41,6 +42,7 @@
 172.64.154.8:2086
 172.64.158.146:2082
 172.64.158.146:2095
+172.64.229.170:80
 172.64.229.2:80
 172.64.32.108:80
 172.64.42.85:80
@@ -54,6 +56,7 @@
 172.67.225.147:8443
 172.67.74.10:443
 173.245.59.162:443
+185.18.250.252:443
 185.207.196.48:443
 185.209.15.198:443
 185.226.172.8:8008
@@ -126,6 +129,7 @@ app.what-ever.co.uk:443
 as.mkim.click:443
 bala.hastim.co.uk:443
 beam.whitelist.cyou:443
+become-last.flashspder.info:443
 bedo-bedo.ir.kjhsdjhads.info.:7443
 beer.crona-extra.co.uk:8443
 beest-sellerst.co.uk.:443
@@ -165,6 +169,7 @@ max.kimt.click:443
 media2.happtg.org:443
 media7.happtg.org:443
 megaconnect.click:443
+mio.foltmeingop.co.uk:8880
 mio.mozitop.co.uk:8443
 mkima.davay.click:443
 mt.joumalanet.co.uk:25565
