@@ -9,6 +9,8 @@
 104.18.155.141:8443
 104.18.2.186:2095
 104.18.37.228:443
+104.18.46.234:2086
+104.18.46.46:2086
 104.18.47.113:2086
 104.18.47.113:8080
 104.19.6.247:2087
@@ -36,9 +38,11 @@
 172.105.104.54:58676
 172.233.139.46:53734
 172.235.62.90:443
+172.64.154.8:2086
 172.64.158.146:2082
 172.64.158.146:2095
 172.64.229.2:80
+172.64.32.108:80
 172.64.42.85:80
 172.64.52.6:2052
 172.64.52.6:80
@@ -119,6 +123,7 @@ ad1.arixo.shop:443
 admin.valmira.co.uk:25565
 api2.medhata.org:2443
 app.what-ever.co.uk:443
+as.mkim.click:443
 bala.hastim.co.uk:443
 beam.whitelist.cyou:443
 bedo-bedo.ir.kjhsdjhads.info.:7443
@@ -144,6 +149,8 @@ gate.24starsmarket.ru:443
 gen.foriran.co.uk:443
 help.joumalanet.co.uk:443
 help.meow0.co.uk:22
+http.khelijefars.co.uk:22
+ir.makkers.co.uk:8443
 iran.billblog.co.uk.:8443
 irancell-mci-rightell-adsl.visalawyer.co.uk.:443
 iranian.billblog.co.uk:8443
@@ -153,10 +160,13 @@ kurd.tryzub-it.co.uk.:8443
 lazeyka-2-5.getvelora.space:443
 mamadali.co.uk:4455
 mamadgoli.co.uk:4455
+mashti.just-money.co.uk:8880
+max.kimt.click:443
 media2.happtg.org:443
 media7.happtg.org:443
 megaconnect.click:443
 mio.mozitop.co.uk:8443
+mkima.davay.click:443
 mt.joumalanet.co.uk:25565
 my-iran.dinocol.co.uk.:8443
 naro.guguli.co.uk:8443
@@ -180,6 +190,7 @@ s5.assetflux.org:443
 s5.foriran.co.uk:443
 setion-two.co.uk.:443
 severjadid.co.uk:4455
+sftp.khelijefars.co.uk:25565
 skein.chunkycorp.shop:8443
 ssh.meow0.co.uk:22
 strait-of-hormuz.ir.khdakjahdskj.info.:443
@@ -188,6 +199,7 @@ support.joumalanet.co.uk:443
 sync.lovely.lat:443
 t.meow-network.com:443
 teranhavaei.charkhofalak.info.:7799
+tls.joumalanet.co.uk:25565
 topproxt.asia:443
 turk.dasy2k1.co.uk.:8443
 ultr.helloworld.surf:443
