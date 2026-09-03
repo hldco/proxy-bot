@@ -9,6 +9,7 @@
 104.18.155.141:8443
 104.18.2.186:2095
 104.18.37.228:443
+104.18.39.218:2095
 104.18.46.234:2082
 104.18.46.234:2086
 104.18.46.46:2086
@@ -78,6 +79,8 @@
 188.114.97.7:443
 192.155.87.188:10092
 194.120.230.37:443
+194.59.221.90:8443
+194.59.221.90:8444
 195.201.216.142:8443
 198.251.78.29:2053
 199.232.78.159:80
@@ -96,6 +99,7 @@
 31.hide.newflamingodomain.co.uk:8443
 37.19.198.243:443
 41.hide.newflamingodomain.co.uk:8443
+45.130.125.207:2083
 51.250.81.95:443
 54321.sobhan-allah.info.:543
 64.23.229.123:443
@@ -108,6 +112,7 @@
 65.21.83.248:443
 69.46.46.124:443
 69.46.46.20:443
+74.207.245.124:39852
 81.18.48.97:2053
 84.32.131.61:18610
 87.58.153.39:8443
@@ -135,6 +140,7 @@ Jet-motor.iran.proxy.ir.kkhfkasfhkasdx.info.:7443
 Lashboy.muzanesghy.co.uk:4455
 New.nchnch.co.uk:4455
 Speed-speed.co.uk.:443
+Strait-of-Hormuz.ir.jursdheks.info.:88
 Suodbo.co.uk.:443
 ad1.arixo.shop:443
 admin.valmira.co.uk:25565
@@ -190,13 +196,17 @@ megaconnect.click:443
 mio.foltmeingop.co.uk:8880
 mio.mozitop.co.uk:8443
 mkima.davay.click:443
+mt.best-moz.info:25565
 mt.joumalanet.co.uk:25565
+mt2.best-moz.info:25565
 my-iran.dinocol.co.uk.:8443
+my-iran.vingardium.co.uk:8443
 naro.guguli.co.uk:8443
 node.easyproxy.cfd:443
 nontanori.noshabekoka.info.:7799
 nyakawai.shop:443
 one.horizon555.co.uk:8443
+persian.gulf.ir.olsjddhf.info.:88
 poland.vechnostnet.study:443
 porsorate.co.uk:4455
 premium.speed-benz.co.uk:8443
@@ -235,6 +245,7 @@ uptime.speed-benz.co.uk:8443
 vase-hamas.ir.kjhsdjhads.info.:7443
 vasl-sho.mohearn.co.uk.:443
 ving.mozitop.co.uk:8443
+web.connectina.co.uk:8443
 world-mordak.maraton-co.info.:443
 wow.mtproto.baby:443
 x.shmelproxy.top:443
