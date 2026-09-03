@@ -75,6 +75,7 @@
 185.226.172.8:8008
 185.254.205.79:19842
 185.84.156.45:444
+188.114.97.6:2052
 188.114.97.6:2082
 188.114.97.7:443
 192.155.87.188:10092
@@ -209,6 +210,7 @@ one.horizon555.co.uk:8443
 persian.gulf.ir.olsjddhf.info.:88
 poland.vechnostnet.study:443
 porsorate.co.uk:4455
+portal.mtproxy.cc:443
 premium.speed-benz.co.uk:8443
 proxtstar.live:443
 puot.mozitop.co.uk:8443
