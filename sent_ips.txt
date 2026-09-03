@@ -15,6 +15,7 @@
 104.18.47.113:2086
 104.18.47.113:8080
 104.19.6.247:2087
+104.21.56.225:443
 104.21.71.238:443
 104.26.12.54:443
 104.26.14.85:443
@@ -26,6 +27,7 @@
 151.101.129.242:443
 160.123.255.78:443
 162.159.0.169:2052
+162.159.0.169:2086
 162.159.0.53:80
 162.159.24.131:2052
 162.159.24.131:2095
@@ -60,6 +62,7 @@
 172.67.179.98:8880
 172.67.225.147:8443
 172.67.74.10:443
+173.245.58.75:443
 173.245.59.162:443
 185.18.250.252:443
 185.207.196.48:443
@@ -208,13 +211,17 @@ setion-two.co.uk.:443
 severjadid.co.uk:4455
 sftp.khelijefars.co.uk:25565
 skein.chunkycorp.shop:8443
+ssh.best-moz.info:22
 ssh.meow0.co.uk:22
+ssh2.best-moz.info:22
 strait-of-hormuz.ir.khdakjahdskj.info.:443
+stu.vechnostnet.study:443
 support.infinityhalo.co.uk.:8443
 support.joumalanet.co.uk:443
 sync.lovely.lat:443
 t.meow-network.com:443
 teranhavaei.charkhofalak.info.:7799
+tetstts.mtproto.baby:443
 tls.joumalanet.co.uk:25565
 topproxt.asia:443
 turk.dasy2k1.co.uk.:8443
