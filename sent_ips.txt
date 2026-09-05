@@ -22,8 +22,10 @@
 104.18.47.113:8080
 104.18.47.113:8880
 104.19.6.247:2087
+104.21.51.132:8080
 104.21.56.225:443
 104.21.70.21:443
+104.21.70.21:8080
 104.21.71.238:443
 104.21.8.63:443
 104.21.93.245:8443
@@ -37,6 +39,7 @@
 135.181.129.162:443
 138.199.238.202:8443
 140.248.185.253:443
+15.204.97.195:23576
 151.101.129.242:443
 151.101.65.242:443
 160.123.255.78:443
@@ -177,6 +180,7 @@ Strait-of-Hormuz.ir.jursdheks.info:7443
 Suodbo.co.uk.:443
 ad1.arixo.shop:443
 admin.valmira.co.uk:25565
+adproxy.mtproto.baby:443
 api2.medhata.org:2443
 app.what-ever.co.uk:443
 as.mkim.click:443
@@ -192,6 +196,7 @@ blue.what-ever.co.uk.:8443
 bo0ji.co.uk.:443
 bolt.utkanos.life:2443
 ccc.horizon555.co.uk:8443
+cdn10.cdnwave.org:443
 cdn3.cdnwave.org:443
 cdn5.cdnwave.org:443
 danmarki.tokhmemorgh.info.:7799
@@ -215,12 +220,14 @@ help.meow0.co.uk:22
 http.khelijefars.co.uk:22
 ir.makkers.co.uk:8443
 iran-download.shentaichiacademy.co.uk.:443
+iran-ir.vingardium.co.uk:8443
 iran.billblog.co.uk.:8443
 iran.brettanderson.co.uk.:443
 irancell-mci-rightell-adsl.visalawyer.co.uk.:443
 iranian.billblog.co.uk:8443
 jadid.zhigool.co.uk:25565
 joon.jinxandjack.co.uk:8443
+kima.rabotaet.online:443
 kurd.tryzub-it.co.uk.:8443
 lazeyka-2-5.getvelora.space:443
 mamadali.co.uk:4455
@@ -246,6 +253,7 @@ nodes.startnetwork.shop:443
 nontanori.noshabekoka.info.:7799
 nyakawai.shop:443
 one.horizon555.co.uk:8443
+os.vechnostnet.study:443
 persian.gulf.ir.olsjddhf.info.:7443
 persian.gulf.ir.olsjddhf.info.:88
 poland.vechnostnet.study:443
@@ -260,6 +268,7 @@ region.lovely.lat:443
 relay.rknsosi.shop:443
 resturant.zereshkpolo.info.:7799
 rootssh2.co.uk.:4455
+s1.assetflux.org:443
 s4.assetflux.org:443
 s5.assetflux.org:443
 s5.foriran.co.uk:443
