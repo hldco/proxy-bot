@@ -41,7 +41,7 @@ CUSTOM_REMARK = "@goololgoo 🔐 وی‌پی‌ان رایگان | Free Proxy�
 
 MAX_V2RAY_POST = 5
 MAX_MTPROTO_POST = 12
-MAX_SUB_SIZE = 600
+MAX_SUB_SIZE = 1000
 BATCH_SIZE = 200
 
 PREFERRED_COUNTRIES = {
@@ -348,20 +348,24 @@ def collect_from_channel(channel):
         pattern = r'(?:^|[\s\n\r\"\'>]|\d+\.\s*)((?:vless|vmess|trojan|ss)://[^\s<>"\']+)'
 
         for msg in messages:
+            # 1. متن کامل پیام (شامل quote و collapse)
             full_text = msg.get_text(separator="\n")
             matches = re.findall(pattern, full_text, flags=re.IGNORECASE | re.MULTILINE)
             found.extend(matches)
 
+            # 2. داخل تگ‌های code و pre
             for tag in msg.find_all(['code', 'pre']):
                 code_text = tag.get_text()
                 matches = re.findall(pattern, code_text, flags=re.IGNORECASE | re.MULTILINE)
                 found.extend(matches)
 
+            # 3. لینک‌های مستقیم
             for a in msg.find_all('a', href=True):
                 href = a.get('href', '')
                 if any(href.lower().startswith(p) for p in ("vless://", "vmess://", "trojan://", "ss://")):
                     found.append(href)
 
+            # 4. خود HTML خام
             raw_html = str(msg)
             matches = re.findall(pattern, raw_html, flags=re.IGNORECASE | re.MULTILINE)
             found.extend(matches)
@@ -569,10 +573,8 @@ def main():
     sent_ips = get_sent_ips()
     print(f"تعداد IPهای ذخیره‌شده قبلی: {len(sent_ips)}")
 
-    # ۱. ساخت ساب
     update_subscription()
 
-    # ۲. پست V2Ray از ساب (اولویت اروپا)
     v2ray_results = get_v2ray_from_sub(sent_ips)
 
     if v2ray_results:
@@ -586,12 +588,10 @@ def main():
     else:
         print("هیچ کانفیگ V2Ray زنده‌ای پیدا نشد.")
 
-    # فاصله رندم
     between_delay = random.randint(180, 720)
     print(f"\n⏳ فاصله رندم بین دو پست: {between_delay // 60} دقیقه و {between_delay % 60} ثانیه...")
     time.sleep(between_delay)
 
-    # ۳. پست MTProto
     mt_proxies = get_mtproto_proxies(sent_ips)
     if mt_proxies:
         all_ips = []
