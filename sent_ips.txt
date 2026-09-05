@@ -1,4 +1,5 @@
 1.hide.newflamingodomain.co.uk:8443
+1.pugfhtrdyted.info.:7443
 103.161.35.23:443
 104.16.104.71:443
 104.16.148.244:2087
@@ -37,6 +38,7 @@
 116.202.189.213:8443
 129.121.95.159:443
 135.181.129.162:443
+136.243.195.203:443
 138.199.238.202:8443
 140.248.185.253:443
 15.204.97.195:23576
@@ -104,6 +106,7 @@
 188.114.97.6:2082
 188.114.97.7:443
 192.155.87.188:10092
+194.120.230.26:443
 194.120.230.37:443
 194.59.221.90:8443
 194.59.221.90:8444
@@ -112,6 +115,7 @@
 199.232.78.140:443
 199.232.78.159:80
 199.232.78.160:443
+208.103.161.1:443
 209.200.246.148:443
 21.hide.newflamingodomain.co.uk:8443
 212.23.221.62:443
@@ -175,6 +179,7 @@ Lashboy.muzanesghy.co.uk:4455
 Mo.Mohearn.co.uk.:443
 New.nchnch.co.uk:4455
 Speed-speed.co.uk.:443
+Stand-For-Iran.ir.mausjakaqd.info.:7443
 Strait-of-Hormuz.ir.jursdheks.info.:88
 Strait-of-Hormuz.ir.jursdheks.info:7443
 Suodbo.co.uk.:443
@@ -199,6 +204,7 @@ ccc.horizon555.co.uk:8443
 cdn10.cdnwave.org:443
 cdn3.cdnwave.org:443
 cdn5.cdnwave.org:443
+cdn7.cdnwave.org:443
 danmarki.tokhmemorgh.info.:7799
 davande.ir.kjhsdjhads.info.:7443
 del-tange-toam.ir.kkhfkasfhkasdx.info.:7443
@@ -235,6 +241,7 @@ mamadgoli.co.uk:4455
 mashti.just-money.co.uk:8880
 max.kimt.click:443
 media2.happtg.org:443
+media6.happtg.org:443
 media7.happtg.org:443
 media9.happtg.org:443
 megaconnect.click:443
@@ -272,6 +279,7 @@ s1.assetflux.org:443
 s4.assetflux.org:443
 s5.assetflux.org:443
 s5.foriran.co.uk:443
+s8.assetflux.org:443
 september.mtproto.baby:443
 setion-two.co.uk.:443
 severjadid.co.uk:4455
